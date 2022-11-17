@@ -47,10 +47,9 @@ const LoginForm = (props: Props) => {
           />
           <Button type="submit">Submit</Button>
           <Typography variant="body1">
-            {' '}
             Not registered?.
-            <Link onClick={handleClose} href="/signin">
-              Sign in
+            <Link onClick={handleClose} href="/signUp">
+              SignUp
             </Link>
           </Typography>
         </FormControl>

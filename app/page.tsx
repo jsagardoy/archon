@@ -1,8 +1,13 @@
 import React from 'react'
+import {SnackbarContextProvider} from './context/SnackbarContext'
 
 const HomePage = () => {
   return (
-    <div>HomePage</div>
+    <>
+      <SnackbarContextProvider>
+        <div>HomePage</div>
+      </SnackbarContextProvider>
+    </>
   )
 }
 
