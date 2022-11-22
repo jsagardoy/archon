@@ -1,4 +1,4 @@
-import MiniLogin from './MiniLogin'
+import LoginButton from './LoginButton'
 import React from 'react'
 import SideMenu from './SideMenu'
 import styles from './Header.module.css'
@@ -8,7 +8,7 @@ const Header = () => {
     <div className={styles.loginContainer}>
       <SideMenu />
       <h2>Archon</h2>
-      <MiniLogin />
+     <LoginButton />
     </div>
   )
 }

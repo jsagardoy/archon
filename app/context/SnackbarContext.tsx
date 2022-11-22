@@ -1,3 +1,5 @@
+'use client'
+
 import { AlertType, SnackbarContextType } from '../../utils/types'
 import React, { createContext, useState } from 'react'
 

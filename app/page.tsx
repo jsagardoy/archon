@@ -1,14 +1,10 @@
 import React from 'react'
-import {SnackbarContextProvider} from './context/SnackbarContext'
+import SnackbarComponent from './components/SnackbarComponent'
 
-const HomePage = () => {
-  return (
-    <>
-      <SnackbarContextProvider>
-        <div>HomePage</div>
-      </SnackbarContextProvider>
-    </>
-  )
-}
+const HomePage = () => (
+  <>
+    <div>HomePage</div>
+  </>
+)
 
 export default HomePage
