@@ -8,7 +8,7 @@ const Header = () => {
     <div className={styles.loginContainer}>
       <SideMenu />
       <h2>Archon</h2>
-     <LoginButton />
+      <LoginButton />
     </div>
   )
 }
