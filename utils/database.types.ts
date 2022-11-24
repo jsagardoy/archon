@@ -41,6 +41,56 @@ export interface Database {
           rol?: string | null
         }
       }
+      tournament: {
+        Row: {
+          id: string
+          name: string | null
+          date: string | null
+          full_name: string | null
+          hour: string | null
+          number_of_rounds: string | null
+          max_numb_of_players: string | null
+          active: boolean | null
+          details: string | null
+          price: number | null
+          city: string | null
+          country: string | null
+          address: string | null
+          players: any[] | null 
+        }
+        Insert: {
+          id: string
+          name: string | null
+          date: string | null
+          full_name: string | null
+          hour: string | null
+          number_of_rounds: string | null
+          max_numb_of_players: string | null
+          active: boolean | null
+          details: string | null
+          price: number | null
+          city: string | null
+          country: string | null
+          address: string | null
+          players: any[] | null 
+        }
+        Update: {
+          id?: string
+          name?: string | null
+          date?: string | null
+          full_name?: string | null
+          hour?: string | null
+          number_of_rounds?: string | null
+          max_numb_of_players?: string | null
+          active?: boolean | null
+          details?: string | null
+          price?: number | null
+          city?: string | null
+          country?: string | null
+          address ?: string | null
+          players?: any[] | null 
+        }
+      }
     }
     Views: {
       [_ in never]: never
@@ -52,4 +102,20 @@ export interface Database {
       [_ in never]: never
     }
   }
+}
+export type TournamentType = {
+  id: string
+  name: string | null
+  date: string | null
+  full_name: string | null
+  hour: string | null
+  number_of_rounds: string | null
+  max_numb_of_players: string | null
+  active: boolean | null
+  details: string | null
+  price: number | null
+  city: string | null
+  country: string | null
+  address: string | null
+  players: any[] | null //TODO: relacionarlo con la tabla correspondiente
 }
