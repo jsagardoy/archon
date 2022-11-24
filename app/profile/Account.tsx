@@ -1,13 +1,6 @@
 'use client'
 
-import {
-  Avatar,
-  Box,
-  Button,
-  Container,
-  FormControl,
-  TextField,
-} from '@mui/material'
+import { Box, Button, Container, FormControl, TextField } from '@mui/material'
 import {
   Session,
   useSupabaseClient,
@@ -15,9 +8,9 @@ import {
 } from '@supabase/auth-helpers-react'
 import { useEffect, useRef, useState } from 'react'
 
+import { AlertType } from '../../utils/types'
 import { Database } from '../../utils/database.types'
-import Image from 'next/image'
-import { useRouter } from 'next/navigation'
+import useSnackbar from '../hooks/useSnackbar'
 
 type Profiles = Database['public']['Tables']['profiles']['Row']
 
@@ -27,17 +20,16 @@ export default function Account({ session }: { session: Session }) {
   const supabase = useSupabaseClient<Database>()
   const user = useUser()
   const [loading, setLoading] = useState(true)
- /*  const [username, setUsername] = useState<Profiles['username']>(null)
-  const [website, setWebsite] = useState<Profiles['website']>(null)
-  const [avatar_url, setAvatarUrl] = useState<Profiles['avatar_url']>(null)
-  const [vken, setVken] = useState<Profiles['vken']>(null)
-  const [fullName, setFullName] = useState<Profiles['full_name']>(null) */
+
   const usernameRef = useRef<HTMLInputElement>(null)
   const avatarURLRef = useRef<HTMLInputElement>(null)
   const websiteRef = useRef<HTMLInputElement>(null)
   const vkenRef = useRef<HTMLInputElement>(null)
   const fullNameRef = useRef<HTMLInputElement>(null)
-  
+  const rolRef = useRef<string>('user')
+
+  const { setAlert } = useSnackbar()
+
   useEffect(() => {
     getProfile()
   }, [session])
@@ -49,7 +41,7 @@ export default function Account({ session }: { session: Session }) {
 
       const { data, error, status } = await supabase
         .from('profiles')
-        .select(`username, website, avatar_url, vken, full_name`)
+        .select(`username, website, avatar_url, vken, full_name, rol`)
         .eq('id', user.id)
         .single()
 
@@ -58,11 +50,6 @@ export default function Account({ session }: { session: Session }) {
       }
 
       if (data) {
-        /* setUsername(data.username)
-        setWebsite(data.website)
-        setAvatarUrl(data.avatar_url)
-        setVken(data.vken)
-        setFullName(data.full_name) */
         if (usernameRef && usernameRef.current) {
           usernameRef.current.value = data.username ?? ''
         }
@@ -78,36 +65,56 @@ export default function Account({ session }: { session: Session }) {
         if (fullNameRef && fullNameRef.current) {
           fullNameRef.current.value = data.full_name ?? ''
         }
+        if (rolRef && rolRef.current) {
+          rolRef.current = data.rol ?? ''
+        }
       }
     } catch (error) {
-      alert('Error loading user data!')
+      const newAlert: AlertType = {
+        open: true,
+        severity: 'error',
+        message: `Error loading user data!`,
+      }
+      setAlert(newAlert)
       console.log(error)
     } finally {
       setLoading(false)
     }
   }
 
-  const updateProfile = async ()=> {
+  const updateProfile = async () => {
     try {
       setLoading(true)
       if (!user) throw new Error('No user')
 
       const updates = {
         id: user.id,
-        username:usernameRef.current?.value??'',
-        website:websiteRef.current?.value??'',
-        avatar_url:avatarURLRef.current?.value??'',
+        username: usernameRef.current?.value ?? '',
+        website: websiteRef.current?.value ?? '',
+        avatar_url: avatarURLRef.current?.value ?? '',
         updated_at: new Date().toISOString(),
-        vken:vkenRef.current?.value??'',
-        full_name: fullNameRef.current?.value??'',
-        rol: user.role??'',
+        vken: vkenRef.current?.value ?? '',
+        full_name: fullNameRef.current?.value ?? '',
+        rol: rolRef.current ?? '',
       }
 
       let { error } = await supabase.from('profiles').upsert(updates)
       if (error) throw error
-      alert('Profile updated!')
+
+      const newAlert: AlertType = {
+        open: true,
+        severity: 'success',
+        message: `Profile updated!`,
+      }
+      setAlert(newAlert)
+      
     } catch (error) {
-      alert('Error updating the data!')
+      const newAlert: AlertType = {
+        open: true,
+        severity: 'error',
+        message: `Error updating the data!`,
+      }
+      setAlert(newAlert)
       console.log(error)
     } finally {
       setLoading(false)
@@ -167,50 +174,6 @@ export default function Account({ session }: { session: Session }) {
           />
           <Button type="submit">Save</Button>
         </FormControl>
-        {/* <Box>
-          <label htmlFor="email">Email</label>
-          <input id="email" type="text" value={session.user.email} disabled />
-        </Box>
-        <Box>
-          <label htmlFor="username">Username</label>
-          <input
-            id="username"
-            type="text"
-            value={username || ''}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-        </Box>
-        <Box>
-          <label htmlFor="website">Website</label>
-          <input
-            id="website"
-            type="website"
-            value={website || ''}
-            onChange={(e) => setWebsite(e.target.value)}
-          />
-        </Box>
-
-        <Box>
-          <button
-            className="button primary block"
-            onClick={() => updateProfile({ username, website, avatar_url })}
-            disabled={loading}
-          >
-            {loading ? 'Loading ...' : 'Update'}
-          </button>
-        </Box>
-
-        <Box>
-          <button
-            className="button block"
-            onClick={() => {
-              supabase.auth.signOut()
-              router.push('/')
-            }}
-          >
-            Sign Out
-          </button>
-        </Box> */}
       </Box>
     </Container>
   )
