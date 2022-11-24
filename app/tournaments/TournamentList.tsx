@@ -14,6 +14,7 @@ import { Database, TournamentType } from '../../utils/database.types'
 import React, { useEffect, useState } from 'react'
 
 import { AlertType } from '../../utils/types'
+import PrinceAccess from '../components/PrinceAccess'
 import { database } from 'firebase-admin'
 import useSnackbar from '../hooks/useSnackbar'
 import { useSupabaseClient } from '@supabase/auth-helpers-react'
@@ -41,6 +42,10 @@ const TournamentList = () => {
     }
   }
 
+    const createNewTournament = () => {
+        
+    }
+    
   useEffect(() => {
     getData()
   }, [supabase])
@@ -55,6 +60,9 @@ const TournamentList = () => {
       }}
     >
       <Typography variant="h4">Tournaments</Typography>
+      <PrinceAccess>
+              <Button onClick={createNewTournament}>New Tournament</Button>
+      </PrinceAccess>
       <TableContainer>
         <Table>
           <TableHead>
@@ -89,7 +97,7 @@ const TournamentList = () => {
                     <TableCell>{country}</TableCell>
                     <TableCell>{city}</TableCell>
                     <TableCell>
-                      {players?.length??0}/{max_numb_of_players}
+                      {players?.length ?? 0}/{max_numb_of_players}
                     </TableCell>
                     <TableCell>Suscribe</TableCell>
                   </TableRow>

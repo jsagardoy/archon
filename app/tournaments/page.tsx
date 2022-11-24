@@ -1,8 +1,12 @@
+import PrivateComponent from '../components/PrivateComponent'
 import React from 'react'
+import TournamentList from './TournamentList'
 
 const Tournaments = () => {
   return (
-    <div>Tournaments</div>
+    <PrivateComponent>
+      <TournamentList />
+    </PrivateComponent>
   )
 }
 
