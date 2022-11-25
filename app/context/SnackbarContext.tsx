@@ -11,7 +11,7 @@ const snackbarInitial: AlertType = {
 
 const Context = createContext<SnackbarContextType>({
   alert: snackbarInitial,
-  setAlert: (value:AlertType) => {},
+  setAlert: (value: AlertType) => {},
 })
 
 export function SnackbarContextProvider({
