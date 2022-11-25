@@ -46,7 +46,6 @@ export interface Database {
           id: string
           name: string | null
           date: string | null
-          full_name: string | null
           hour: string | null
           number_of_rounds: string | null
           max_numb_of_players: string | null
@@ -62,7 +61,6 @@ export interface Database {
           id: string
           name: string | null
           date: string | null
-          full_name: string | null
           hour: string | null
           number_of_rounds: string | null
           max_numb_of_players: string | null
@@ -78,7 +76,6 @@ export interface Database {
           id?: string
           name?: string | null
           date?: string | null
-          full_name?: string | null
           hour?: string | null
           number_of_rounds?: string | null
           max_numb_of_players?: string | null
