@@ -22,20 +22,22 @@ export default function RootLayout({
       <head>
         <title>Vtes Archon</title>
       </head>
-      <body>
+      <SnackbarContextProvider>
         <SessionContextProvider
           supabaseClient={supabaseClient}
           initialSession={initialSession}
         >
-          <SnackbarContextProvider>
+          <body>
             <header>
               <Header />
             </header>
-            <main>{children}</main>
-            <SnackbarComponent />
-          </SnackbarContextProvider>
+            <main>
+              {children}
+              <SnackbarComponent />
+            </main>
+          </body>
         </SessionContextProvider>
-      </body>
+      </SnackbarContextProvider>
     </html>
   )
 }
