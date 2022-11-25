@@ -1,12 +1,12 @@
 'use client'
 
 import { Box, Button, Container, FormControl, TextField } from '@mui/material'
+import { FormEvent, useEffect, useRef, useState } from 'react'
 import {
   Session,
   useSupabaseClient,
   useUser,
 } from '@supabase/auth-helpers-react'
-import { useEffect, useRef, useState } from 'react'
 
 import { AlertType } from '../../utils/types'
 import { Database } from '../../utils/database.types'
@@ -121,7 +121,8 @@ export default function Account({ session }: { session: Session }) {
     }
   }
 
-  const onSubmit = () => {
+  const onSubmit = (e:FormEvent) => {
+    e.preventDefault()
     updateProfile()
   }
   return (
