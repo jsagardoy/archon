@@ -17,19 +17,6 @@ const PrivateComponent = ({ children }: Props) => {
   const { setAlert } = useSnackbar()
   const session: Session | null = useSession()
 
-  useEffect(() => {
-    const newAlert: AlertType = {
-      open: true,
-      severity: 'error',
-      message:
-        'Insuficient permission. You need to be logged to access to this page.',
-    }
-    if (!session) {
-      setAlert(newAlert)
-      router.push('/login')
-    }
-  }, [])
-
   if (session) {
     return children
   }

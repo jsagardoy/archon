@@ -20,27 +20,29 @@ const LoginForm = () => {
 
   const redirectToHome = () => router.push('/')
 
-  useEffect(() => {
-    if (session) {
-      const newAlert: AlertType = {
-        open: true,
-        severity: 'info',
-        message: 'User already logged in',
-      }
-      setAlert(newAlert)
-      //redirectToHome()
+  if (session) {
+    const newAlert: AlertType = {
+      open: true,
+      severity: 'info',
+      message: 'User already logged in. You have been redirected to Home!!',
     }
-  }, [session])
+    setAlert(newAlert)
+    redirectToHome()
+    return <></>
+  }
 
-  return !session ? (
-    <Container>
-      <Auth
-        supabaseClient={supabase}
-        providers={providers}
-        appearance={{ theme: ThemeSupa }}
-      />
-    </Container>
-  ) : null
+  if (!session) {
+    return (
+      <Container>
+        <Auth
+          supabaseClient={supabase}
+          providers={providers}
+          appearance={{ theme: ThemeSupa }}
+        />
+      </Container>
+    )
+  }
+  return <></>
 }
 
 export default LoginForm
