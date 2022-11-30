@@ -16,33 +16,31 @@ const LoginForm = () => {
   const supabase = useSupabaseClient()
   const providers: Provider[] = ['google']
   const router = useRouter()
-  const {setAlert} = useSnackbar()
+  const { setAlert } = useSnackbar()
 
   const redirectToHome = () => router.push('/')
-  
+
   useEffect(() => {
     if (session) {
       const newAlert: AlertType = {
-        open:true,
+        open: true,
         severity: 'info',
         message: 'User already logged in',
       }
       setAlert(newAlert)
-      redirectToHome()
+      //redirectToHome()
     }
   }, [session])
 
-  return (
+  return !session ? (
     <Container>
-      {!session ? (
-        <Auth
-          supabaseClient={supabase}
-          providers={providers}
-          appearance={{ theme: ThemeSupa }}
-        />
-      ) : null}
+      <Auth
+        supabaseClient={supabase}
+        providers={providers}
+        appearance={{ theme: ThemeSupa }}
+      />
     </Container>
-  )
+  ) : null
 }
 
 export default LoginForm

@@ -33,6 +33,7 @@ const PrivateComponent = ({ children }: Props) => {
   if (session) {
     return children
   }
+  return null
 }
 
 export default PrivateComponent

@@ -58,9 +58,7 @@ const TournamentList = () => {
     >
       <Typography variant="h4">Tournaments</Typography>
       <PrinceAccess>
-        <DialogWrapper label="Create Tournament">
-          <TournamentForm />
-        </DialogWrapper>
+        <DialogWrapper label="Create Tournament" />
       </PrinceAccess>
       <TableContainer>
         <Table>
@@ -87,7 +85,7 @@ const TournamentList = () => {
                   date,
                   country,
                   city,
-                  max_numb_of_players,
+                  max_num_of_players,
                   players,
                 }) => (
                   <TableRow key={id} hover selected>
@@ -96,7 +94,7 @@ const TournamentList = () => {
                     <TableCell>{country}</TableCell>
                     <TableCell>{city}</TableCell>
                     <TableCell>
-                      {players?.length ?? 0}/{max_numb_of_players}
+                      {players?.length ?? 0}/{max_num_of_players}
                     </TableCell>
                     <TableCell>Suscribe</TableCell>
                   </TableRow>

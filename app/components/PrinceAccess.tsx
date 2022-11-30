@@ -6,6 +6,7 @@ import {
 } from '@supabase/auth-helpers-react'
 
 import AccessDenied from './AccessDenied'
+import { AlertType } from '../../utils/types'
 import { Database } from '../../utils/database.types'
 import { Session } from '@supabase/auth-helpers-nextjs'
 import useSnackbar from '../hooks/useSnackbar'
@@ -40,11 +41,12 @@ const PrinceAccess = ({ children }: Props) => {
         }
       }
     } catch (error) {
-      const newAlert = {
+      const newAlert:AlertType = {
         open: true,
         severity: 'error',
         message: 'Error accesing profile',
       }
+      setAlert(newAlert)
       console.error(error)
     }
   }

@@ -1,19 +1,93 @@
 'use client'
 
-import { Box, Button, TextField } from '@mui/material'
-import React, { useRef } from 'react'
+import {
+  Box,
+  Button,
+  FormControl,
+  FormHelperText,
+  InputAdornment,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  TextField,
+} from '@mui/material'
+import { City, Country, State } from 'country-state-city'
+import { ICity, ICountry, IState } from 'country-state-city'
+import React, { useRef, useState } from 'react'
+import { ZodFormattedError, number, z } from 'zod'
 
-const TournamentForm = () => {
+import { AlertType } from '../../utils/types'
+import { TournamentType } from '../../utils/database.types'
+import getSymbolFromCurrency from 'currency-symbol-map'
+import { supabase } from '../../utils/supabase'
+import useSnackbar from '../hooks/useSnackbar'
+import { useUser } from '@supabase/auth-helpers-react'
+import { v4 as uuidv4 } from 'uuid'
+
+interface Props {
+  handleClose: () => void
+}
+const TournamentForm = ({ handleClose }: Props) => {
   const nameRef = useRef<HTMLInputElement>(null)
+  const descriptionRef = useRef<HTMLInputElement>(null)
   const dateRef = useRef<HTMLInputElement>(null)
   const hourRef = useRef<HTMLInputElement>(null)
   const numberOfRoundsRef = useRef<HTMLInputElement>(null)
-  const maxNumbOfPlayersRef = useRef<HTMLInputElement>(null)
+  const maxNumOfPlayersRef = useRef<HTMLInputElement>(null)
   const detailsRef = useRef<HTMLInputElement>(null)
   const priceRef = useRef<HTMLInputElement>(null)
-  const cityRef = useRef<HTMLInputElement>(null)
-  const countryRef = useRef<HTMLInputElement>(null)
+  const [validationResult, setValidationResult] = useState<
+    ZodFormattedError<
+      {
+        country: string
+        description: string
+        state: string
+        city: string
+        name: string
+        date: string
+        hour: string
+        number_of_rounds: string
+        max_num_of_players: string
+        details: string
+        price: string
+        user_id: string
+        address: string
+      },
+      string
+    >
+  >()
+
+  const [country, setCountry] = useState<ICountry | null>(null)
+  const [state, setState] = useState<IState | null>(null)
+  const [city, setCity] = useState<string | null>(null)
   const addressRef = useRef<HTMLInputElement>(null)
+  const user = useUser()
+  const { setAlert } = useSnackbar()
+
+  const FormSchema = z.object({
+    name: z.string()?.min(1),
+    date: z.string().min(1),
+    hour: z.string().regex(/^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/),
+    number_of_rounds: z
+      .string()
+      .min(1)
+      .regex(/^[1-9]\d*$/),
+    max_num_of_players: z
+      .string()
+      .min(1)
+      .regex(/^[1-9]\d*$/),
+    details: z.string(),
+    price: z
+      .string()
+      .min(1)
+      .regex(/^[+]?\d+([.]\d+)?$/),
+    country: z.string().min(1),
+    state: z.string().min(1),
+    user_id: z.string().min(1),
+    city: z.string().min(1),
+    address: z.string(),
+  })
 
   const isActive = (tournamentDate: string | undefined) => {
     if (!tournamentDate) {
@@ -23,108 +97,269 @@ const TournamentForm = () => {
       const today = new Date()
       const tournamentDateFormated = new Date(tournamentDate)
       tournamentDateFormated.setHours(23, 59, 59)
-
-      console.log(today.getTime())
-      console.log(tournamentDateFormated.getTime())
       return today.getTime() <= tournamentDateFormated.getTime()
     }
   }
 
-  const onSubmit = (e: React.FormEvent) => {
+  const insertTournamentInDatabase = async (newTournament: TournamentType) => {
+    try {
+      const { data, error } = await supabase
+        .from('tournament')
+        .insert([newTournament])
+
+      if (error) {
+        throw error
+      }
+
+      const newAlert: AlertType = {
+        open: true,
+        severity: 'success',
+        message: 'Tournament added',
+      }
+      setAlert(newAlert)
+    } catch (error) {
+      const newAlert: AlertType = {
+        open: true,
+        severity: 'error',
+        message: 'Error creating tournament',
+      }
+      setAlert(newAlert)
+      console.error({ error })
+    }
+  }
+
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    const newTournament = {
-      name: nameRef.current?.value,
-      dateRef: nameRef.current?.value,
-      hour: hourRef.current?.value,
-      number_of_rounds: numberOfRoundsRef.current?.value,
-      max_num_of_players: maxNumbOfPlayersRef.current?.value,
-      details: detailsRef.current?.value,
-      date: dateRef.current?.value,
-      price: priceRef.current?.value,
-      city: cityRef.current?.value,
-      country: countryRef.current?.value,
-      address: addressRef.current?.value,
-      active: isActive(dateRef.current?.value),
-      players: [],
+    if (user && user.id) {
+      const newTournament: TournamentType = {
+        name: nameRef.current?.value ?? null,
+        description: descriptionRef.current?.value ?? null,
+        date: dateRef.current?.value ?? null,
+        hour: hourRef.current?.value ?? null,
+        number_of_rounds: numberOfRoundsRef.current?.value ?? '0',
+        max_num_of_players: maxNumOfPlayersRef.current?.value ?? '0',
+        details: detailsRef.current?.value ?? null,
+        price: priceRef.current?.value ?? null,
+        country: country?.name ?? '',
+        state: state?.name ?? '',
+        city: city ?? '',
+        address: addressRef.current?.value ?? null,
+        active: isActive(dateRef.current?.value) ?? false,
+        user_id: user.id,
+        players: null,
+      }
+      try {
+        const validation = FormSchema.safeParse(newTournament)
+
+        if (!validation.success) {
+          setValidationResult(validation.error.format())
+        }
+        if (validation.success) {
+          await insertTournamentInDatabase(newTournament)
+          handleClose()
+        }
+      } catch (error) {
+        const newAlert: AlertType = {
+          message: 'Error',
+          open: true,
+          severity: 'error',
+        }
+        setAlert(newAlert)
+        console.error(error)
+      }
     }
-    console.log(newTournament)
   }
-  /*  id: string
-          name: string | null
-          date: string | null
-          hour: string | null
-          number_of_rounds: string | null
-          max_numb_of_players: string | null
-          active: boolean | null
-          details: string | null
-          price: number | null
-          city: string | null
-          country: string | null
-          address: string | null
-          players: any[] | null  */
+
+  const handleCountry = (e: SelectChangeEvent) => {
+    setCountry((prev) => Country.getCountryByCode(e.target.value) ?? prev)
+    setState(null)
+    setCity('')
+  }
+  const handleState = (e: SelectChangeEvent) => {
+    setState((prev) => State.getStateByCode(e.target.value) ?? prev)
+    setCity('')
+  }
+  const handleCity = (e: SelectChangeEvent) => {
+    setCity((prev) => e.target.value ?? prev)
+  }
 
   return (
-    <Box
-      component="form"
-      onSubmit={onSubmit}
-      sx={{
-        display: 'flex',
-        justifyContent: 'center',
-        gap: '1rem',
-        flexDirection: 'column',
-      }}
-    >
-      <TextField
-        required
-        fullWidth
-        inputRef={nameRef}
-        id="id_name"
-        label="Name"
-      />
-      <TextField
-        required
-        inputRef={dateRef}
-        id="id_date"
-        label="Date"
-        type="date"
-        InputLabelProps={{ shrink: true }}
-      />
-      <TextField inputRef={hourRef} id="id_hour" label="Starting time" />
-      <TextField
-        required
-        inputRef={numberOfRoundsRef}
-        id="id_numberOfRounds"
-        label="Number of rounds (including the final)"
-        type="number"
-      />
-      <TextField
-        required
-        inputRef={maxNumbOfPlayersRef}
-        id="id_maxNumbOfPlayers"
-        label="Maximun number of players"
-        type="number"
-      />
-      <TextField inputRef={detailsRef} id="id_details" label="Details" />
-      <TextField inputRef={priceRef} id="id_price" label="Price" />
-      <TextField required inputRef={cityRef} id="id_city" label="City" />
-      {/* TODO: include dropdownList */}
-      <TextField
-        required
-        inputRef={countryRef}
-        id="id_country"
-        label="Country"
-      />
-      {/*  TODO: include dropdownList */}
-      <TextField
-        required
-        inputRef={addressRef}
-        id="id_address"
-        label="Tournament address"
-      />
-      <Button type="submit">Create Tournament</Button>
-    </Box>
-    
+    <>
+      <Box
+        component="form"
+        onSubmit={onSubmit}
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          gap: '1rem',
+          flexDirection: 'column',
+        }}
+      >
+        <TextField
+          error={validationResult?.name?._errors !== undefined}
+          helperText={validationResult?.name?._errors.join(', ') || ''}
+          required
+          fullWidth
+          inputRef={nameRef}
+          id="id_name"
+          label="Name"
+        />
+        <TextField
+          error={validationResult?.description?._errors !== undefined}
+          helperText={validationResult?.description?._errors.join(', ') || ''}
+          fullWidth
+          inputRef={descriptionRef}
+          id="id_description"
+          label="Description"
+          multiline
+        />
+        <TextField
+          error={validationResult?.date?._errors !== undefined}
+          helperText={validationResult?.date?._errors.join(', ') || ''}
+          required
+          inputRef={dateRef}
+          id="id_date"
+          label="Date"
+          type="date"
+          InputLabelProps={{ shrink: true }}
+        />
+        <TextField
+          error={validationResult?.hour?._errors !== undefined}
+          helperText={validationResult?.hour?._errors.join(', ') || ''}
+          inputRef={hourRef}
+          id="id_hour"
+          label="Starting time"
+        />
+        <TextField
+          error={validationResult?.number_of_rounds?._errors !== undefined}
+          helperText={
+            validationResult?.number_of_rounds?._errors.join(', ') || ''
+          }
+          required
+          inputRef={numberOfRoundsRef}
+          id="id_numberOfRounds"
+          label="Number of rounds (including the final)"
+          type="number"
+        />
+        <TextField
+          error={validationResult?.max_num_of_players?._errors !== undefined}
+          helperText={
+            validationResult?.max_num_of_players?._errors.join(', ') || ''
+          }
+          required
+          inputRef={maxNumOfPlayersRef}
+          id="id_maxNumbOfPlayers"
+          label="Maximun number of players"
+          type="number"
+        />
+        <TextField
+          error={validationResult?.details?._errors !== undefined}
+          helperText={validationResult?.details?._errors.join(', ') || ''}
+          inputRef={detailsRef}
+          multiline
+          id="id_details"
+          label="Details"
+        />
+        <TextField
+          error={validationResult?.price?._errors !== undefined}
+          helperText={validationResult?.price?._errors.join(', ') || ''}
+          inputRef={priceRef}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                {country && getSymbolFromCurrency(country?.currency)}
+              </InputAdornment>
+            ),
+          }}
+          id="id_price"
+          label="Price"
+        />
+        <FormControl fullWidth>
+          <InputLabel required id="id_country_label">
+            Country
+          </InputLabel>
+          <Select
+            error={validationResult?.country?._errors !== undefined}
+            labelId="id_country_label"
+            id="id_country"
+            onChange={handleCountry}
+            value={country ? country.isoCode : ''}
+          >
+            {Country.getAllCountries().map((c) => (
+              <MenuItem key={c.isoCode} value={c.isoCode}>
+                {c.name}
+              </MenuItem>
+            ))}
+          </Select>
+          <FormHelperText error={validationResult?.city?._errors !== undefined}>
+            {validationResult?.country?._errors.join(', ') || ''}
+          </FormHelperText>
+        </FormControl>
+        <FormControl fullWidth>
+          <InputLabel required id="id_state_label">
+            State
+          </InputLabel>
+          <Select
+            error={validationResult?.state?._errors !== undefined}
+            disabled={!country || country?.isoCode === ''}
+            labelId="id_state_label"
+            id="id_state"
+            onChange={handleState}
+            value={state ? state.isoCode : ''}
+          >
+            {State.getStatesOfCountry(country?.isoCode).map((s) => (
+              <MenuItem key={s.isoCode} value={s.isoCode}>
+                {s.name}
+              </MenuItem>
+            ))}
+          </Select>
+          <FormHelperText error={validationResult?.city?._errors !== undefined}>
+            {validationResult?.state?._errors.join(', ') || ''}
+          </FormHelperText>
+        </FormControl>
+        <FormControl fullWidth>
+          <InputLabel required id="id_state_label">
+            City
+          </InputLabel>
+          <Select
+            error={validationResult?.city?._errors !== undefined}
+            disabled={
+              !country ||
+              country?.isoCode === '' ||
+              !state ||
+              state?.isoCode === ''
+            }
+            labelId="id_city_label"
+            id="id_city"
+            value={city ? city : ''}
+            onChange={handleCity}
+          >
+            {country &&
+              state &&
+              City.getCitiesOfState(country?.isoCode, state?.isoCode).map(
+                (c) => (
+                  <MenuItem key={c.name} value={c.name}>
+                    {c.name}
+                  </MenuItem>
+                )
+              )}
+          </Select>
+          <FormHelperText error={validationResult?.city?._errors !== undefined}>
+            {validationResult?.city?._errors.join(', ') || ''}
+          </FormHelperText>
+        </FormControl>
+        <TextField
+          required
+          inputRef={addressRef}
+          id="id_address"
+          label="Tournament address"
+        />
+        <Button disabled={!user} type="submit">
+          Create Tournament
+        </Button>
+      </Box>
+    </>
   )
 }
 

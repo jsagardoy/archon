@@ -32,7 +32,7 @@ export default function Account({ session }: { session: Session }) {
 
   useEffect(() => {
     getProfile()
-  }, [session])
+  }, [session, avatarURLRef.current])
 
   const getProfile = async () => {
     try {
@@ -107,7 +107,6 @@ export default function Account({ session }: { session: Session }) {
         message: `Profile updated!`,
       }
       setAlert(newAlert)
-      
     } catch (error) {
       const newAlert: AlertType = {
         open: true,
@@ -121,7 +120,7 @@ export default function Account({ session }: { session: Session }) {
     }
   }
 
-  const onSubmit = (e:FormEvent) => {
+  const onSubmit = (e: FormEvent) => {
     e.preventDefault()
     updateProfile()
   }
@@ -151,9 +150,14 @@ export default function Account({ session }: { session: Session }) {
               label="Avatar URL"
               InputLabelProps={{ shrink: true }}
             />
-            <picture>
-              <img src={avatarURLRef.current?.value ?? ''} alt="user avatar" />
-            </picture>
+            {avatarURLRef.current && (
+              <picture>
+                <img
+                  src={avatarURLRef.current?.value ?? ''}
+                  alt="user avatar"
+                />
+              </picture>
+            )}
           </Box>
           <TextField
             id="id_username"

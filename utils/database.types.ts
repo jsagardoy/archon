@@ -45,47 +45,56 @@ export interface Database {
         Row: {
           id: string
           name: string | null
+          description: string | null
           date: string | null
           hour: string | null
           number_of_rounds: string | null
-          max_numb_of_players: string | null
+          max_num_of_players: string | null
           active: boolean | null
           details: string | null
-          price: number | null
+          price: string | null
           city: string | null
           country: string | null
+          state: string | null
           address: string | null
-          players: any[] | null 
+          players: any[] | null
+          user_id: string
         }
         Insert: {
           id: string
           name: string | null
+          description: string | null
           date: string | null
           hour: string | null
           number_of_rounds: string | null
-          max_numb_of_players: string | null
+          max_num_of_players: string | null
           active: boolean | null
           details: string | null
-          price: number | null
+          price: string | null
           city: string | null
           country: string | null
+          state: string | null
           address: string | null
-          players: any[] | null 
+          players: any[] | null
+          user_id: string
         }
         Update: {
           id?: string
           name?: string | null
+          description?: string | null
           date?: string | null
           hour?: string | null
           number_of_rounds?: string | null
-          max_numb_of_players?: string | null
+          max_num_of_players?: string | null
           active?: boolean | null
           details?: string | null
-          price?: number | null
+          price?: string | null
           city?: string | null
           country?: string | null
-          address ?: string | null
-          players?: any[] | null 
+          state?: string | null
+          address?: string | null
+          players?: any[] | null
+          user_id?: string
         }
       }
     }
@@ -101,18 +110,20 @@ export interface Database {
   }
 }
 export type TournamentType = {
-  id: string
+  id?: string
   name: string | null
+  description: string | null
   date: string | null
-  full_name: string | null
   hour: string | null
   number_of_rounds: string | null
-  max_numb_of_players: string | null
+  max_num_of_players: string | null
   active: boolean | null
   details: string | null
-  price: number | null
+  price: string | null
   city: string | null
   country: string | null
   address: string | null
+  state: string | null
+  user_id: string
   players: any[] | null //TODO: relacionarlo con la tabla correspondiente
 }
