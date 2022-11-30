@@ -58,7 +58,9 @@ const TournamentList = () => {
     >
       <Typography variant="h4">Tournaments</Typography>
       <PrinceAccess>
-        <DialogWrapper label="Create Tournament" />
+        <DialogWrapper label="Create Tournament">
+          <TournamentForm handleClose={() => {}} />
+        </DialogWrapper>
       </PrinceAccess>
       <TableContainer>
         <Table>
