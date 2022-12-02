@@ -1,22 +1,28 @@
 'use client'
 
+import { AlertType, TournamentFilterValuesType } from '../../utils/types'
 import {
   Container,
+  Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
+  TableFooter,
   TableHead,
+  TablePagination,
   TableRow,
   Typography,
 } from '@mui/material'
 import { Database, TournamentType } from '../../utils/database.types'
 import React, { useEffect, useState } from 'react'
 
-import { AlertType } from '../../utils/types'
 import DialogWrapper from '../components/DialogWrapper'
 import PrinceAccess from '../components/PrinceAccess'
+import TableFilter from './TableFilter'
+import TablePaginationActions from '../components/TablePaginationActions'
 import TournamentForm from './TournamentForm'
+import { start } from 'repl'
 import useSnackbar from '../hooks/useSnackbar'
 import { useSupabaseClient } from '@supabase/auth-helpers-react'
 
@@ -24,6 +30,11 @@ const TournamentList = () => {
   const supabase = useSupabaseClient<Database>()
   const { setAlert } = useSnackbar()
   const [tournaments, setTournaments] = useState<TournamentType[] | null>(null)
+  const [filters, setFilters] = useState<TournamentFilterValuesType>(
+    {} as TournamentFilterValuesType
+  )
+  const [page, setPage] = React.useState(0)
+  const [rowsPerPage, setRowsPerPage] = React.useState(5)
 
   const getData = async () => {
     try {
@@ -47,6 +58,69 @@ const TournamentList = () => {
     getData()
   }, [supabase])
 
+  const handleChangePage = (
+    event: React.MouseEvent<HTMLButtonElement> | null,
+    newPage: number
+  ) => {
+    setPage(newPage)
+  }
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10))
+    setPage(0)
+  }
+
+  const calculateRows = () =>
+    rowsPerPage > 0
+      ? tournaments?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+      : tournaments
+
+  const isDateInBetweenDates = (
+    startDate: string,
+    endDate: string,
+    compare: string
+  ) => {
+    const formatedDate = new Date(compare)
+    formatedDate.setHours(23, 59, 59)
+    const start = new Date(startDate)
+    start.setHours(parseInt('00', 8), parseInt('00', 8), parseInt('00', 8))
+    const end = new Date(endDate)
+    start.setHours(23, 59, 59)
+    return (
+      formatedDate.getTime() >= start.getTime() &&
+      formatedDate.getTime() <= end.getTime()
+    )
+  }
+
+  const handleFilters = (appliedFilters: TournamentFilterValuesType) => {
+    setFilters(appliedFilters)
+  }
+
+  const applyFilters = (list: TournamentType[]): TournamentType[] => {
+    return (
+      list
+        ?.filter((elem) =>
+          filters.country ? elem.country === filters.country : elem
+        )
+        .filter((elem) => (filters.state ? elem.state === filters.state : elem))
+        .filter((elem) => (filters.city ? elem.city === filters.city : elem))
+        .filter((elem) => {
+          if (elem) {
+            if (elem.date && filters.startDate && filters.endDate) {
+              return isDateInBetweenDates(
+                filters.startDate,
+                filters.endDate,
+                elem.date
+              )
+            }
+          }
+          return elem
+        }) ?? ([] as TournamentType[])
+    )
+  }
+
   return (
     <Container
       sx={{
@@ -62,10 +136,11 @@ const TournamentList = () => {
           <TournamentForm handleClose={() => {}} />
         </DialogWrapper>
       </PrinceAccess>
-      <TableContainer>
+      <TableFilter filterValues={handleFilters} />
+      <TableContainer component={Paper}>
         <Table>
           <TableHead>
-            <TableRow>
+            <TableRow hover selected>
               <TableCell>Name</TableCell>
               <TableCell>Date</TableCell>
               <TableCell>Country</TableCell>
@@ -75,12 +150,12 @@ const TournamentList = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {tournaments?.length === 0 ? (
+            {applyFilters(calculateRows() ?? [])?.length === 0 ? (
               <TableRow>
-                <TableCell>No tournaments</TableCell>
+                <TableCell colSpan={6}>No tournaments</TableCell>
               </TableRow>
             ) : (
-              tournaments?.map(
+              applyFilters(calculateRows() ?? [])?.map(
                 ({
                   id,
                   name,
@@ -92,7 +167,9 @@ const TournamentList = () => {
                 }) => (
                   <TableRow key={id} hover selected>
                     <TableCell>{name}</TableCell>
-                    <TableCell>{date}</TableCell>
+                    <TableCell>
+                      {new Date(date ?? '').toLocaleDateString()}
+                    </TableCell>
                     <TableCell>{country}</TableCell>
                     <TableCell>{city}</TableCell>
                     <TableCell>
@@ -104,6 +181,26 @@ const TournamentList = () => {
               )
             )}
           </TableBody>
+          <TableFooter>
+            <TableRow>
+              <TablePagination
+                rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
+                colSpan={6}
+                count={tournaments?.length ?? 0}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                SelectProps={{
+                  inputProps: {
+                    'aria-label': 'rows per page',
+                  },
+                  native: true,
+                }}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                ActionsComponent={TablePaginationActions}
+              />
+            </TableRow>
+          </TableFooter>
         </Table>
       </TableContainer>
     </Container>

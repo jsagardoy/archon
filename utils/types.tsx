@@ -19,3 +19,11 @@ export type UserContextType = {
   userId: string
   setUserId: (value: string) => void
 }
+
+export type TournamentFilterValuesType = {
+  country: string | null
+  state: string | null
+  city: string | null
+  startDate: string | null
+  endDate: string | null
+}

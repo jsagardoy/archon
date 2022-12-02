@@ -86,7 +86,7 @@ const TournamentForm = ({ handleClose }: Props) => {
     state: z.string().min(1),
     user_id: z.string().min(1),
     city: z.string().min(1),
-    address: z.string(),
+    address: z.string().min(1),
   })
 
   const isActive = (tournamentDate: string | undefined) => {
