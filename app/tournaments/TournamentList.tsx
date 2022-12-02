@@ -55,7 +55,7 @@ const TournamentList = () => {
   }
 
   useEffect(() => {
-    getData()
+    getData() //only active tournaments
   }, [supabase])
 
   const handleChangePage = (
@@ -106,6 +106,7 @@ const TournamentList = () => {
         )
         .filter((elem) => (filters.state ? elem.state === filters.state : elem))
         .filter((elem) => (filters.city ? elem.city === filters.city : elem))
+        .filter((elem) => elem.active ?? false)
         .filter((elem) => {
           if (elem) {
             if (elem.date && filters.startDate && filters.endDate) {
@@ -155,7 +156,11 @@ const TournamentList = () => {
                 <TableCell colSpan={6}>No tournaments</TableCell>
               </TableRow>
             ) : (
-              applyFilters(calculateRows() ?? [])?.map(
+              applyFilters(
+                calculateRows()?.sort((a, b) =>
+                  a && b && a.date && b.date ? a.date.localeCompare(b.date) : 1
+                ) ?? []
+              )?.map(
                 ({
                   id,
                   name,
