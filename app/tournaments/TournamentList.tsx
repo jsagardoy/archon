@@ -42,7 +42,10 @@ const TournamentList = () => {
         .from('tournament')
         .select('*')
         .eq('active', true)
-      setTournaments(data as TournamentType[])
+      const sortedData = [...(data as TournamentType[])].sort((a, b) =>
+        a && b && a.date && b.date ? a.date.localeCompare(b.date) : 1
+      )
+      setTournaments(sortedData)
     } catch (error) {
       const alert: AlertType = {
         severity: 'error',
