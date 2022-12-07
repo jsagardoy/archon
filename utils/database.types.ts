@@ -55,6 +55,7 @@ export interface Database {
           price: string | null
           city: string | null
           country: string | null
+          currency: string | null
           state: string | null
           address: string | null
           players: any[] | null
@@ -73,6 +74,7 @@ export interface Database {
           price: string | null
           city: string | null
           country: string | null
+          currency: string | null
           state: string | null
           address: string | null
           players: any[] | null
@@ -91,6 +93,7 @@ export interface Database {
           price?: string | null
           city?: string | null
           country?: string | null
+          currency?: string | null
           state?: string | null
           address?: string | null
           players?: any[] | null
@@ -110,7 +113,7 @@ export interface Database {
   }
 }
 export type TournamentType = {
-  id?: string
+  id: string
   name: string | null
   description: string | null
   date: string | null
@@ -124,6 +127,13 @@ export type TournamentType = {
   country: string | null
   address: string | null
   state: string | null
+  currency: string | null
   user_id: string
   players: any[] | null //TODO: relacionarlo con la tabla correspondiente
+}
+export type PlayerType = {
+  id?: string
+  id_tournament: string | null
+  ranking: number | null
+  userId: string | null
 }

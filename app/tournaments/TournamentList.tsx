@@ -2,6 +2,7 @@
 
 import { AlertType, TournamentFilterValuesType } from '../../utils/types'
 import {
+  Button,
   Container,
   Paper,
   Table,
@@ -14,22 +15,33 @@ import {
   TableRow,
   Typography,
 } from '@mui/material'
-import { Database, TournamentType } from '../../utils/database.types'
+import {
+  Database,
+  PlayerType,
+  TournamentType,
+} from '../../utils/database.types'
 import React, { useEffect, useState } from 'react'
+import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react'
 
 import DialogWrapper from '../components/DialogWrapper'
 import PrinceAccess from '../components/PrinceAccess'
 import TableFilter from './TableFilter'
 import TablePaginationActions from '../components/TablePaginationActions'
 import TournamentForm from './TournamentForm'
-import { start } from 'repl'
-import useSnackbar from '../hooks/useSnackbar'
-import { useSupabaseClient } from '@supabase/auth-helpers-react'
+import getTournamentPlayers from '../../services/getTournamentPlayers'
+import getTournamentsData from '../../services/getTournamentsData'
+import { useRouter } from 'next/navigation'
 
 const TournamentList = () => {
   const supabase = useSupabaseClient<Database>()
-  const { setAlert } = useSnackbar()
+  const user = useUser()
+  const router = useRouter()
+
+  const [playersList, setPlayerList] = useState<
+    { id: string; subscribed: number }[] | null
+  >(null)
   const [tournaments, setTournaments] = useState<TournamentType[] | null>(null)
+
   const [filters, setFilters] = useState<TournamentFilterValuesType>(
     {} as TournamentFilterValuesType
   )
@@ -37,29 +49,20 @@ const TournamentList = () => {
   const [rowsPerPage, setRowsPerPage] = React.useState(5)
 
   const getData = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('tournament')
-        .select('*')
-        .eq('active', true)
-      const sortedData = [...(data as TournamentType[])].sort((a, b) =>
-        a && b && a.date && b.date ? a.date.localeCompare(b.date) : 1
-      )
-      setTournaments(sortedData)
-    } catch (error) {
-      const alert: AlertType = {
-        severity: 'error',
-        open: true,
-        message: 'Error while fetching data',
-      }
-      setAlert(alert)
-      console.error(error)
+    const tournamentsData = await getTournamentsData() //only active tournaments
+    if (tournamentsData) {
+      setTournaments(tournamentsData)
+      const tournamentsId: string[] = tournamentsData.map((t:TournamentType) => t.id)
+      const newValue = await Promise.all(tournamentsId.map(id => getTournamentPlayers(id)))
+      const newData:{id:string, subscribed:number}[] = tournamentsId.map((t,index)=>({id:t, subscribed:newValue[index]?.length??0}))  
+      setPlayerList(newData)
     }
+    
   }
-
+  
   useEffect(() => {
-    getData() //only active tournaments
-  }, [supabase])
+    getData()
+  }, [supabase,playersList])
 
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
@@ -125,6 +128,71 @@ const TournamentList = () => {
     )
   }
 
+  const getTournamentInfo = async (tournamentId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('tournament')
+        .select('*')
+        .eq('id', tournamentId)
+
+      if (error) {
+        throw error
+      }
+      if (data.length < 1) {
+        throw 'Id not found'
+      }
+
+      return data[0] as TournamentType
+    } catch (error) {
+      console.error(error)
+      return null
+    }
+  }
+
+  const addPlayerToTournament = async (
+    tournamentId: string,
+    userId: string
+  ) => {
+    //TODO: add snackbar
+    //TODO: control user duplication
+    const tournament = await getTournamentInfo(tournamentId)
+    if (tournament) {
+      try {
+        const { data, error } = await supabase
+          .from('players')
+          .insert([{ id_tournament: tournamentId, ranking: 0, userId: userId }])
+        if (error) {
+          throw error
+        }
+        return true
+      } catch (error) {
+        console.error(error)
+        return false
+      }
+    }
+  }
+
+  const handleSubscribe = async (id: string) => {
+    try {
+      const playerId = user?.id ?? ''
+      const tournamentId = id
+
+      const response = await addPlayerToTournament(tournamentId, playerId)
+      console.log('added user ' + response)
+    } catch (error) {
+      error
+    }
+  }
+
+  const handleShowInfo = async (id: string) => {
+    router.push(`/tournaments/${id}`)
+  }
+
+  const getSubscribed = (tournamentId:string):number => {
+    const elem = playersList?.find(elem => elem.id === tournamentId)
+    return elem?elem.subscribed:0
+  }
+
   return (
     <Container
       sx={{
@@ -144,13 +212,19 @@ const TournamentList = () => {
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
-            <TableRow hover selected>
-              <TableCell>Name</TableCell>
-              <TableCell>Date</TableCell>
-              <TableCell>Country</TableCell>
-              <TableCell>City</TableCell>
-              <TableCell>Players</TableCell>
-              <TableCell>Actions</TableCell>
+            <TableRow hover selected sx={{ borderBottom: '1px solid black' }}>
+              <TableCell sx={{ backgroundColor: 'darkgrey' }}>Name</TableCell>
+              <TableCell sx={{ backgroundColor: 'darkgrey' }}>Date</TableCell>
+              <TableCell sx={{ backgroundColor: 'darkgrey' }}>
+                Country
+              </TableCell>
+              <TableCell sx={{ backgroundColor: 'darkgrey' }}>City</TableCell>
+              <TableCell sx={{ backgroundColor: 'darkgrey' }}>
+                Players
+              </TableCell>
+              <TableCell sx={{ backgroundColor: 'darkgrey' }}>
+                Actions
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -164,28 +238,29 @@ const TournamentList = () => {
                   a && b && a.date && b.date ? a.date.localeCompare(b.date) : 1
                 ) ?? []
               )?.map(
-                ({
-                  id,
-                  name,
-                  date,
-                  country,
-                  city,
-                  max_num_of_players,
-                  players,
-                }) => (
-                  <TableRow key={id} hover selected>
-                    <TableCell>{name}</TableCell>
-                    <TableCell>
-                      {new Date(date ?? '').toLocaleDateString()}
-                    </TableCell>
-                    <TableCell>{country}</TableCell>
-                    <TableCell>{city}</TableCell>
-                    <TableCell>
-                      {players?.length ?? 0}/{max_num_of_players}
-                    </TableCell>
-                    <TableCell>Suscribe</TableCell>
-                  </TableRow>
-                )
+                ({ id, name, date, country, city, max_num_of_players }) =>
+                  id && (
+                    <TableRow key={id} hover selected>
+                      <TableCell onClick={() => handleShowInfo(id)}>
+                        {name}
+                      </TableCell>
+                      <TableCell onClick={() => handleShowInfo(id)}>
+                        {new Date(date ?? '').toLocaleDateString()}
+                      </TableCell>
+                      <TableCell onClick={() => handleShowInfo(id)}>
+                        {country}
+                      </TableCell>
+                      <TableCell>{city}</TableCell>
+                      <TableCell onClick={() => handleShowInfo(id)}>
+                        {getSubscribed(id) ?? 0}/{max_num_of_players}
+                      </TableCell>
+                      <TableCell>
+                        <Button onClick={() => handleSubscribe(id)}>
+                          Subscribe
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  )
               )
             )}
           </TableBody>

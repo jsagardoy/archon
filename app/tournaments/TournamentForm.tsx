@@ -148,6 +148,7 @@ const TournamentForm = ({ handleClose }: Props) => {
         active: isActive(dateRef.current?.value) ?? false,
         user_id: user.id,
         players: null,
+        currency:country?.currency??null,
       }
       try {
         const validation = FormSchema.safeParse(newTournament)
@@ -265,6 +266,7 @@ const TournamentForm = ({ handleClose }: Props) => {
           error={validationResult?.price?._errors !== undefined}
           helperText={validationResult?.price?._errors.join(', ') || ''}
           inputRef={priceRef}
+          type='number'
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
