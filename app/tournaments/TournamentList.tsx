@@ -30,6 +30,7 @@ import TablePaginationActions from '../components/TablePaginationActions'
 import TournamentForm from './TournamentForm'
 import getTournamentPlayers from '../../services/getTournamentPlayers'
 import getTournamentsData from '../../services/getTournamentsData'
+import removePlayerFromTournament from '../../services/removePlayerFromTournament'
 import { useRouter } from 'next/navigation'
 
 const TournamentList = () => {
@@ -37,8 +38,8 @@ const TournamentList = () => {
   const user = useUser()
   const router = useRouter()
 
-  const [playersList, setPlayerList] = useState<
-    { id: string; subscribed: number }[] | null
+  const [playersList, setlist] = useState<
+    { tournamentId: string; players: PlayerType[] }[] | null
   >(null)
   const [tournaments, setTournaments] = useState<TournamentType[] | null>(null)
 
@@ -52,17 +53,26 @@ const TournamentList = () => {
     const tournamentsData = await getTournamentsData() //only active tournaments
     if (tournamentsData) {
       setTournaments(tournamentsData)
-      const tournamentsId: string[] = tournamentsData.map((t:TournamentType) => t.id)
-      const newValue = await Promise.all(tournamentsId.map(id => getTournamentPlayers(id)))
-      const newData:{id:string, subscribed:number}[] = tournamentsId.map((t,index)=>({id:t, subscribed:newValue[index]?.length??0}))  
-      setPlayerList(newData)
+      const tournamentsId: string[] = tournamentsData.map(
+        (t: TournamentType) => t.id
+      )
+
+      const newValue: { tournamentId: string; players: PlayerType[] }[] =
+        await Promise.all(
+          tournamentsId.map(async (id) => {
+            return {
+              tournamentId: id,
+              players: (await getTournamentPlayers(id)) ?? [],
+            }
+          })
+        )
+      setlist(newValue)
     }
-    
   }
-  
+
   useEffect(() => {
     getData()
-  }, [supabase,playersList])
+  }, [supabase, playersList])
 
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
@@ -149,34 +159,63 @@ const TournamentList = () => {
     }
   }
 
+  const isAlreadySubscribed = (tournamentId: string): boolean => {
+    return playersList
+      ?.filter((elem) => elem.tournamentId === tournamentId)
+      .find((elem) =>
+        elem.players.find((player) => player.userId === user?.id)
+      ) !== undefined
+      ? true
+      : false
+  }
+
+  const isThereSpaceToSubscribe = (
+    tournament: TournamentType,
+    players: PlayerType[]
+  ): boolean => {
+    return players.length < Number(tournament.max_num_of_players)
+  }
+
   const addPlayerToTournament = async (
     tournamentId: string,
     userId: string
   ) => {
     //TODO: add snackbar
-    //TODO: control user duplication
-    const tournament = await getTournamentInfo(tournamentId)
-    if (tournament) {
-      try {
-        const { data, error } = await supabase
-          .from('players')
-          .insert([{ id_tournament: tournamentId, ranking: 0, userId: userId }])
-        if (error) {
-          throw error
+    //TODO: move to services
+    const players = playersList?.find(
+      (elem) => elem.tournamentId === tournamentId
+    )?.players
+
+    if (players) {
+      const tournament = await getTournamentInfo(tournamentId)
+
+      if (
+        tournament &&
+        !isAlreadySubscribed(tournamentId) &&
+        isThereSpaceToSubscribe(tournament, players)
+      ) {
+        try {
+          const { data, error } = await supabase
+            .from('players')
+            .insert({ id_tournament: tournamentId, ranking: 0, userId: userId })
+            .single()
+          if (error) {
+            throw error
+          }
+          return true
+        } catch (error) {
+          console.error(error)
+          return false
         }
-        return true
-      } catch (error) {
-        console.error(error)
-        return false
       }
     }
+    return false
   }
 
   const handleSubscribe = async (id: string) => {
     try {
       const playerId = user?.id ?? ''
       const tournamentId = id
-
       const response = await addPlayerToTournament(tournamentId, playerId)
       console.log('added user ' + response)
     } catch (error) {
@@ -188,11 +227,22 @@ const TournamentList = () => {
     router.push(`/tournaments/${id}`)
   }
 
-  const getSubscribed = (tournamentId:string):number => {
-    const elem = playersList?.find(elem => elem.id === tournamentId)
-    return elem?elem.subscribed:0
+  const getSubscribed = (tournamentId: string): number => {
+    const elem = playersList?.find((elem) => elem.tournamentId === tournamentId)
+    return elem ? elem.players.length : 0
   }
-
+  const handleUnsubscribe = async (id: string) => {
+    try {
+      const playerId = user?.id ?? ''
+      const tournamentId = id
+      if (isAlreadySubscribed(tournamentId)) {
+        const response = await removePlayerFromTournament(tournamentId, playerId)
+        console.log('removed user ' + response)
+      }
+    } catch (error) {
+      error
+    }
+  }
   return (
     <Container
       sx={{
@@ -255,9 +305,15 @@ const TournamentList = () => {
                         {getSubscribed(id) ?? 0}/{max_num_of_players}
                       </TableCell>
                       <TableCell>
-                        <Button onClick={() => handleSubscribe(id)}>
-                          Subscribe
-                        </Button>
+                        {isAlreadySubscribed(id) ? (
+                          <Button onClick={() => handleUnsubscribe(id)}>
+                            Unsubscribe
+                          </Button>
+                        ) : (
+                          <Button onClick={() => handleSubscribe(id)}>
+                            Subscribe
+                          </Button>
+                        )}
                       </TableCell>
                     </TableRow>
                   )
