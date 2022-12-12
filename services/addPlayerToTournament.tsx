@@ -1,12 +1,16 @@
+import { AlertType, PlayersList } from '../utils/types'
 import { isAlreadySubscribed, isThereSpaceToSubscribe } from '../utils/funtions'
 
-import { PlayersList } from '../utils/types'
 import getTournamentInfo from './getTournamentInfo'
 import { supabase } from '../utils/supabase'
+import useSnackbar from '../app/hooks/useSnackbar'
 
-const addPlayerToTournament = async (tournamentId: string, userId: string, playersList:PlayersList[]) => {
-  //TODO: add snackbar
-  //TODO: move to services
+const addPlayerToTournament = async (
+  tournamentId: string,
+  userId: string,
+  playersList: PlayersList[]
+) => {
+
   const players = playersList.find(
     (elem) => elem.tournamentId === tournamentId
   )?.players
@@ -29,7 +33,6 @@ const addPlayerToTournament = async (tournamentId: string, userId: string, playe
         }
         return true
       } catch (error) {
-        console.error(error)
         return false
       }
     }

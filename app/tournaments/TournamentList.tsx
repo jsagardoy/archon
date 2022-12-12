@@ -39,11 +39,13 @@ import getTournamentsData from '../../services/getTournamentsData'
 import { isAlreadySubscribed } from '../../utils/funtions'
 import removePlayerFromTournament from '../../services/removePlayerFromTournament'
 import { useRouter } from 'next/navigation'
+import useSnackbar from '../hooks/useSnackbar'
 
 const TournamentList = () => {
   const supabase = useSupabaseClient<Database>()
   const user = useUser()
   const router = useRouter()
+  const { setAlert } = useSnackbar()
 
   const [playersList, setlist] = useState<PlayersList[]>([])
   const [tournaments, setTournaments] = useState<TournamentType[]>([])
@@ -152,8 +154,19 @@ const TournamentList = () => {
         playerId,
         playersList
       )
-      console.log('added user ' + response)
+      const newAlert: AlertType = {
+        message: 'User subscribed',
+        severity: 'success',
+        open:true
+      }
+      setAlert(newAlert)
     } catch (error) {
+      const newAlert: AlertType = {
+        message: JSON.stringify(error),
+        severity: 'error',
+        open: true,
+      }
+      setAlert(newAlert)
       error
     }
   }
@@ -175,10 +188,20 @@ const TournamentList = () => {
           tournamentId,
           playerId
         )
-        console.log('removed user ' + response)
+        const newAlert: AlertType = {
+          message: 'User unsubscribed',
+          severity: 'success',
+          open: true,
+        }
+        setAlert(newAlert)
       }
     } catch (error) {
-      error
+      const newAlert: AlertType = {
+        message: JSON.stringify(error),
+        severity: 'error',
+        open: true,
+      }
+      setAlert(newAlert)
     }
   }
   return (
