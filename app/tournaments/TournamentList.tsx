@@ -1,6 +1,10 @@
 'use client'
 
-import { AlertType, TournamentFilterValuesType } from '../../utils/types'
+import {
+  AlertType,
+  PlayersList,
+  TournamentFilterValuesType,
+} from '../../utils/types'
 import {
   Button,
   Container,
@@ -28,8 +32,11 @@ import PrinceAccess from '../components/PrinceAccess'
 import TableFilter from './TableFilter'
 import TablePaginationActions from '../components/TablePaginationActions'
 import TournamentForm from './TournamentForm'
+import addPlayerToTournament from '../../services/addPlayerToTournament'
+import getTournamentInfo from '../../services/getTournamentInfo'
 import getTournamentPlayers from '../../services/getTournamentPlayers'
 import getTournamentsData from '../../services/getTournamentsData'
+import { isAlreadySubscribed } from '../../utils/funtions'
 import removePlayerFromTournament from '../../services/removePlayerFromTournament'
 import { useRouter } from 'next/navigation'
 
@@ -38,10 +45,8 @@ const TournamentList = () => {
   const user = useUser()
   const router = useRouter()
 
-  const [playersList, setlist] = useState<
-    { tournamentId: string; players: PlayerType[] }[] | null
-  >(null)
-  const [tournaments, setTournaments] = useState<TournamentType[] | null>(null)
+  const [playersList, setlist] = useState<PlayersList[]>([])
+  const [tournaments, setTournaments] = useState<TournamentType[]>([])
 
   const [filters, setFilters] = useState<TournamentFilterValuesType>(
     {} as TournamentFilterValuesType
@@ -138,85 +143,15 @@ const TournamentList = () => {
     )
   }
 
-  const getTournamentInfo = async (tournamentId: string) => {
-    try {
-      const { data, error } = await supabase
-        .from('tournament')
-        .select('*')
-        .eq('id', tournamentId)
-
-      if (error) {
-        throw error
-      }
-      if (data.length < 1) {
-        throw 'Id not found'
-      }
-
-      return data[0] as TournamentType
-    } catch (error) {
-      console.error(error)
-      return null
-    }
-  }
-
-  const isAlreadySubscribed = (tournamentId: string): boolean => {
-    return playersList
-      ?.filter((elem) => elem.tournamentId === tournamentId)
-      .find((elem) =>
-        elem.players.find((player) => player.userId === user?.id)
-      ) !== undefined
-      ? true
-      : false
-  }
-
-  const isThereSpaceToSubscribe = (
-    tournament: TournamentType,
-    players: PlayerType[]
-  ): boolean => {
-    return players.length < Number(tournament.max_num_of_players)
-  }
-
-  const addPlayerToTournament = async (
-    tournamentId: string,
-    userId: string
-  ) => {
-    //TODO: add snackbar
-    //TODO: move to services
-    const players = playersList?.find(
-      (elem) => elem.tournamentId === tournamentId
-    )?.players
-
-    if (players) {
-      const tournament = await getTournamentInfo(tournamentId)
-
-      if (
-        tournament &&
-        !isAlreadySubscribed(tournamentId) &&
-        isThereSpaceToSubscribe(tournament, players)
-      ) {
-        try {
-          const { data, error } = await supabase
-            .from('players')
-            .insert({ id_tournament: tournamentId, ranking: 0, userId: userId })
-            .single()
-          if (error) {
-            throw error
-          }
-          return true
-        } catch (error) {
-          console.error(error)
-          return false
-        }
-      }
-    }
-    return false
-  }
-
   const handleSubscribe = async (id: string) => {
     try {
       const playerId = user?.id ?? ''
       const tournamentId = id
-      const response = await addPlayerToTournament(tournamentId, playerId)
+      const response = await addPlayerToTournament(
+        tournamentId,
+        playerId,
+        playersList
+      )
       console.log('added user ' + response)
     } catch (error) {
       error
@@ -235,8 +170,11 @@ const TournamentList = () => {
     try {
       const playerId = user?.id ?? ''
       const tournamentId = id
-      if (isAlreadySubscribed(tournamentId)) {
-        const response = await removePlayerFromTournament(tournamentId, playerId)
+      if (isAlreadySubscribed(tournamentId, playersList, playerId)) {
+        const response = await removePlayerFromTournament(
+          tournamentId,
+          playerId
+        )
         console.log('removed user ' + response)
       }
     } catch (error) {
@@ -305,7 +243,11 @@ const TournamentList = () => {
                         {getSubscribed(id) ?? 0}/{max_num_of_players}
                       </TableCell>
                       <TableCell>
-                        {isAlreadySubscribed(id) ? (
+                        {isAlreadySubscribed(
+                          id,
+                          playersList,
+                          user?.id ?? ''
+                        ) ? (
                           <Button onClick={() => handleUnsubscribe(id)}>
                             Unsubscribe
                           </Button>
