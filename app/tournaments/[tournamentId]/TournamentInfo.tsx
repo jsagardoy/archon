@@ -5,17 +5,21 @@ import { PlayerType, TournamentType } from '../../../utils/database.types'
 import React, { useEffect, useState } from 'react'
 
 import OwnerAccessWrapper from '../../components/OwnerAccessWrapper'
+import TournamentInfoTable from './TournamentInfoTable'
+import { UserProfile } from '../../../utils/types'
+import getPlayerInfo from '../../../services/getPlayerInfo'
 import getSymbolFromCurrency from 'currency-symbol-map'
+import getTournamentPlayers from '../../../services/getTournamentPlayers'
 import { supabase } from '../../../utils/supabase'
 
 interface Props {
-  tournamentId: TournamentType
+  tournamentId: string
 }
 const TournamentInfo = ({ tournamentId }: Props) => {
   const [tournament, setTournament] = useState<TournamentType | null>(null)
-  const [playerList, setPlayerList] = useState<PlayerType[]|null>(null)
-    
-    const getTournamentInfo = async () => {
+  const [playersList, setPlayersList] = useState<UserProfile[]>([])
+
+  const getTournamentInfo = async () => {
     try {
       const { data, error } = await supabase
         .from('tournament')
@@ -35,11 +39,20 @@ const TournamentInfo = ({ tournamentId }: Props) => {
     }
   }
 
-    const getPlayersList = async() => {
-        
+  const getPlayersList = async () => {
+    const players = await getTournamentPlayers(tournamentId)
+    console.log({players})
+    if (players) {
+      const playersInfo: UserProfile[] = await Promise.all(
+        players.map(async (profile) => await getPlayerInfo(profile?.userId ?? ''))
+      )
+      console.log(playersInfo.filter((elem) => elem.id !== ''))
+      setPlayersList(playersInfo.filter((elem) => elem.id !== ''))
     }
+  }
   useEffect(() => {
     getTournamentInfo()
+    getPlayersList()
   }, [tournamentId])
 
   const formattedDate = new Date(tournament?.date ?? '')
@@ -78,14 +91,10 @@ const TournamentInfo = ({ tournamentId }: Props) => {
           <Typography variant="body1">City: {tournament.city}</Typography>
           <OwnerAccessWrapper tournamentId={tournament?.id ?? ''}>
             <Typography variant="subtitle1">Player's list:</Typography>
-            {!tournament.players || tournament.players?.length === 0 ? (
+            {playersList.length === 0 ? (
               <Typography variant="body1">No players subscribed</Typography>
             ) : (
-              tournament.players?.map((player, index) => (
-                <Typography key={index} variant="body1">
-                  {index + 1} : {player}
-                </Typography>
-              ))
+                <TournamentInfoTable profiles={playersList} />
             )}
           </OwnerAccessWrapper>
         </Box>
