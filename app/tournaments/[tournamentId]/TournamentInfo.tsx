@@ -83,7 +83,7 @@ const TournamentInfo = ({ tournamentId }: Props) => {
             Number of rounds (including final): {tournament.number_of_rounds}
           </Typography>
           <Typography variant="body1">
-            Number of players: {tournament.players?.length ?? 0}/
+            Number of players: {playersList?.length ?? 0}/
             {tournament.max_num_of_players}
           </Typography>
           <Typography variant="body1">Country: {tournament.country}</Typography>
