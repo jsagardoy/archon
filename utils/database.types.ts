@@ -113,7 +113,7 @@ export interface Database {
   }
 }
 export type TournamentType = {
-  id: string
+  id: string |null
   name: string | null
   description: string | null
   date: string | null

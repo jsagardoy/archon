@@ -1,6 +1,6 @@
 'use client'
 
-import { Box, Container, Typography } from '@mui/material'
+import { Box, Button, Container, Typography } from '@mui/material'
 import { PlayerType, TournamentType } from '../../../utils/database.types'
 import React, { useEffect, useState } from 'react'
 
@@ -11,6 +11,7 @@ import getPlayerInfo from '../../../services/getPlayerInfo'
 import getSymbolFromCurrency from 'currency-symbol-map'
 import getTournamentPlayers from '../../../services/getTournamentPlayers'
 import { supabase } from '../../../utils/supabase'
+import { useRouter } from 'next/navigation'
 
 interface Props {
   tournamentId: string
@@ -18,6 +19,7 @@ interface Props {
 const TournamentInfo = ({ tournamentId }: Props) => {
   const [tournament, setTournament] = useState<TournamentType | null>(null)
   const [playersList, setPlayersList] = useState<UserProfile[]>([])
+  const router = useRouter()
 
   const getTournamentInfo = async () => {
     try {
@@ -41,15 +43,22 @@ const TournamentInfo = ({ tournamentId }: Props) => {
 
   const getPlayersList = async () => {
     const players = await getTournamentPlayers(tournamentId)
-    console.log({players})
+    console.log({ players })
     if (players) {
       const playersInfo: UserProfile[] = await Promise.all(
-        players.map(async (profile) => await getPlayerInfo(profile?.userId ?? ''))
+        players.map(
+          async (profile) => await getPlayerInfo(profile?.userId ?? '')
+        )
       )
-      console.log(playersInfo.filter((elem) => elem.id !== ''))
       setPlayersList(playersInfo.filter((elem) => elem.id !== ''))
     }
   }
+
+
+  const handleStartTournament = () => {
+    router.push(`/tournaments/${tournamentId}/archon/round/1`)
+  }
+
   useEffect(() => {
     getTournamentInfo()
     getPlayersList()
@@ -90,12 +99,15 @@ const TournamentInfo = ({ tournamentId }: Props) => {
           <Typography variant="body1">State: {tournament.state}</Typography>
           <Typography variant="body1">City: {tournament.city}</Typography>
           <OwnerAccessWrapper tournamentId={tournament?.id ?? ''}>
-            <Typography variant="subtitle1">Player's list:</Typography>
-            {playersList.length === 0 ? (
-              <Typography variant="body1">No players subscribed</Typography>
-            ) : (
+            <>
+              <Button onClick={() => handleStartTournament()}>Start tournament</Button>
+              <Typography variant="subtitle1">Player's list:</Typography>
+              {playersList.length === 0 ? (
+                <Typography variant="body1">No players subscribed</Typography>
+              ) : (
                 <TournamentInfoTable profiles={playersList} />
-            )}
+              )}
+            </>
           </OwnerAccessWrapper>
         </Box>
       )}

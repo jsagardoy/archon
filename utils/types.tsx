@@ -39,3 +39,21 @@ export type UserProfile = {
   vken: string | null
   rol: string | null
 }
+export type PlayersInTable = {
+  id?: string
+  playerId: string
+  tournamentId: string
+  VP: string | null
+  GW: string | null
+  minipoints: string | null
+  coinflip: string | null
+  round: string
+  tableRank: string
+  dropped:boolean
+}
+export type PlayersInTableTotalInfo = PlayersInTable & {
+  userId: string | null
+  username: string | null
+  full_name: string | null
+  vken: string | null
+}

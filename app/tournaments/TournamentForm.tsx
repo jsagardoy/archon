@@ -133,6 +133,7 @@ const TournamentForm = ({ handleClose }: Props) => {
 
     if (user && user.id) {
       const newTournament: TournamentType = {
+        id:null,
         name: nameRef.current?.value ?? null,
         description: descriptionRef.current?.value ?? null,
         date: dateRef.current?.value ?? null,
