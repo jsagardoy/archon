@@ -59,9 +59,13 @@ const TournamentList = () => {
     const tournamentsData = await getTournamentsData() //only active tournaments
     if (tournamentsData) {
       setTournaments(tournamentsData)
-      const tournamentsId: string[] = tournamentsData.map(
-        (t: TournamentType) => t.id
-      )
+      const tournamentsId: string[] = 
+        tournamentsData.map((t: TournamentType) => {
+          if (t !== null) {
+            return t.id
+          }
+        }).filter(elem=>elem!==null) as string[]
+      
 
       const newValue: { tournamentId: string; players: PlayerType[] }[] =
         await Promise.all(
@@ -156,7 +160,7 @@ const TournamentList = () => {
       const newAlert: AlertType = {
         message: 'User subscribed',
         severity: 'success',
-        open:true
+        open: true,
       }
       setAlert(newAlert)
     } catch (error) {

@@ -1,21 +1,15 @@
 'use client'
 
-import { Session, SessionContextProvider } from '@supabase/auth-helpers-react'
+import React, { useState } from 'react'
 
-import type { AppProps } from 'next/app'
 import Header from './components/Header'
+import { SessionContextProvider } from '@supabase/auth-helpers-react'
+import SideMenu from './components/SideMenu'
 import SnackbarComponent from './components/SnackbarComponent'
 import { SnackbarContextProvider } from './context/SnackbarContext'
 import { createBrowserSupabaseClient } from '@supabase/auth-helpers-nextjs'
-import { useState } from 'react'
 
-export default function RootLayout({
-  children,
-  initialSession,
-}: {
-  children: React.ReactNode
-  initialSession: Session
-}) {
+export default function Layout() {
   const [supabaseClient] = useState(() => createBrowserSupabaseClient())
   return (
     <html>
@@ -25,14 +19,14 @@ export default function RootLayout({
       <SnackbarContextProvider>
         <SessionContextProvider
           supabaseClient={supabaseClient}
-          initialSession={initialSession}
+          initialSession={null}
         >
           <body>
             <header>
               <Header />
             </header>
             <main>
-              {children}
+             <SideMenu />
               <SnackbarComponent />
             </main>
           </body>
