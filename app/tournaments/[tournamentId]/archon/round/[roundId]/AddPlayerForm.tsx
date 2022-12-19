@@ -7,37 +7,54 @@ import {
   FormHelperText,
   TextField,
 } from '@mui/material'
+import {
+  PlayersInTableTotalInfo,
+  UserProfile,
+} from '../../../../../../utils/types'
 import React, { useRef, useState } from 'react'
 
-import { UserProfile } from '../../../../../../utils/types'
 import getPlayerInfoByVken from '../../../../../../services/getPlayerInfoByVken'
 
-const AddPlayerForm = () => {
+interface Props {
+  tournamentId: string
+  roundId: string
+  addPlayer: (player: PlayersInTableTotalInfo) => void
+}
+const AddPlayerForm = ({ tournamentId, roundId, addPlayer }: Props) => {
   const [showUserNotFound, setShowUserNotFound] = useState<boolean>(false)
-  const vkenRef = useRef<HTMLInputElement>(null)
-  
-    const handleSubmit = async (e: React.FormEvent) => {
-    /* const newPlayers: PlayersInTable[] = players.map(
-            (player: PlayerType) => ({
-              playerId: player.userId ?? '',
-              tournamentId: tournamentId,
-              VP: '0',
-              GW: '0',
-              minipoints: '0',
-              coinflip: '0',
-              round: roundId,
-              tableRank: '0',
-              dropped: false,
-            }) */
-      e.preventDefault()
-    const user: UserProfile|null = await getPlayerInfoByVken(
+  const vkenRef = useRef<HTMLInputElement | null>(null)
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    const user: UserProfile | null = await getPlayerInfoByVken(
       vkenRef.current?.value ?? ''
     )
     if (user) {
-      return user
+      const newUser: PlayersInTableTotalInfo = {
+        userId: user.id,
+        username: user.username,
+        full_name: user.full_name,
+        vken: user.vken,
+        playerId: user.id,
+        tournamentId: tournamentId,
+        VP: '0',
+        GW: '0',
+        minipoints: '0',
+        coinflip: '0',
+        round: roundId,
+        tableRank: '0',
+        dropped: false,
+      }
+      if (vkenRef.current) {
+        vkenRef.current.value = ''
+      }
+      addPlayer(newUser)
     } else {
-        setShowUserNotFound(true)
-        return
+        if (vkenRef.current) {
+          vkenRef.current.value = ''
+        }
+      setShowUserNotFound(true)
+      return
     }
   }
 
@@ -55,7 +72,7 @@ const AddPlayerForm = () => {
             }
           }}
         />
-        <Button type="submit">Search</Button>
+        <Button type="submit">Add</Button>
         {showUserNotFound && (
           <FormHelperText error={showUserNotFound}>
             User not found

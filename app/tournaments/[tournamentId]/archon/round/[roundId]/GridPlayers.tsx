@@ -18,6 +18,7 @@ const GridPlayers = ({ playersList }: Props) => {
     {
       field: 'action',
       headerName: 'action',
+      //TODO add behaviour to drop
       renderCell: (params) => <Button onClick={()=>console.log('drop'+params.id)}>Drop/Play</Button>,
       width: 200,
     },
@@ -29,9 +30,8 @@ const GridPlayers = ({ playersList }: Props) => {
     status: player.dropped?'Dropped':'Playing',
     action: <Button>Drop</Button>,
   }))
-  console.log({ playersList })
   return (
-    <Box sx={{ height: 250, width: '100%' }}>
+    <Box sx={{ height: '60vh', width: '100%' }}>
       <DataGrid columns={columns} rows={rows} />
     </Box>
   )

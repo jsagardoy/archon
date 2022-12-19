@@ -1,16 +1,17 @@
 'use client'
 
-import { Button, Container } from '@mui/material'
 import {
-  PlayerType,
-  TournamentType,
-} from '../../../../../../utils/database.types'
-import {
+  AlertType,
   PlayersInTable,
   PlayersInTableTotalInfo,
   PlayersList,
   UserProfile,
 } from '../../../../../../utils/types'
+import { Button, Container } from '@mui/material'
+import {
+  PlayerType,
+  TournamentType,
+} from '../../../../../../utils/database.types'
 import React, { useEffect, useState } from 'react'
 
 import AddPlayerForm from './AddPlayerForm'
@@ -18,6 +19,7 @@ import GridPlayers from './GridPlayers'
 import getPlayerInfo from '../../../../../../services/getPlayerInfo'
 import getTournamentInfo from '../../../../../../services/getTournamentInfo'
 import getTournamentPlayers from '../../../../../../services/getTournamentPlayers'
+import useSnackbar from '../../../../../hooks/useSnackbar'
 
 interface Props {
   tournamentId: string
@@ -29,9 +31,34 @@ const UserManagement = ({ tournamentId, roundId }: Props) => {
   const [tournamentInfo, setTournamentInfo] = useState<TournamentType | null>(
     null
   )
+  const { setAlert } = useSnackbar()
 
+  const addPlayer = (player: PlayersInTableTotalInfo) => {
+
+    const identifier = player.username?player.username:player.full_name
+
+    if (playersList.find(elem=>elem.userId===player.userId)) {
+      const newAlert: AlertType = {
+        open: true,
+        severity: 'error',
+        message: `User ${identifier} already exists`,
+      }
+      setAlert(newAlert)
+    } else {
+      //TODO:insert into database
+      setPlayersList((prev) => [...prev, player])
+      const newAlert: AlertType = {
+        open: true,
+        severity: 'success',
+        message: `User ${identifier} added`,
+      }
+      setAlert(newAlert)
+    }
+
+    
+  }
   const handleAddPlayer = () => {
-    setShowAddPlayerForm((prev)=>!prev)
+    setShowAddPlayerForm((prev) => !prev)
   }
   const getData = async () => {
     const info = await getTournamentInfo(tournamentId)
@@ -122,8 +149,14 @@ const UserManagement = ({ tournamentId, roundId }: Props) => {
 
   return (
     <Container>
-      <Button onClick={() => handleAddPlayer()}>Add player</Button>
-      {showAddPlayerForm && <AddPlayerForm />}
+      <Button onClick={() => handleAddPlayer()}>New player</Button>
+      {showAddPlayerForm && (
+        <AddPlayerForm
+          tournamentId={tournamentId}
+          roundId={roundId}
+          addPlayer={addPlayer}
+        />
+      )}
       <GridPlayers playersList={playersList} />
     </Container>
   )
