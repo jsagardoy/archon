@@ -26,7 +26,7 @@ export default function Layout() {
               <Header />
             </header>
             <main>
-             <SideMenu />
+         {/*     <SideMenu /> */}
               <SnackbarComponent />
             </main>
           </body>
