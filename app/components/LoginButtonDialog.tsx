@@ -10,9 +10,11 @@ interface Props {
 const LoginButtonDialog = (props: Props) => {
   const { open, onClose } = props
 
-    return <Dialog open={open} onClose={onClose}>
-      <LoginForm />
-  </Dialog>
+  return (
+    <Dialog open={open} onClose={onClose}>
+      <LoginForm handleClose={onClose}/>
+    </Dialog>
+  )
 }
 
 export default LoginButtonDialog
