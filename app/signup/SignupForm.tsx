@@ -10,6 +10,7 @@ import {
   Typography,
 } from '@mui/material'
 import React, { useRef, useState } from 'react'
+import { ZodFormattedError, z } from 'zod'
 
 import { AlertType } from '../../utils/types'
 import Link from 'next/link'
@@ -24,8 +25,18 @@ const SignupForm = () => {
   const [showError, setShowError] = useState<boolean>(false)
   const { setAlert } = useSnackbar()
 
+  const FormSchema = z.object({
+    email: z.string()?.min(1).email(),
+    password: z.string().min(6),
+    confirm: z.string().min(6),
+  })
+
+  const [validationResult, setValidationResult] =
+    useState<ZodFormattedError<{ email: string; password: string, confirm: string }, string>>()
+
   const router = useRouter()
   const { signup } = useAuth()
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     const newUser = {
@@ -33,11 +44,18 @@ const SignupForm = () => {
       password: passwordRef.current?.value,
       confirm: confirmRef.current?.value,
     }
+    const validation = FormSchema.safeParse(newUser)
+
+    if (!validation.success) {
+      setValidationResult(validation.error.format())
+    }
+
     if (newUser.password !== newUser.confirm) {
       setShowError(true)
     }
 
     if (
+      validation.success &&
       signup &&
       newUser.email &&
       newUser.password &&
@@ -69,9 +87,18 @@ const SignupForm = () => {
     <Container>
       <Box component="form" onSubmit={handleLogin}>
         <FormControl fullWidth>
-          <TextField inputRef={emailRef} type="email" label="Email" required />
+          <TextField
+            inputRef={emailRef}
+            error={validationResult?.email?._errors !== undefined}
+            helperText={validationResult?.email?._errors.join(', ') || ''}
+            type="email"
+            label="Email"
+            required
+          />
           <TextField
             inputRef={passwordRef}
+            error={validationResult?.password?._errors !== undefined}
+            helperText={validationResult?.password?._errors.join(', ') || ''}
             type="password"
             label="Password"
             onChange={clearError}
@@ -79,6 +106,8 @@ const SignupForm = () => {
           />
           <TextField
             inputRef={confirmRef}
+            error={validationResult?.confirm?._errors !== undefined}
+            helperText={validationResult?.confirm?._errors.join(', ') || ''}
             type="password"
             label="Confirm password"
             onChange={clearError}
