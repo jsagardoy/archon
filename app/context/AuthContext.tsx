@@ -1,5 +1,5 @@
-import React, { createContext, useEffect, useState } from 'react'
 import {
+  GoogleAuthProvider,
   User,
   UserCredential,
   createUserWithEmailAndPassword,
@@ -7,9 +7,11 @@ import {
   sendEmailVerification,
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
+  signInWithPopup,
   signOut,
   verifyBeforeUpdateEmail,
 } from 'firebase/auth'
+import React, { createContext, useEffect, useState } from 'react'
 
 import { auth } from '../../services/auth'
 import { useCookies } from 'react-cookie'
@@ -17,6 +19,7 @@ import { useCookies } from 'react-cookie'
 interface AuthInterface {
   signup: (email: string, password: string) => Promise<UserCredential>
   login: (email: string, password: string) => Promise<UserCredential>
+  loginGoogle: () => Promise<UserCredential>
   reset: (email: string) => void
   logout: () => void
   user: User | null
@@ -57,6 +60,10 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }
 
+  const loginGoogle = (): Promise<UserCredential> => {
+    const provider = new GoogleAuthProvider()
+    return signInWithPopup(auth, provider)
+  }
   useEffect(() => {
     onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser ?? undefined)
@@ -65,7 +72,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, [])
 
   return (
-    <context.Provider value={{ signup, login, user, logout, reset }}>
+    <context.Provider value={{ signup, login, user, logout, reset, loginGoogle }}>
       {children}
     </context.Provider>
   )

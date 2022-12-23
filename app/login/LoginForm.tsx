@@ -14,8 +14,9 @@ import React, { useRef, useState } from 'react'
 import { ZodFormattedError, z } from 'zod'
 
 import { AlertType } from '../../utils/types'
+import GoogleButton from 'react-google-button'
 import Link from 'next/link'
-import { sendPasswordResetEmail } from 'firebase/auth'
+import { UserCredential } from 'firebase/auth'
 import { useAuth } from '../hooks/useAuth'
 import { useRouter } from 'next/navigation'
 import useSnackbar from '../hooks/useSnackbar'
@@ -28,7 +29,7 @@ const LoginForm = ({ handleClose }: Props) => {
   const passwordRef = useRef<HTMLInputElement>(null)
   const router = useRouter()
   const { setAlert } = useSnackbar()
-  const { login } = useAuth()
+  const { login, loginGoogle } = useAuth()
 
   const FormSchema = z.object({
     email: z.string()?.min(1).email(),
@@ -71,6 +72,33 @@ const LoginForm = ({ handleClose }: Props) => {
         setAlert(newAlert)
         setShowError(true)
       }
+    }
+  }
+  const handleLoginGoogle = async () => {
+    try {
+      if (loginGoogle) {
+        const resp: UserCredential = await loginGoogle()
+        if (resp) {
+          const newAlert: AlertType = {
+            message: `Welcome ${resp.user.displayName ?? resp.user.email}`,
+            severity: 'success',
+            open: true,
+          }
+          setAlert(newAlert)
+          if (handleClose) {
+            handleClose()
+          }
+          router.push('/')
+        }
+      }
+    } catch (error: any) {
+      const newAlert: AlertType = {
+        message: error.message,
+        severity: 'error',
+        open: true,
+      }
+      setAlert(newAlert)
+      setShowError(true)
     }
   }
   const clearError = () => {
@@ -119,6 +147,10 @@ const LoginForm = ({ handleClose }: Props) => {
           Forgot your password?
           <Link href="/reset">Reset</Link>
         </Typography>
+      </Box>
+      <Box>
+        <GoogleButton onClick={handleLoginGoogle}/>
+          
       </Box>
     </Container>
   )
