@@ -2,23 +2,17 @@
 
 import { Box, Button, Container, FormControl, TextField } from '@mui/material'
 import { FormEvent, useEffect, useRef, useState } from 'react'
-import {
-  Session,
-  useSupabaseClient,
-  useUser,
-} from '@supabase/auth-helpers-react'
 
 import { AlertType } from '../../utils/types'
-import { Database } from '../../utils/database.types'
+import { Profile } from '../../database/database.types'
+import { User } from 'firebase/auth'
+import getProfile from '../../services/getProfile'
+import updateProfile from '../../services/updateProfile'
 import useSnackbar from '../hooks/useSnackbar'
 
-type Profiles = Database['public']['Tables']['profiles']['Row']
+//type Profiles = Database['public']['Tables']['profiles']['Row']
 
-interface Props {}
-
-export default function Account({ session }: { session: Session }) {
-  const supabase = useSupabaseClient<Database>()
-  const user = useUser()
+export default function Account({ user }: { user: User }) {
   const [loading, setLoading] = useState(true)
 
   const usernameRef = useRef<HTMLInputElement>(null)
@@ -31,30 +25,26 @@ export default function Account({ session }: { session: Session }) {
   const { setAlert } = useSnackbar()
 
   useEffect(() => {
-    getProfile()
-  }, [session, avatarURLRef.current])
+    getProfileData()
+  }, [user, avatarURLRef.current])
 
-  const getProfile = async () => {
+  const getProfileData = async () => {
     try {
       setLoading(true)
       if (!user) throw new Error('No user')
 
-      const { data, error, status } = await supabase
-        .from('profiles')
-        .select(`username, website, avatar_url, vken, full_name, rol`)
-        .eq('id', user.id)
-        .single()
+      const data = await getProfile(user.uid)
 
-      if (error && status !== 406) {
-        throw error
+      if (!data) {
+        throw new Error('Error fetching profile data')
       }
 
-      if (data) {
+      if (data as Profile) {
         if (usernameRef && usernameRef.current) {
           usernameRef.current.value = data.username ?? ''
         }
         if (avatarURLRef && avatarURLRef.current) {
-          avatarURLRef.current.value = data.avatar_url ?? ''
+          avatarURLRef.current.value = data.avatarURL ?? ''
         }
         if (websiteRef && websiteRef.current) {
           websiteRef.current.value = data.website ?? ''
@@ -63,7 +53,7 @@ export default function Account({ session }: { session: Session }) {
           vkenRef.current.value = data.vken ?? ''
         }
         if (fullNameRef && fullNameRef.current) {
-          fullNameRef.current.value = data.full_name ?? ''
+          fullNameRef.current.value = data.fullName ?? ''
         }
         if (rolRef && rolRef.current) {
           rolRef.current = data.rol ?? ''
@@ -82,24 +72,24 @@ export default function Account({ session }: { session: Session }) {
     }
   }
 
-  const updateProfile = async () => {
+  const updateProfileData = async () => {
     try {
       setLoading(true)
       if (!user) throw new Error('No user')
 
-      const updates = {
-        id: user.id,
+      const updates: Profile = {
+        userId: user.uid,
         username: usernameRef.current?.value ?? '',
         website: websiteRef.current?.value ?? '',
-        avatar_url: avatarURLRef.current?.value ?? '',
-        updated_at: new Date().toISOString(),
+        avatarURL: avatarURLRef.current?.value ?? '',
         vken: vkenRef.current?.value ?? '',
-        full_name: fullNameRef.current?.value ?? '',
+        fullName: fullNameRef.current?.value ?? '',
         rol: rolRef.current ?? '',
       }
 
-      let { error } = await supabase.from('profiles').upsert(updates)
-      if (error) throw error
+      const resp = await updateProfile(updates)
+
+      if (!resp) throw new Error('Error updating profile')
 
       const newAlert: AlertType = {
         open: true,
@@ -122,7 +112,7 @@ export default function Account({ session }: { session: Session }) {
 
   const onSubmit = (e: FormEvent) => {
     e.preventDefault()
-    updateProfile()
+    updateProfileData()
   }
   return (
     <Container>

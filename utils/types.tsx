@@ -1,5 +1,5 @@
 import { AlertColor } from '@mui/material/Alert'
-import { PlayerType } from './database.types'
+import { Player } from '../database/database.types'
 
 export type AlertType = {
   open: boolean
@@ -28,7 +28,7 @@ export type TournamentFilterValuesType = {
   startDate: string | null
   endDate: string | null
 }
-export type PlayersList = { tournamentId: string; players: PlayerType[] }
+export type PlayersList = { tournamentId: string; players: Player[] }
 export type UserProfile = {
   id: string
   updated_at: string | null

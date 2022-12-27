@@ -14,6 +14,8 @@ import { ZodFormattedError, z } from 'zod'
 
 import { AlertType } from '../../utils/types'
 import Link from 'next/link'
+import { Profile } from '../../database/database.types'
+import createProfile from '../../services/createProfile'
 import { useAuth } from '../hooks/useAuth'
 import { useRouter } from 'next/navigation'
 import useSnackbar from '../hooks/useSnackbar'
@@ -32,7 +34,12 @@ const SignupForm = () => {
   })
 
   const [validationResult, setValidationResult] =
-    useState<ZodFormattedError<{ email: string; password: string, confirm: string }, string>>()
+    useState<
+      ZodFormattedError<
+        { email: string; password: string; confirm: string },
+        string
+      >
+    >()
 
   const router = useRouter()
   const { signup } = useAuth()
@@ -69,6 +76,9 @@ const SignupForm = () => {
           open: true,
         }
         setAlert(newAlert)
+
+        
+
         router.push('/')
       } catch (error: any) {
         const newAlert: AlertType = {

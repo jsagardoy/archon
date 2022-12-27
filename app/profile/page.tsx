@@ -4,16 +4,20 @@ import Account from './Account'
 import LoginForm from '../login/LoginForm'
 import NoSession from './NoSession'
 import React from 'react'
+import { auth } from 'firebase-admin'
+import { useAuth } from '../hooks/useAuth'
 import { useRouter } from 'next/navigation'
-import { useSession } from '@supabase/auth-helpers-react'
 
 const ProfilePage = () => {
-  const session = useSession()
+  
+  const { user } = useAuth()
+  
+  
   const router = useRouter()
 
 
-  if (session) {
-    return <Account session={session} />
+  if (user) {
+    return <Account user={user} />
   } else {
      return <NoSession/>
   }

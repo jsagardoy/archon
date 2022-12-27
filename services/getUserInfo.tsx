@@ -1,8 +1,9 @@
-import{Profile} from '../database/database.types'
-import { firebaseApp } from './auth'
-import { getAuth } from 'firebase/auth'
+import { Player, Profile } from '../database/database.types'
+import { User, getAuth } from 'firebase/auth'
 
-const getPlayerInfo = async (userId: string): Promise<Profile> | null => {
+import { firebaseApp } from './auth'
+
+const getProfileInfo = async (userId: string): Promise<Profile> | null => {
   /*   try {
     const { data, error } = await supabase
       .from('profiles')
@@ -30,14 +31,13 @@ const getPlayerInfo = async (userId: string): Promise<Profile> | null => {
   } */
 
   const auth = getAuth()
-  const user = auth.currentUser
-  {}
+
+  
 
   try {
-    
   } catch (error) {
     return null
   }
 }
 
-export default getPlayerInfo
+export default getProfileInfo

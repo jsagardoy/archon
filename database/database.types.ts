@@ -36,6 +36,7 @@ export type Table = {
 export type Tournament = {
     tournamentId: string,
     name: string,
+    tournamentType: string,
     description: string,
     date: Date,
     hour: string,

@@ -13,7 +13,10 @@ import {
 } from 'firebase/auth'
 import React, { createContext, useEffect, useState } from 'react'
 
+import { Profile } from '../../database/database.types'
 import { auth } from '../../services/auth'
+import createProfile from '../../services/createProfile'
+import getProfile from '../../services/getProfile'
 import { useCookies } from 'react-cookie'
 
 interface AuthInterface {
@@ -39,6 +42,20 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       email,
       password
     )
+    //add Profile
+    const newProfile: Profile = {
+      userId: userCredential.user.uid,
+      username: '',
+      fullName:
+        userCredential.user.displayName ?? userCredential.user.email ?? '',
+      avatarURL: userCredential.user.photoURL ?? '',
+      website: '',
+      vken: '',
+      rol: 'user',
+    }
+    if (!(await getProfile(userCredential.user.uid))) {
+      await createProfile(newProfile)
+    }
     await sendEmailVerification(userCredential.user)
     return userCredential
   }
@@ -54,15 +71,30 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const reset = async (email: string) => {
     try {
       await sendPasswordResetEmail(auth, email)
-      
     } catch (error) {
       console.error(error)
     }
   }
 
-  const loginGoogle = (): Promise<UserCredential> => {
+  const loginGoogle = async (): Promise<UserCredential> => {
     const provider = new GoogleAuthProvider()
-    return signInWithPopup(auth, provider)
+
+    const data = await signInWithPopup(auth, provider)
+
+    if (!(await getProfile(data.user.uid))) {
+      const newProfile: Profile = {
+        userId: data.user.uid,
+        username: '',
+        fullName: data.user.displayName ?? data.user.email ?? '',
+        avatarURL: data.user.photoURL ?? '',
+        website: '',
+        vken: '',
+        rol: 'user',
+      }
+      await createProfile(newProfile)
+    }
+
+    return data
   }
   useEffect(() => {
     onAuthStateChanged(auth, (currentUser) => {
@@ -72,7 +104,9 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, [])
 
   return (
-    <context.Provider value={{ signup, login, user, logout, reset, loginGoogle }}>
+    <context.Provider
+      value={{ signup, login, user, logout, reset, loginGoogle }}
+    >
       {children}
     </context.Provider>
   )
