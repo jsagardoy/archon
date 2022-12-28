@@ -26,7 +26,7 @@ export default function Account({ user }: { user: User }) {
 
   useEffect(() => {
     getProfileData()
-  }, [user, avatarURLRef.current])
+  }, [user])
 
   const getProfileData = async () => {
     try {
@@ -140,14 +140,13 @@ export default function Account({ user }: { user: User }) {
               label="Avatar URL"
               InputLabelProps={{ shrink: true }}
             />
-            {avatarURLRef.current && (
+            <Box sx={{ minWidth: 'fit-content', minHeight: 'fit-content' }}>
               <picture>
-                <img
-                  src={avatarURLRef.current?.value ?? ''}
-                  alt="user avatar"
-                />
+                {avatarURLRef.current && (
+                  <img src={avatarURLRef.current.value} alt="user avatar" />
+                )}
               </picture>
-            )}
+            </Box>
           </Box>
           <TextField
             id="id_username"
