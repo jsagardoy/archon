@@ -1,73 +1,68 @@
-import React, { use, useEffect, useState } from 'react'
-import {
-  useSession,
-  useSupabaseClient,
-  useUser,
-} from '@supabase/auth-helpers-react'
+import { Profile, Tournament } from '../../database/database.types'
+import React, { useEffect, useState } from 'react'
 
-import AccessDenied from './AccessDenied'
 import { AlertType } from '../../utils/types'
-import { Database } from '../../utils/database.types'
-import { Session } from '@supabase/auth-helpers-nextjs'
+import getProfile from '../../services/getProfile'
+import getTournamentInfo from '../../services/getTournamentInfo'
+import { useAuth } from '../hooks/useAuth'
 import useSnackbar from '../hooks/useSnackbar'
 
 interface Props {
-    children: any,
-    tournamentId:string
+  children: any
+  tournamentId: string
 }
 
 const OwnerAccessWrapper = ({ children, tournamentId }: Props) => {
-  const session: Session | null = useSession()
-  const supabase = useSupabaseClient<Database>()
-    const [userData, setUserData] = useState<{ id: string, rol: string } | null>(
+  //show only if user is owner
+
+  const [userData, setUserData] = useState<{ id: string; rol: string } | null>(
     null
   )
-    const [tournamentData, setTournamentData] = useState<{ id: string, user_id: string } | null>(
-    null
-  )
-  const user = useUser()
+  const [tournamentData, setTournamentData] = useState<{
+    id: string
+    user_id: string
+  } | null>(null)
+  const { user } = useAuth()
   const { setAlert } = useSnackbar()
 
   const getUserInfo = async () => {
     try {
-      if (session && user) {
-        const { data, error, status } = await supabase
-          .from('profiles')
-          .select('id, rol')
-          .eq('id', user?.id)
-          .single()
+      if (user) {
+        const profile: Profile | null = await getProfile(user.uid)
 
-        if (error && status !== 406) {
-          throw error
+        if (!profile) {
+          throw new Error('Error fetching profile')
         }
-        if (data) {
-          setUserData({ id: data.id, rol: data.rol ?? 'user'})
+        if (profile) {
+          setUserData({ id: profile.userId, rol: profile.rol ?? 'user' })
         }
       }
     } catch (error) {
       const newAlert: AlertType = {
         open: true,
         severity: 'error',
-        message: 'Error accesing profile',
+        message: 'Error accessing profile',
       }
       setAlert(newAlert)
       console.error(error)
     }
   }
-  const getTournamentInfo = async () => {
+
+  const getTournamentInfoData = async () => {
     try {
-      if (session && user) {
-        const { data, error, status } = await supabase
-          .from('tournament')
-          .select('id, user_id')
-          .eq('id', tournamentId)
-          .single()
+      if (user) {
+        const tournament: Tournament | null = await getTournamentInfo(
+          tournamentId
+        )
 
-        if (error && status !== 406) {
-          throw error
+        if (!tournament) {
+         throw new Error('Error fetching tournament information')
         }
-        if (data) {
-          setTournamentData({ id: data.id, user_id: data.user_id})
+        if (tournament) {
+          setTournamentData({
+            id: tournament.tournamentId,
+            user_id: tournament.userId,
+          })
         }
       }
     } catch (error) {
@@ -80,12 +75,12 @@ const OwnerAccessWrapper = ({ children, tournamentId }: Props) => {
       console.error(error)
     }
   }
-    useEffect(() => {
-      getUserInfo()
-      getTournamentInfo()
-  }, [session, user])
+  useEffect(() => {
+    getUserInfo()
+    getTournamentInfoData()
+  }, [user])
 
-  if (session && userData?.rol === 'prince' && tournamentData?.user_id===userData.id) {
+  if (userData?.rol === 'prince' && tournamentData?.user_id === userData.id) {
     return children
   } else {
     return null

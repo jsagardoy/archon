@@ -1,24 +1,22 @@
-import { TournamentType } from '../utils/database.types'
-import { supabase } from '../utils/supabase'
+import { doc, getDoc } from 'firebase/firestore'
 
-const getTournamentInfo = async (tournamentId: string) => {
+import { Tournament } from '../database/database.types'
+import { db } from '../database/config'
+
+const getTournamentInfo = async (
+  tournamentId: string
+): Promise<Tournament | null> => {
+  const taskDockRef = doc(db, `/tournaments/${tournamentId}`)
   try {
-    const { data, error } = await supabase
-      .from('tournament')
-      .select('*')
-      .eq('id', tournamentId)
-
-    if (error) {
-      throw error
+    const docSnap = await getDoc(taskDockRef)
+    if (docSnap.exists()) {
+      const tournament: Tournament = docSnap.data() as Tournament
+      return tournament
     }
-    if (data.length < 1) {
-      throw 'Id not found'
-    }
-
-    return data[0] as TournamentType
+    return null
   } catch (error) {
-    console.error(error)
     return null
   }
 }
+
 export default getTournamentInfo

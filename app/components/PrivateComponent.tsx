@@ -1,23 +1,12 @@
-'use client'
-
-import React, { useEffect } from 'react'
-import { Session, useSession, useUser } from '@supabase/auth-helpers-react'
-
-import AccessDenied from './AccessDenied'
-import { AlertType } from '../../utils/types'
-import { useRouter } from 'next/navigation'
-import useSnackbar from '../hooks/useSnackbar'
-
+import { useAuth } from '../hooks/useAuth'
 interface Props {
   children: JSX.Element
 }
 
 const PrivateComponent = ({ children }: Props) => {
-  const router = useRouter()
-  const { setAlert } = useSnackbar()
-  const session: Session | null = useSession()
-
-  if (session) {
+  //show only if user is logged in
+  const user = useAuth()
+  if (user) {
     return children
   }
   return null
