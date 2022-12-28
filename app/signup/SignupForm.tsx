@@ -77,8 +77,6 @@ const SignupForm = () => {
         }
         setAlert(newAlert)
 
-        
-
         router.push('/')
       } catch (error: any) {
         const newAlert: AlertType = {
