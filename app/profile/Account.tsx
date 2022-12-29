@@ -4,17 +4,17 @@ import { Box, Button, Container, FormControl, TextField } from '@mui/material'
 import { FormEvent, useEffect, useRef, useState } from 'react'
 
 import { AlertType } from '../../utils/types'
+import NoSession from './NoSession'
 import { Profile } from '../../database/database.types'
-import { User } from 'firebase/auth'
 import getProfile from '../../services/getProfile'
 import updateProfile from '../../services/updateProfile'
+import { useAuth } from '../hooks/useAuth'
 import useSnackbar from '../hooks/useSnackbar'
 
 //type Profiles = Database['public']['Tables']['profiles']['Row']
 
-export default function Account({ user }: { user: User }) {
-  const [loading, setLoading] = useState(true)
-
+export default function Account() {
+  const { user, getSession } = useAuth()
   const usernameRef = useRef<HTMLInputElement>(null)
   const avatarURLRef = useRef<HTMLInputElement>(null)
   const websiteRef = useRef<HTMLInputElement>(null)
@@ -26,37 +26,31 @@ export default function Account({ user }: { user: User }) {
 
   useEffect(() => {
     getProfileData()
-  }, [user])
-
+  }, [])
   const getProfileData = async () => {
     try {
-      setLoading(true)
-      if (!user) throw new Error('No user')
+      if (user) {
+        const data = await getProfile(user.uid)
 
-      const data = await getProfile(user.uid)
-
-      if (!data) {
-        throw new Error('Error fetching profile data')
-      }
-
-      if (data as Profile) {
-        if (usernameRef && usernameRef.current) {
-          usernameRef.current.value = data.username ?? ''
-        }
-        if (avatarURLRef && avatarURLRef.current) {
-          avatarURLRef.current.value = data.avatarURL ?? ''
-        }
-        if (websiteRef && websiteRef.current) {
-          websiteRef.current.value = data.website ?? ''
-        }
-        if (vkenRef && vkenRef.current) {
-          vkenRef.current.value = data.vken ?? ''
-        }
-        if (fullNameRef && fullNameRef.current) {
-          fullNameRef.current.value = data.fullName ?? ''
-        }
-        if (rolRef && rolRef.current) {
-          rolRef.current = data.rol ?? ''
+        if (data && (data as Profile)) {
+          if (usernameRef && usernameRef.current) {
+            usernameRef.current.value = data.username ?? ''
+          }
+          if (avatarURLRef && avatarURLRef.current) {
+            avatarURLRef.current.value = data.avatarURL ?? ''
+          }
+          if (websiteRef && websiteRef.current) {
+            websiteRef.current.value = data.website ?? ''
+          }
+          if (vkenRef && vkenRef.current) {
+            vkenRef.current.value = data.vken ?? ''
+          }
+          if (fullNameRef && fullNameRef.current) {
+            fullNameRef.current.value = data.fullName ?? ''
+          }
+          if (rolRef && rolRef.current) {
+            rolRef.current = data.rol ?? ''
+          }
         }
       }
     } catch (error) {
@@ -67,14 +61,11 @@ export default function Account({ user }: { user: User }) {
       }
       setAlert(newAlert)
       console.log(error)
-    } finally {
-      setLoading(false)
     }
   }
 
   const updateProfileData = async () => {
     try {
-      setLoading(true)
       if (!user) throw new Error('No user')
 
       const updates: Profile = {
@@ -105,8 +96,6 @@ export default function Account({ user }: { user: User }) {
       }
       setAlert(newAlert)
       console.log(error)
-    } finally {
-      setLoading(false)
     }
   }
 
@@ -114,7 +103,7 @@ export default function Account({ user }: { user: User }) {
     e.preventDefault()
     updateProfileData()
   }
-  return (
+  return user ? (
     <Container>
       <Box component="form" onSubmit={onSubmit}>
         <FormControl fullWidth sx={{ gap: '1rem' }}>
@@ -143,7 +132,10 @@ export default function Account({ user }: { user: User }) {
             <Box sx={{ minWidth: 'fit-content', minHeight: 'fit-content' }}>
               <picture>
                 {avatarURLRef.current && (
-                  <img src={avatarURLRef.current.value} alt="user avatar" />
+                  <img
+                    src={avatarURLRef.current?.value ?? ''}
+                    alt="user avatar"
+                  />
                 )}
               </picture>
             </Box>
@@ -166,9 +158,13 @@ export default function Account({ user }: { user: User }) {
             label="Vken"
             InputLabelProps={{ shrink: true }}
           />
-          <Button type="submit">Save</Button>
+          <Button disabled={!user} type="submit">
+            Save
+          </Button>
         </FormControl>
       </Box>
     </Container>
+  ) : (
+    <NoSession />
   )
 }

@@ -4,19 +4,19 @@ import { AlertType } from '../../utils/types'
 import { Button } from '@mui/material'
 import React from 'react'
 import { useAuth } from '../hooks/useAuth'
-import { useRouter } from 'next/navigation'
 import useSnackbar from '../hooks/useSnackbar'
 
 const Logout = () => {
   const { logout, user } = useAuth()
   const { setAlert } = useSnackbar()
 
-  const handelLogout = (): void => {
+
+  const handleLogout = async () => {
     try {
       if (logout) {
         logout()
         const newAlert: AlertType = {
-          message: `Signout`,
+          message: `Logout`,
           severity: 'success',
           open: true,
         }
@@ -31,7 +31,11 @@ const Logout = () => {
       setAlert(newAlert)
     }
   }
-  return <Button disabled={!user} onClick={() => handelLogout()}>Logout</Button>
+  return (
+    <Button disabled={!user} onClick={() => handleLogout()}>
+      Logout
+    </Button>
+  )
 }
 
 export default Logout

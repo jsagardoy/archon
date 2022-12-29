@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { Suspense, useState } from 'react'
 
 import AuthProvider from './context/AuthContext'
 import { CookiesProvider } from 'react-cookie'
