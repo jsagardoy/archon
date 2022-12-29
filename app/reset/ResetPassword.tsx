@@ -36,7 +36,7 @@ const ResetPassword = () => {
     <Container>
       <Box component="form" onSubmit={handleResetPassword}>
         <TextField type="email" required inputRef={emailRef} />
-        <Button type="submit">Reset</Button>
+        <Button type="submit">Reset password</Button>
       </Box>
     </Container>
   )
