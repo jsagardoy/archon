@@ -1,3 +1,5 @@
+'use client'
+
 import {
   GoogleAuthProvider,
   User,
@@ -25,6 +27,7 @@ interface AuthInterface {
   loginGoogle: () => Promise<UserCredential>
   reset: (email: string) => void
   logout: () => void
+  getSession: () => User | null
   user: User | null
 }
 
@@ -96,6 +99,9 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     return data
   }
+  const getSession = (): User | null => {
+    return cookies.FirebaseAuth as User ?? null
+  }
   useEffect(() => {
     onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser ?? undefined)
@@ -105,7 +111,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <context.Provider
-      value={{ signup, login, user, logout, reset, loginGoogle }}
+      value={{ signup, login, user, logout, reset, loginGoogle, getSession }}
     >
       {children}
     </context.Provider>
