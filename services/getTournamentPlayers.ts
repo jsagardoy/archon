@@ -1,22 +1,34 @@
-import { PlayerType, TournamentType } from '../utils/database.types'
+import { collection, doc, getDoc, getDocs } from 'firebase/firestore'
 
-import { AlertType } from '../utils/types'
-import { supabase } from '../utils/supabase'
+import { Player } from '../database/database.types'
+import { Tournament } from '../database/database.types'
+import { db } from '../database/config'
 
 const getTournamentPlayers = async (
   tournamentId: string
-): Promise<PlayerType[] | null> => {
+): Promise<Player[] | null> => {
+  const taskCollectionRef = collection(db, `/players`)
   try {
-    const { data, error } = await supabase
-      .from('players')
-      .select('*')
-      .eq('id_tournament', tournamentId)
+    const docsSnap = await getDocs(taskCollectionRef)
 
-    return data as PlayerType[]
+    if (docsSnap.empty) {
+      return []
+    }
+    if (!docsSnap.empty) {
+      const players: Player[] = docsSnap.docs.map(
+        (elem) => elem.data() as Player
+      )
+
+      const playersInTournament: Player[] = players.filter(
+        (elem) => elem.tournamentId === tournamentId
+      )
+      return playersInTournament
+    }
+    return null
   } catch (error) {
-    console.error(error)
     return null
   }
 }
+
 
 export default getTournamentPlayers

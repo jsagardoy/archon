@@ -4,9 +4,9 @@ import { Profile } from '../database/database.types'
 import { db } from '../database/config'
 
 const getProfile = async (uid: string): Promise<Profile | null> => {
-  const taskDockRef = doc(db, `/profile/${uid}`)
+  const taskDocRef = doc(db, `/profile/${uid}`)
   try {
-    const docSnap = await getDoc(taskDockRef)
+    const docSnap = await getDoc(taskDocRef)
     if (docSnap.exists()) {
       const profile: Profile = docSnap.data() as Profile
       return profile

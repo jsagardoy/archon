@@ -1,24 +1,29 @@
-import { PlayerType, TournamentType } from '../utils/database.types'
-
-import { AlertType } from '../utils/types'
-import { supabase } from '../utils/supabase'
+import { deleteDoc, doc } from 'firebase/firestore'
+import { db } from '../database/config'
+import getTournamentPlayers from './getTournamentPlayers'
 
 const removePlayerFromTournament = async (
   tournamentId: string,
   userId: string
 ): Promise<boolean> => {
   try {
-    const { data, error } = await supabase
-      .from('players')
-      .delete()
-      .eq('id_tournament', tournamentId)
-      .eq('userId', userId)
-
-    return true
+    const players = await getTournamentPlayers(tournamentId)
+    if (players) {
+      const selectedId: string | undefined = players.find(
+        (elem) => elem.userId === userId && elem.tournamentId === tournamentId
+      )?.id
+      if (selectedId) {
+        const taskDocRef = doc(db, `/players/${selectedId}`)
+        await deleteDoc(taskDocRef)
+        return true
+      }
+      return false
+    }
+    return false
   } catch (error) {
-    console.error(error)
     return false
   }
+
 }
 
 export default removePlayerFromTournament

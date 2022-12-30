@@ -1,4 +1,4 @@
-import { PlayerType, TournamentType } from './database.types'
+import { Player, Tournament } from '../database/database.types'
 
 import { PlayersList } from './types'
 
@@ -13,8 +13,8 @@ export const isAlreadySubscribed = (tournamentId: string, playersList: PlayersLi
 }
 
 export const isThereSpaceToSubscribe = (
-  tournament: TournamentType,
-  players: PlayerType[]
+  tournament: Tournament,
+  playersList: Player[]
 ): boolean => {
-  return players.length < Number(tournament.max_num_of_players)
+  return playersList.length < Number(tournament.maxNumberOfPlayers)
 }

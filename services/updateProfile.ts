@@ -4,9 +4,9 @@ import { Profile } from '../database/database.types'
 import { db } from '../database/config'
 
 const updateProfile = async (profile: Profile): Promise<boolean> => {
-  const taskDockRef = doc(db, `/profile/${profile.userId}`)
+  const taskDocRef = doc(db, `/profile/${profile.userId}`)
   try {
-    await updateDoc(taskDockRef, profile)
+    await updateDoc(taskDocRef, profile)
     return true
   } catch (error) {
     return false

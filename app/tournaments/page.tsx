@@ -4,9 +4,11 @@ import TournamentList from './TournamentList'
 
 const Tournaments = () => {
   return (
-    <PrivateComponent>
-      <TournamentList />
-    </PrivateComponent>
+    <>
+      <PrivateComponent>
+        <TournamentList />
+      </PrivateComponent>
+    </>
   )
 }
 

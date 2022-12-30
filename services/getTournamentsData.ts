@@ -1,20 +1,27 @@
-import { AlertType } from '../utils/types'
-import { TournamentType } from '../utils/database.types'
-import { supabase } from '../utils/supabase'
+import { collection, doc, getDocs } from 'firebase/firestore'
 
-const getTournamentsData = async (): Promise<TournamentType[] | null> => {
+import { Tournament } from '../database/database.types'
+import { db } from '../database/config'
 
+const getTournamentsData = async (): Promise<Tournament[] | null> => {
   try {
-    const { data, error } = await supabase
-      .from('tournament')
-      .select('*')
-      .eq('active', true)
-    const sortedData = [...(data as TournamentType[])].sort((a, b) =>
-      a && b && a.date && b.date ? a.date.localeCompare(b.date) : 1
-    )
-    return sortedData
-  } catch (error) {
+    const collectionRef = collection(db, `/tournaments/`)
 
+    const docsSnap = await getDocs(collectionRef)
+
+    if (!docsSnap.empty) {
+      const data = docsSnap.docs.map((elem) => elem.data() as Tournament)
+
+      const sortedData: Tournament[] = [...(data as Tournament[])].sort(
+        (a, b) =>
+          a && b && a.date && b.date
+            ? a.date.toString().localeCompare(b.date.toString())
+            : 1
+      )
+      return sortedData
+    }
+    return []
+  } catch (error) {
     console.error(error)
     return null
   }

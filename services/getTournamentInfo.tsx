@@ -6,9 +6,9 @@ import { db } from '../database/config'
 const getTournamentInfo = async (
   tournamentId: string
 ): Promise<Tournament | null> => {
-  const taskDockRef = doc(db, `/tournaments/${tournamentId}`)
+  const taskDocRef = doc(db, `/tournaments/${tournamentId}`)
   try {
-    const docSnap = await getDoc(taskDockRef)
+    const docSnap = await getDoc(taskDocRef)
     if (docSnap.exists()) {
       const tournament: Tournament = docSnap.data() as Tournament
       return tournament

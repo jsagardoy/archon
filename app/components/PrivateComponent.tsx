@@ -1,15 +1,16 @@
+'use client'
+
+import { ReactElement } from 'react'
 import { useAuth } from '../hooks/useAuth'
 interface Props {
-  children: JSX.Element
+  children: ReactElement
 }
 
 const PrivateComponent = ({ children }: Props) => {
   //show only if user is logged in
-  const user = useAuth()
-  if (user) {
-    return children
-  }
-  return null
+
+  const { user } = useAuth()
+  return user ? children : null
 }
 
 export default PrivateComponent

@@ -11,7 +11,6 @@ import {
   signInWithEmailAndPassword,
   signInWithPopup,
   signOut,
-  verifyBeforeUpdateEmail,
 } from 'firebase/auth'
 import React, { createContext, useEffect, useState } from 'react'
 
@@ -27,7 +26,6 @@ interface AuthInterface {
   loginGoogle: () => Promise<UserCredential>
   reset: (email: string) => void
   logout: () => void
-  getSession: () => User | null
   user: User | null
 }
 
@@ -36,6 +34,7 @@ export const context = createContext<Partial<AuthInterface>>({})
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>()
   const [cookies, setCookie, removeCookie] = useCookies(['FirebaseAuth'])
+  const [session, setSession] = useState(cookies)
   const signup = async (
     email: string,
     password: string
@@ -99,19 +98,17 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     return data
   }
-  const getSession = (): User | null => {
-    return cookies.FirebaseAuth as User ?? null
-  }
+
   useEffect(() => {
     onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser ?? undefined)
+      setUser(currentUser ?? null)
       setCookie('FirebaseAuth', JSON.stringify(currentUser))
     })
   }, [])
 
   return (
     <context.Provider
-      value={{ signup, login, user, logout, reset, loginGoogle, getSession }}
+      value={{ signup, login, user, logout, reset, loginGoogle }}
     >
       {children}
     </context.Provider>
