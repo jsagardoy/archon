@@ -9,21 +9,18 @@ import {
   Link as MuiLink,
 } from '@mui/material'
 import React, { useEffect, useState } from 'react'
-import {
-  User,
-  useSession,
-  useSupabaseClient,
-  useUser,
-} from '@supabase/auth-helpers-react'
 
 import Box from '@mui/material/Box'
-import { Database } from '../../utils/database.types'
 import Link from 'next/link'
 import MenuIcon from '@mui/icons-material/Menu'
+import { User } from 'firebase/auth'
+import useSession from '../hooks/useSession'
+import { useAuth } from '../hooks/useAuth'
 
 const SideMenu = () => {
-  const user = useUser()
-  const supabase = useSupabaseClient<Database>()
+  const { session } = useSession()
+  const { logout } = useAuth()
+  const user: User | null = session
   const [activeUser, setActiveUser] = useState<User | null>(user)
   const [showDrawer, setShowDrawer] = useState<boolean>(false)
   const menuElements: string[] = ['Home', 'Tournaments', 'Profile', 'Login']
@@ -35,7 +32,11 @@ const SideMenu = () => {
     setShowDrawer(false)
   }
 
-  const handleSignOut = () => supabase.auth.signOut()
+  const handleSignOut = async () => {
+    if (logout !== undefined) {
+      await logout()
+    }
+  }
   const handleListOfElements = (elem: string) => {
     if (elem === 'Home') {
       return <Link href={`/`}>{elem}</Link>

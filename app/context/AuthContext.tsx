@@ -65,8 +65,8 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const login = (email: string, password: string): Promise<UserCredential> =>
     signInWithEmailAndPassword(auth, email, password)
 
-  const logout = () => {
-    signOut(auth)
+  const logout = async () => {
+    await signOut(auth)
     removeCookie('FirebaseAuth')
   }
 
