@@ -16,6 +16,7 @@ import MenuIcon from '@mui/icons-material/Menu'
 import { User } from 'firebase/auth'
 import useSession from '../hooks/useSession'
 import { useAuth } from '../hooks/useAuth'
+import { useRouter } from 'next/navigation'
 
 const SideMenu = () => {
   const { session } = useSession()
@@ -24,7 +25,7 @@ const SideMenu = () => {
   const [activeUser, setActiveUser] = useState<User | null>(user)
   const [showDrawer, setShowDrawer] = useState<boolean>(false)
   const menuElements: string[] = ['Home', 'Tournaments', 'Profile', 'Login']
-
+  const router = useRouter()
   const toogleDrawer = (): void => {
     setShowDrawer((prev) => !prev)
   }
@@ -32,9 +33,10 @@ const SideMenu = () => {
     setShowDrawer(false)
   }
 
-  const handleSignOut = async () => {
+  const handleLogout = async () => {
     if (logout !== undefined) {
       await logout()
+      router.push('/')
     }
   }
   const handleListOfElements = (elem: string) => {
@@ -48,7 +50,7 @@ const SideMenu = () => {
       return <Link href={`/${elem}`.toLocaleLowerCase()}>{elem}</Link>
     }
 
-    return <MuiLink onClick={handleSignOut}>Sign Out</MuiLink>
+    return <MuiLink onClick={handleLogout}>Logout</MuiLink>
   }
   useEffect(() => {
     setActiveUser(user)
