@@ -1,40 +1,44 @@
 import {
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
-  Button,
-  TableFooter,
-  TablePagination,
-  TableContainer,
-} from '@mui/material'
-import { User } from 'firebase/auth'
-import { useRouter } from 'next/navigation'
-import React from 'react'
-import { Tournament } from '../../database/database.types'
-import addPlayerToTournament from '../../services/addPlayerToTournament'
-import removePlayerFromTournament from '../../services/removePlayerFromTournament'
-import { isAlreadySubscribed } from '../../utils/funtions'
-import {
   AlertType,
   PlayersList,
   TournamentFilterValuesType,
 } from '../../utils/types'
+import {
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableFooter,
+  TableHead,
+  TablePagination,
+  TableRow,
+} from '@mui/material'
+import { Player, Tournament } from '../../database/database.types'
+import React, { useEffect } from 'react'
+
 import TablePaginationActions from '../components/TablePaginationActions'
+import { User } from 'firebase/auth'
+import addPlayerToTournament from '../../services/addPlayerToTournament'
+import getTournamentPlayers from '../../services/getTournamentPlayers'
+import { isAlreadySubscribed } from '../../utils/funtions'
+import page from '../page'
+import removePlayerFromTournament from '../../services/removePlayerFromTournament'
 import { useAuth } from '../hooks/useAuth'
+import { useRouter } from 'next/navigation'
 import useSession from '../hooks/useSession'
 import useSnackbar from '../hooks/useSnackbar'
-import page from '../page'
 
 const TournamentsTable = ({
   tournaments,
   filters,
   playersList,
+  updatePlayers,
 }: {
   tournaments: Tournament[]
   filters: TournamentFilterValuesType
   playersList: PlayersList[]
+  updatePlayers: (newPlayersList: PlayersList[]) => void
 }) => {
   const router = useRouter()
   const { setAlert } = useSnackbar()
@@ -109,12 +113,29 @@ const TournamentsTable = ({
         playerId,
         playersList
       )
-      const newAlert: AlertType = {
-        message: 'User subscribed',
-        severity: 'success',
-        open: true,
+      if (!response) {
+        throw new Error('Error susbscribing user')
       }
-      setAlert(newAlert)
+      if (response) {
+        const newPlayers: Player[] = (await getTournamentPlayers(id)) ?? []
+        const index = playersList.findIndex(
+          (elem) => elem.tournamentId === tournamentId
+        )
+        if (index !== -1) {
+          const newPlayersList = playersList.splice(index, 1, {
+            tournamentId: tournamentId,
+            players: [...newPlayers],
+          })
+          updatePlayers(newPlayersList)
+
+          const newAlert: AlertType = {
+            message: 'User subscribed',
+            severity: 'success',
+            open: true,
+          }
+          setAlert(newAlert)
+        }
+      }
     } catch (error) {
       const newAlert: AlertType = {
         message: JSON.stringify(error),
@@ -143,12 +164,42 @@ const TournamentsTable = ({
           tournamentId,
           playerId
         )
-        const newAlert: AlertType = {
-          message: 'User unsubscribed',
-          severity: 'success',
-          open: true,
+        if (!response) {
+          throw new Error('Error deleting player from tournament')
         }
-        setAlert(newAlert)
+        if (response) {
+          const index = playersList.findIndex(
+            (elem) => elem.tournamentId === tournamentId && elem
+          )
+          if (index !== -1) {
+            const newPlayers: PlayersList = playersList[index]
+            const playerIndex = newPlayers.players.findIndex(
+              (elem) =>
+                elem.tournamentId === tournamentId && elem.userId === user?.uid
+            )
+            if (playerIndex === -1) {
+              throw new Error('Error. User is alredy unsubscribed')
+            }
+
+            const newPlayersList = newPlayers.players.splice(playerIndex, 1)
+
+            const updatePlayerList = [
+              ...playersList.splice(index, 1, {
+                tournamentId: tournamentId,
+                players: newPlayersList,
+              }),
+            ]
+
+            updatePlayers(updatePlayerList)
+
+            const newAlert: AlertType = {
+              message: 'User unsubscribed',
+              severity: 'success',
+              open: true,
+            }
+            setAlert(newAlert)
+          }
+        }
       }
     } catch (error) {
       const newAlert: AlertType = {
@@ -159,6 +210,7 @@ const TournamentsTable = ({
       setAlert(newAlert)
     }
   }
+
   return (
     <TableContainer>
       <Table>

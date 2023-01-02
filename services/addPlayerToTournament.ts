@@ -16,56 +16,38 @@ const addPlayerToTournament = async (
     const players = playersList.find(
       (elem) => elem.tournamentId === tournamentId
     )?.players
-    const taskDocRef = doc(db, `/players/${userId}`)
+    const newId: string = crypto.randomUUID()
+    const taskDocRef = doc(db, `/players/${newId}`)
     const tournament = await getTournamentInfo(tournamentId)
+    if (
+      !players ||
+      !tournament ||
+      !taskDocRef ||
+      isAlreadySubscribed(tournamentId, playersList, userId) ||
+      !isThereSpaceToSubscribe(tournament, players)
+    ) {
+      return null
+    }
+
     if (
       players &&
       tournament &&
       taskDocRef &&
-      isAlreadySubscribed(tournamentId, playersList, userId) &&
+      !isAlreadySubscribed(tournamentId, playersList, userId) &&
       isThereSpaceToSubscribe(tournament, players)
     ) {
       const newPlayer: Player = {
         tournamentId: tournamentId,
         userId: userId,
         ranking: 0,
-        id: crypto.randomUUID(),
+        id: newId,
       }
       await setDoc(taskDocRef, newPlayer)
-      return true
+      return newPlayer
     }
   } catch (error) {
-    return false
+    return null
   }
 }
-
-/*  const players = playersList.find(
-    (elem) => elem.tournamentId === tournamentId
-  )?.players
-
-  if (players) {
-    const tournament = await getTournamentInfo(tournamentId)
-
-    if (
-      tournament &&
-      !isAlreadySubscribed(tournamentId, playersList, userId) &&
-      isThereSpaceToSubscribe(tournament, players)
-    ) {
-      try {
-        const { data, error } = await supabase
-          .from('players')
-          .insert({ id_tournament: tournamentId, ranking: 0, userId: userId })
-          .single()
-        if (error) {
-          throw error
-        }
-        return true
-      } catch (error) {
-        return false
-      }
-    }
-  }
-  return false 
-}*/
 
 export default addPlayerToTournament
