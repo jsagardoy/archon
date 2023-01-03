@@ -18,6 +18,7 @@ import React, { useRef, useState } from 'react'
 import { ZodFormattedError, z } from 'zod'
 
 import { AlertType } from '../../utils/types'
+import { Timestamp } from 'firebase/firestore'
 import { Tournament } from '../../database/database.types'
 import addTournament from '../../services/addTournament'
 import getSymbolFromCurrency from 'currency-symbol-map'
@@ -133,7 +134,7 @@ const TournamentForm = ({ handleClose }: Props) => {
         tournamentId: crypto.randomUUID(),
         name: nameRef.current?.value ?? '',
         description: descriptionRef.current?.value ?? '',
-        date: new Date(dateRef.current?.value ?? '') ?? new Date(),
+        date: Timestamp.fromDate(new Date(dateRef.current?.value??'')),
         hour: hourRef.current?.value ?? '',
         numberOfRounds: Number(numberOfRoundsRef.current?.value) ?? 0,
         maxNumberOfPlayers: Number(maxNumOfPlayersRef.current?.value) ?? 0,

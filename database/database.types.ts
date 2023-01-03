@@ -1,3 +1,5 @@
+import { Timestamp } from 'firebase/firestore'
+
 export type Profile = {
     userId: string,
     username: string,
@@ -38,7 +40,7 @@ export type Tournament = {
     name: string,
     tournamentType: string,
     description: string,
-    date: Date,
+    date: Timestamp,
     hour: string,
     numberOfRounds: number,
     maxNumberOfPlayers: number,

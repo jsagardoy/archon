@@ -11,6 +11,7 @@ const getTournamentInfo = async (
     const docSnap = await getDoc(taskDocRef)
     if (docSnap.exists()) {
       const tournament: Tournament = docSnap.data() as Tournament
+      
       return tournament
     }
     return null

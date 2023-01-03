@@ -13,6 +13,7 @@ import {
   isDateInBetweenDates,
 } from '../../../utils/funtions'
 
+import { Timestamp } from 'firebase/firestore'
 import addPlayerToTournament from '../../../services/addPlayerToTournament'
 import getTournamentPlayers from '../../../services/getTournamentPlayers'
 import removePlayerFromTournament from '../../../services/removePlayerFromTournament'
@@ -189,7 +190,7 @@ const TournamentTableBody = ({
                   {name}
                 </TableCell>
                 <TableCell onClick={() => handleShowInfo(tournamentId)}>
-                  {new Date(date ?? '').toLocaleDateString()}
+                   {Intl.DateTimeFormat('es-ES').format(date.toDate())} 
                 </TableCell>
                 <TableCell onClick={() => handleShowInfo(tournamentId)}>
                   {country}
