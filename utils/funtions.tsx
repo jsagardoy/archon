@@ -18,3 +18,20 @@ export const isThereSpaceToSubscribe = (
 ): boolean => {
   return playersList.length < Number(tournament.maxNumberOfPlayers)
 }
+
+export const isDateInBetweenDates = (
+  startDate: string,
+  endDate: string,
+  compare: string
+): boolean => {
+  const formatedDate = new Date(compare)
+  formatedDate.setHours(23, 59, 59)
+  const start = new Date(startDate)
+  start.setHours(parseInt('00', 8), parseInt('00', 8), parseInt('00', 8))
+  const end = new Date(endDate)
+  start.setHours(23, 59, 59)
+  return (
+    formatedDate.getTime() >= start.getTime() &&
+    formatedDate.getTime() <= end.getTime()
+  )
+}

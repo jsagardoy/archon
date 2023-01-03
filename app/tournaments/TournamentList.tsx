@@ -5,10 +5,7 @@ import {
   PlayersList,
   TournamentFilterValuesType,
 } from '../../utils/types'
-import {
-Container,
-Typography,
-} from '@mui/material'
+import { Container, Typography } from '@mui/material'
 import { Player, Tournament } from '../../database/database.types'
 import React, { useEffect, useState } from 'react'
 
@@ -16,7 +13,7 @@ import DialogWrapper from '../components/DialogWrapper'
 import PrinceAccess from '../components/PrinceAccess'
 import TableFilter from './TableFilter'
 import TournamentForm from './TournamentForm'
-import TournamentsTable from './TournamentsTable'
+import TournamentsTable from './table/TournamentsTable'
 import getTournamentPlayers from '../../services/getTournamentPlayers'
 import getTournamentsData from '../../services/getTournamentsData'
 
@@ -31,7 +28,7 @@ const TournamentList = () => {
   const getData = async () => {
     try {
       const tournamentsData = await getTournamentsData() //only active tournaments
-      if (tournamentsData?.filter(elem=>elem.tournamentId)) {
+      if (tournamentsData?.filter((elem) => elem.tournamentId)) {
         setTournaments(tournamentsData)
         const tournamentsId: string[] = tournamentsData
           .map((t: Tournament) => {
@@ -62,7 +59,6 @@ const TournamentList = () => {
   }
 
   useEffect(() => {
-    console.log(playersList.length)
     getData()
   }, [playersList.length])
 
