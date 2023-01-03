@@ -1,24 +1,18 @@
-import { collection, doc, getDocs } from 'firebase/firestore'
+import { collection, getDocs, orderBy, query } from 'firebase/firestore'
 
 import { Tournament } from '../database/database.types'
+import { date } from 'zod'
 import { db } from '../database/config'
 
 const getTournamentsData = async (): Promise<Tournament[] | null> => {
   try {
-    const collectionRef = collection(db, `/tournaments/`)
+    const collectionRef = query(collection(db, `/tournaments/`), orderBy('date'))
 
     const docsSnap = await getDocs(collectionRef)
 
     if (!docsSnap.empty) {
       const data = docsSnap.docs.map((elem) => elem.data() as Tournament)
-
-      const sortedData: Tournament[] = [...(data as Tournament[])].sort(
-        (a, b) =>
-          a && b && a.date && b.date
-            ? a.date.toString().localeCompare(b.date.toString())
-            : 1
-      )
-      return sortedData
+      return data
     }
     return []
   } catch (error) {
