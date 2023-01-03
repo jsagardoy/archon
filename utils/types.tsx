@@ -29,7 +29,7 @@ export type TournamentFilterValuesType = {
   endDate: string | null
 }
 export type PlayersList = { tournamentId: string; players: Player[] }
-export type UserProfile = {
+/* export type UserProfile = {
   id: string
   updated_at: string | null
   username: string | null
@@ -38,7 +38,7 @@ export type UserProfile = {
   website: string | null
   vken: string | null
   rol: string | null
-}
+} */
 export type PlayersInTable = {
   id?: string
   playerId: string

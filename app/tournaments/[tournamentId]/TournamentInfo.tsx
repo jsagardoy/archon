@@ -1,41 +1,34 @@
 'use client'
 
 import { Box, Button, Container, Typography } from '@mui/material'
-import { PlayerType, TournamentType } from '../../../utils/database.types'
+import { Profile, Tournament } from '../../../database/database.types'
 import React, { useEffect, useState } from 'react'
 
 import OwnerAccessWrapper from '../../components/OwnerAccessWrapper'
 import TournamentInfoTable from './TournamentInfoTable'
-import { UserProfile } from '../../../utils/types'
-import getPlayerInfo from '../../../services/getPlayerInfo'
+import getProfile from '../../../services/getProfile'
 import getSymbolFromCurrency from 'currency-symbol-map'
+import getTournamentInfo from '../../../services/getTournamentInfo'
 import getTournamentPlayers from '../../../services/getTournamentPlayers'
-import { supabase } from '../../../utils/supabase'
 import { useRouter } from 'next/navigation'
 
 interface Props {
   tournamentId: string
 }
 const TournamentInfo = ({ tournamentId }: Props) => {
-  const [tournament, setTournament] = useState<TournamentType | null>(null)
-  const [playersList, setPlayersList] = useState<UserProfile[]>([])
+  const [tournament, setTournament] = useState<Tournament | null>(null)
+  const [playersList, setPlayersList] = useState<Profile[]>([])
   const router = useRouter()
 
-  const getTournamentInfo = async () => {
+  const getTournamentInfoData = async () => {
     try {
-      const { data, error } = await supabase
-        .from('tournament')
-        .select('*')
-        .eq('id', tournamentId)
-
-      if (error) {
-        throw error
+      const newTournament: Tournament | null = await getTournamentInfo(
+        tournamentId
+      )
+      if (!newTournament) {
+        throw new Error(`Error. Not tournament found with Id: ${tournamentId}`)
       }
-      if (data.length < 1) {
-        throw 'Id not found'
-      }
-
-      setTournament(data[0] as TournamentType)
+      setTournament(newTournament)
     } catch (error) {
       console.error(error)
     }
@@ -45,35 +38,34 @@ const TournamentInfo = ({ tournamentId }: Props) => {
     const players = await getTournamentPlayers(tournamentId)
     console.log({ players })
     if (players) {
-      const playersInfo: UserProfile[] = await Promise.all(
-        players.map(
-          async (profile) => await getPlayerInfo(profile?.userId ?? '')
-        )
+      const playersInfo: (Profile | null)[] = await Promise.all(
+        players.map(async (profile) => await getProfile(profile?.userId))
       )
-      setPlayersList(playersInfo.filter((elem) => elem.id !== ''))
+      const notNullPlayers: Profile[] =
+        playersInfo.map((elem: Profile | null) => elem as Profile) ?? []
+      setPlayersList(notNullPlayers)
     }
   }
-
 
   const handleStartTournament = () => {
     router.push(`/tournaments/${tournamentId}/archon/round/1`)
   }
 
   useEffect(() => {
-    getTournamentInfo()
+    getTournamentInfoData()
     getPlayersList()
   }, [tournamentId])
 
-  const formattedDate = new Date(tournament?.date ?? '')
+  const formattedDate = Intl.DateTimeFormat(navigator.language).format(
+    tournament?.date.toDate()
+  )
   return (
     <Container>
       <Typography variant="h6">Tournament Information</Typography>
       {tournament && (
         <Box>
           <Typography variant="body1">Name: {tournament.name}</Typography>
-          <Typography variant="body1">
-            Date: {formattedDate.toLocaleDateString('es-ES')}
-          </Typography>
+          <Typography variant="body1">Date: {formattedDate}</Typography>
           <Typography variant="body1">
             Starting time: {tournament.hour} Hrs
           </Typography>
@@ -89,18 +81,20 @@ const TournamentInfo = ({ tournamentId }: Props) => {
             {getSymbolFromCurrency(tournament.currency ?? 'EUR')}
           </Typography>
           <Typography variant="body1">
-            Number of rounds (including final): {tournament.number_of_rounds}
+            Number of rounds (including final): {tournament.numberOfRounds}
           </Typography>
           <Typography variant="body1">
             Number of players: {playersList?.length ?? 0}/
-            {tournament.max_num_of_players}
+            {tournament.maxNumberOfPlayers}
           </Typography>
           <Typography variant="body1">Country: {tournament.country}</Typography>
           <Typography variant="body1">State: {tournament.state}</Typography>
           <Typography variant="body1">City: {tournament.city}</Typography>
-          <OwnerAccessWrapper tournamentId={tournament?.id ?? ''}>
+          <OwnerAccessWrapper tournamentId={tournament?.tournamentId}>
             <>
-              <Button onClick={() => handleStartTournament()}>Start tournament</Button>
+              <Button onClick={() => handleStartTournament()}>
+                Start tournament
+              </Button>
               <Typography variant="subtitle1">Player's list:</Typography>
               {playersList.length === 0 ? (
                 <Typography variant="body1">No players subscribed</Typography>

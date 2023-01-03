@@ -9,11 +9,11 @@ import {
   TableRow,
 } from '@mui/material'
 
+import { Profile } from '../../../database/database.types'
 import React from 'react'
-import { UserProfile } from '../../../utils/types'
 
 interface Props {
-  profiles: UserProfile[]
+  profiles: Profile[]
 }
 const TournamentInfoTable = ({ profiles }: Props) => {
   return (
@@ -28,12 +28,12 @@ const TournamentInfoTable = ({ profiles }: Props) => {
         </TableHead>
         <TableBody>
           {profiles.map((profile, index) => (
-            <TableRow key={profile.id}>
+            <TableRow key={profile.userId}>
               <TableCell>{index + 1}</TableCell>
               <TableCell>{profile.vken}</TableCell>
               <TableCell>
                 {profile.username?.length === 0
-                  ? profile.full_name
+                  ? profile.fullName
                   : profile.username}
               </TableCell>
             </TableRow>
