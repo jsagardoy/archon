@@ -1,7 +1,7 @@
 'use client'
 
 import { Box, Button } from '@mui/material'
-import { DataGrid, GridApi, GridColDef } from '@mui/x-data-grid'
+import { DataGrid, GridColDef } from '@mui/x-data-grid'
 
 import { PlayersInTableTotalInfo } from '../../../../../../utils/types'
 import React from 'react'

@@ -7,12 +7,12 @@ import {
   FormHelperText,
   TextField,
 } from '@mui/material'
-import {
-  PlayersInTableTotalInfo,
-  UserProfile,
-} from '../../../../../../utils/types'
 import React, { useRef, useState } from 'react'
 
+import {
+  PlayersInTableTotalInfo,
+} from '../../../../../../utils/types'
+import { Profile } from '../../../../../../database/database.types'
 import getPlayerInfoByVken from '../../../../../../services/getPlayerInfoByVken'
 
 interface Props {
@@ -26,16 +26,16 @@ const AddPlayerForm = ({ tournamentId, roundId, addPlayer }: Props) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    const user: UserProfile | null = await getPlayerInfoByVken(
+    const user: Profile | null = await getPlayerInfoByVken(
       vkenRef.current?.value ?? ''
     )
     if (user) {
       const newUser: PlayersInTableTotalInfo = {
-        userId: user.id,
+        userId: user.userId,
         username: user.username,
-        full_name: user.full_name,
+        full_name: user.fullName,
         vken: user.vken,
-        playerId: user.id,
+        playerId: user.userId,
         tournamentId: tournamentId,
         VP: '0',
         GW: '0',

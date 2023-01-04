@@ -1,14 +1,19 @@
-import { PlayerType, TournamentType } from '../utils/database.types'
+import { collection, getDocs, query, where } from 'firebase/firestore'
 
-import { AlertType } from '../utils/types'
-import { supabase } from '../utils/supabase'
+import { Player } from '../database/database.types'
+import { db } from '../database/config'
 
-const getAllTournamentPlayers = async (): Promise<PlayerType[] | null> => {
+const getAllTournamentPlayers = async (): Promise<Player[] | null> => {
   try {
-    const { data, error } = await supabase
-      .from('players')
-      .select('*')
-    return data as PlayerType[]
+    const docsRef = collection(db, '/players')
+    const data = await getDocs(docsRef)
+
+    if (data.empty) {
+      return []
+    }
+
+    const allPlayers: Player[] = data.docs.map((elem) => elem.data() as Player)
+    return allPlayers
   } catch (error) {
     console.error(error)
     return null

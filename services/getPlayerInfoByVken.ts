@@ -1,20 +1,20 @@
-import { UserProfile } from '../utils/types'
-import { supabase } from '../utils/supabase'
+import { collection, getDocs, query, where } from 'firebase/firestore'
 
-const getPlayerInfoByVken = async (vken: string): Promise<UserProfile|null> => {
+import { Profile } from '../database/database.types'
+import { db } from '../database/config'
+
+const getPlayerInfoByVken = async (vken: string): Promise<Profile | null> => {
   try {
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('vken', vken)
+    const docRef = collection(db, '/profile')
+    const q = query(docRef, where('vken', '==', vken))
 
-    if (error) {
-      throw error
+    const data = await getDocs(q)
+
+    if (data.empty) {
+      return null
     }
-    if (data && data.length > 0) {
-      return data[0] as UserProfile
-    }
-    throw error
+
+    return data.docs[0].data() as Profile
   } catch (error) {
     return null
   }

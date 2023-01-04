@@ -1,25 +1,32 @@
+import { collection, getDocs, query, where } from 'firebase/firestore'
+
 import { PlayersInTable } from '../utils/types'
-import { PostgrestError } from '@supabase/supabase-js'
-import { supabase } from '../utils/supabase'
+import { db } from '../database/config'
 
 const getPlayersPerRound = async (
   tournamentId: string,
   round: string
 ): Promise<PlayersInTable[] | null> => {
   try {
-    const { data, error } = await supabase
-      .from('players_in_table')
-      .select('*')
-      .eq('tournamentId', tournamentId)
-      .eq('round', round)
+    const docsRef = query(
+      collection(db, 'playersInTable'),
+      where('tournamentId', '==', tournamentId),
+      where('round', '==', round)
+    )
 
-    if (error) {
-      throw error
+    const data = await getDocs(docsRef)
+
+    if (data.empty) {
+      return []
     }
-    if (data) {
-      return data as PlayersInTable[]
-    }
-    throw error
+
+    const playersPerRound: PlayersInTable[] = data.docs.map(
+      (elem) => elem.data() as PlayersInTable
+    )
+
+    return playersPerRound
+
+ 
   } catch (error) {
     return null
   }
