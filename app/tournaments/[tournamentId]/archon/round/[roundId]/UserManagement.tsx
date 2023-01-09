@@ -13,6 +13,7 @@ import AddPlayerForm from './AddPlayerForm'
 import GridPlayers from './GridPlayers'
 import addNewPlayer from '../../../../../../services/addNewPlayer'
 import addNewPlayerToRound from '../../../../../../services/addNewPlayerToRound'
+import getPlayersPerRound from '../../../../../../services/getPlayersPerRound'
 import getProfile from '../../../../../../services/getProfile'
 import getTournamentInfo from '../../../../../../services/getTournamentInfo'
 import getTournamentPlayers from '../../../../../../services/getTournamentPlayers'
@@ -132,19 +133,20 @@ const UserManagement = ({ tournamentId, roundId }: Props) => {
 
         return
       }
-      if (Number(roundId) === tournamentInfo?.maxNumberOfPlayers) {
-        //is final
+      if (Number(roundId) === tournamentInfo?.numberOfRounds) {
+        //final Round
         //calculateFinal
         return
       }
-      //TODO: other cases. Round 2 & 3
-      /* const players: PlayersInTable[] | null = await getPlayersPerRound(
-        tournamentId,
-        roundId
-      )
+      
+      //other rounds
+      const players = await getPlayersPerRound(tournamentId, roundId)
+      if (!players || players.length===0) {
+        throw new Error ('Error getting Players in round')
+      }
       if (players) {
-        setPlayersList(players)
-      } */
+        return players
+      } 
     }
   }
 

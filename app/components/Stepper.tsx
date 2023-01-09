@@ -9,7 +9,7 @@ const Stepper = ({ steps }: { steps: ReactElement[] }) => {
   const { currentStepIndex, step, isFirstStep, isLastStep, back, next } =
       useMultistep(steps)
     const handleNext = () => {
-        if (!isLastStep) { return next() }
+        if (!isLastStep()) { return next() }
         alert('Done')
     }
   return (
@@ -18,9 +18,9 @@ const Stepper = ({ steps }: { steps: ReactElement[] }) => {
         {currentStepIndex + 1}/{steps.length}
       </Box>
       <Box>{step}</Box>
-      <Box>
+      <Box sx={{display:'flex', justifyContent:'space-between',width:'100%'}}>
         {!isFirstStep() && <Button onClick={back}>Back</Button>}
-        <Button onClick={()=>handleNext}>{isLastStep() ? 'Finish' : 'Next'}</Button>
+        <Button onClick={()=>handleNext()}>{isLastStep() ? 'Finish' : 'Next'}</Button>
       </Box>
     </Container>
   )

@@ -1,7 +1,9 @@
 'use client'
 
+import React, { ReactElement } from 'react'
+
 import OwnerAccessWrapper from '../../../../../components/OwnerAccessWrapper'
-import React from 'react'
+import Stepper from '../../../../../components/Stepper'
 import UserManagement from './UserManagement'
 
 const ArchonRound = ({
@@ -10,9 +12,12 @@ const ArchonRound = ({
   params: { tournamentId: string; roundId: string }
 }) => {
   const { tournamentId, roundId } = params
+  const steps:ReactElement[] = [
+    <UserManagement tournamentId={tournamentId} roundId={roundId} />,<>2</>,<>3</>
+  ]
   return (
     <OwnerAccessWrapper tournamentId={tournamentId}>
-      <UserManagement tournamentId={tournamentId} roundId={roundId} />
+      <Stepper  steps={steps} />
     </OwnerAccessWrapper>
   )
 }
