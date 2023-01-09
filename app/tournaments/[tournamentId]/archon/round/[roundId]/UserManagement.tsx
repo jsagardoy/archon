@@ -16,6 +16,7 @@ import addNewPlayerToRound from '../../../../../../services/addNewPlayerToRound'
 import getProfile from '../../../../../../services/getProfile'
 import getTournamentInfo from '../../../../../../services/getTournamentInfo'
 import getTournamentPlayers from '../../../../../../services/getTournamentPlayers'
+import updatePlayerInRoundInfoByVken from '../../../../../../services/updatePlayerInfoByVken'
 import useSnackbar from '../../../../../hooks/useSnackbar'
 
 interface Props {
@@ -56,11 +57,11 @@ const UserManagement = ({ tournamentId, roundId }: Props) => {
       setAlert(newAlert)
     }
   }
-  
+
   const handleAddPlayer = () => {
     setShowAddPlayerForm((prev) => !prev)
   }
-  
+
   const getData = async () => {
     const info = await getTournamentInfo(tournamentId)
     if (info) {
@@ -147,6 +148,22 @@ const UserManagement = ({ tournamentId, roundId }: Props) => {
     }
   }
 
+  const dropPlayer = (index: number) => {
+    const newObject: PlayersTotalInfo = {
+      ...playersList[index],
+      dropped: !playersList[index].dropped,
+    }
+    const newList: PlayersTotalInfo[] = [...playersList]
+    newList[index] = newObject
+    setPlayersList(
+      newList.sort(
+        (a: PlayersTotalInfo, b: PlayersTotalInfo) =>
+          Number(a.dropped) - Number(b.dropped)
+      )
+    )
+    updatePlayerInRoundInfoByVken(newObject, tournamentId, roundId)
+  }
+
   useEffect(() => {
     getData()
   }, [])
@@ -161,7 +178,10 @@ const UserManagement = ({ tournamentId, roundId }: Props) => {
           addPlayer={addPlayer}
         />
       )}
-      <GridPlayers playersList={playersList} />
+      <GridPlayers
+        playersList={playersList}
+        dropPlayer={(index: number) => dropPlayer(index)}
+      />
     </Container>
   )
 }

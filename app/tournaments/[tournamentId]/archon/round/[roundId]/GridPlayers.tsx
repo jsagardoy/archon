@@ -8,8 +8,13 @@ import React from 'react'
 
 interface Props {
   playersList: PlayersTotalInfo[]
+  dropPlayer: (index: number) => void
 }
-const GridPlayers = ({ playersList }: Props) => {
+const GridPlayers = ({ playersList, dropPlayer }: Props) => {
+  const handleDrop = (id: number) => {
+    dropPlayer(id - 1)
+  }
+
   const columns: GridColDef[] = [
     { field: 'id', headerName: '#', width: 200 },
     { field: 'name', headerName: 'Name', width: 200 },
@@ -20,7 +25,7 @@ const GridPlayers = ({ playersList }: Props) => {
       headerName: 'action',
       //TODO add behaviour to drop
       renderCell: (params) => (
-        <Button onClick={() => console.log('drop' + params.id)}>
+        <Button onClick={() => handleDrop(params.id as number)}>
           Drop/Play
         </Button>
       ),
@@ -35,7 +40,7 @@ const GridPlayers = ({ playersList }: Props) => {
     action: <Button>Drop</Button>,
   }))
   return (
-    <Box sx={{ height: '60vh', width: '100%' }}>
+    <Box sx={{ height: '80vh', width: '100%' }}>
       <DataGrid columns={columns} rows={rows} />
     </Box>
   )

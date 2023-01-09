@@ -1,12 +1,12 @@
 import { collection, getDocs, query, where } from 'firebase/firestore'
 
-import { PlayersInTable } from '../utils/types'
+import { PlayersInRound } from '../database/database.types'
 import { db } from '../database/config'
 
 const getPlayersPerRound = async (
   tournamentId: string,
   round: string
-): Promise<PlayersInTable[] | null> => {
+): Promise<PlayersInRound[] | null> => {
   try {
     const docsRef = query(
       collection(db, 'playersInTable'),
@@ -20,8 +20,8 @@ const getPlayersPerRound = async (
       return []
     }
 
-    const playersPerRound: PlayersInTable[] = data.docs.map(
-      (elem) => elem.data() as PlayersInTable
+    const playersPerRound: PlayersInRound[] = data.docs.map(
+      (elem) => elem.data() as PlayersInRound
     )
 
     return playersPerRound
