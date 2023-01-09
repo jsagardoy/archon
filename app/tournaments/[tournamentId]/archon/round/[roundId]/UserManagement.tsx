@@ -1,16 +1,18 @@
 'use client'
 
-import {
-  AlertType,
-  PlayersInTable,
-  PlayersInTableTotalInfo,
-} from '../../../../../../utils/types'
+import { AlertType, PlayersTotalInfo } from '../../../../../../utils/types'
 import { Button, Container } from '@mui/material'
-import { Player, Profile, Tournament } from '../../../../../../database/database.types'
+import {
+  Player,
+  Profile,
+  Tournament,
+} from '../../../../../../database/database.types'
 import React, { useEffect, useState } from 'react'
 
 import AddPlayerForm from './AddPlayerForm'
 import GridPlayers from './GridPlayers'
+import addNewPlayer from '../../../../../../services/addNewPlayer'
+import addNewPlayerToRound from '../../../../../../services/addNewPlayerToRound'
 import getProfile from '../../../../../../services/getProfile'
 import getTournamentInfo from '../../../../../../services/getTournamentInfo'
 import getTournamentPlayers from '../../../../../../services/getTournamentPlayers'
@@ -21,18 +23,15 @@ interface Props {
   roundId: string
 }
 const UserManagement = ({ tournamentId, roundId }: Props) => {
-  const [playersList, setPlayersList] = useState<PlayersInTableTotalInfo[]>([])
+  const [playersList, setPlayersList] = useState<PlayersTotalInfo[]>([])
   const [showAddPlayerForm, setShowAddPlayerForm] = useState<boolean>(false)
-  const [tournamentInfo, setTournamentInfo] = useState<Tournament | null>(
-    null
-  )
+  const [tournamentInfo, setTournamentInfo] = useState<Tournament | null>(null)
   const { setAlert } = useSnackbar()
 
-  const addPlayer = (player: PlayersInTableTotalInfo) => {
+  const addPlayer = async (player: PlayersTotalInfo) => {
+    const identifier = player.username ? player.username : player.full_name
 
-    const identifier = player.username?player.username:player.full_name
-
-    if (playersList.find(elem=>elem.userId===player.userId)) {
+    if (playersList.find((elem) => elem.userId === player.userId)) {
       const newAlert: AlertType = {
         open: true,
         severity: 'error',
@@ -40,7 +39,14 @@ const UserManagement = ({ tournamentId, roundId }: Props) => {
       }
       setAlert(newAlert)
     } else {
-      //TODO:insert into database
+      await addNewPlayerToRound([...playersList, player], tournamentId, roundId)
+      const newPlayer: Player = {
+        id: crypto.randomUUID(),
+        tournamentId: tournamentId,
+        ranking: 0,
+        userId: player.userId ?? '',
+      }
+      await addNewPlayer(newPlayer)
       setPlayersList((prev) => [...prev, player])
       const newAlert: AlertType = {
         open: true,
@@ -49,12 +55,12 @@ const UserManagement = ({ tournamentId, roundId }: Props) => {
       }
       setAlert(newAlert)
     }
-
-    
   }
+  
   const handleAddPlayer = () => {
     setShowAddPlayerForm((prev) => !prev)
   }
+  
   const getData = async () => {
     const info = await getTournamentInfo(tournamentId)
     if (info) {
@@ -72,9 +78,9 @@ const UserManagement = ({ tournamentId, roundId }: Props) => {
           tournamentId
         )
         if (players) {
-          const newPlayers: PlayersInTable[] = players.map(
+          const newPlayers: PlayersTotalInfo[] = players.map(
             (player: Player) => ({
-              playerId: player.userId ?? '',
+              userId: player.userId ?? '',
               tournamentId: tournamentId,
               VP: '0',
               GW: '0',
@@ -83,13 +89,16 @@ const UserManagement = ({ tournamentId, roundId }: Props) => {
               round: roundId,
               tableRank: '0',
               dropped: false,
+              username: null,
+              full_name: null,
+              vken: null,
             })
           )
 
           const result = await Promise.all(
-            newPlayers.map(async (elem: PlayersInTable) => {
-              if (elem.playerId) {
-                return await getProfile(elem.playerId)
+            newPlayers.map(async (elem: PlayersTotalInfo) => {
+              if (elem.userId) {
+                return await getProfile(elem.userId)
               }
               return null
             })
@@ -99,9 +108,9 @@ const UserManagement = ({ tournamentId, roundId }: Props) => {
             (elem): elem is Profile => elem !== null
           )
 
-          const newTotalData: (PlayersInTableTotalInfo | null)[] =
-            newPlayers.map((elem) => {
-              const up = cleanedResult.find((r) => r?.userId === elem.playerId)
+          const newTotalData: (PlayersTotalInfo | null)[] = newPlayers.map(
+            (elem) => {
+              const up = cleanedResult.find((r) => r?.userId === elem.userId)
               if (up && up !== undefined) {
                 return {
                   ...elem,
@@ -112,11 +121,11 @@ const UserManagement = ({ tournamentId, roundId }: Props) => {
                 }
               }
               return null
-            })
-          const cleanedTotalData: PlayersInTableTotalInfo[] =
-            newTotalData.filter(
-              (elem): elem is PlayersInTableTotalInfo => elem !== null
-            )
+            }
+          )
+          const cleanedTotalData: PlayersTotalInfo[] = newTotalData.filter(
+            (elem): elem is PlayersTotalInfo => elem !== null
+          )
           setPlayersList(cleanedTotalData)
         }
 

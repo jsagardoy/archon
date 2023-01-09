@@ -9,16 +9,14 @@ import {
 } from '@mui/material'
 import React, { useRef, useState } from 'react'
 
-import {
-  PlayersInTableTotalInfo,
-} from '../../../../../../utils/types'
+import { PlayersTotalInfo } from '../../../../../../utils/types'
 import { Profile } from '../../../../../../database/database.types'
 import getPlayerInfoByVken from '../../../../../../services/getPlayerInfoByVken'
 
 interface Props {
   tournamentId: string
   roundId: string
-  addPlayer: (player: PlayersInTableTotalInfo) => void
+  addPlayer: (player: PlayersTotalInfo) => void
 }
 const AddPlayerForm = ({ tournamentId, roundId, addPlayer }: Props) => {
   const [showUserNotFound, setShowUserNotFound] = useState<boolean>(false)
@@ -30,7 +28,7 @@ const AddPlayerForm = ({ tournamentId, roundId, addPlayer }: Props) => {
       vkenRef.current?.value ?? ''
     )
     if (user) {
-      const newUser: PlayersInTableTotalInfo = {
+      const newUser: PlayersTotalInfo = {
         userId: user.userId,
         username: user.username,
         full_name: user.fullName,
@@ -50,9 +48,9 @@ const AddPlayerForm = ({ tournamentId, roundId, addPlayer }: Props) => {
       }
       addPlayer(newUser)
     } else {
-        if (vkenRef.current) {
-          vkenRef.current.value = ''
-        }
+      if (vkenRef.current) {
+        vkenRef.current.value = ''
+      }
       setShowUserNotFound(true)
       return
     }

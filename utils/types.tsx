@@ -29,19 +29,12 @@ export type TournamentFilterValuesType = {
   endDate: string | null
 }
 export type PlayersList = { tournamentId: string; players: Player[] }
-/* export type UserProfile = {
-  id: string
-  updated_at: string | null
+
+export type PlayersTotalInfo = {
+  userId: string | null
   username: string | null
   full_name: string | null
-  avatar_url: string | null
-  website: string | null
   vken: string | null
-  rol: string | null
-} */
-export type PlayersInTable = {
-  id?: string
-  playerId: string
   tournamentId: string
   VP: string | null
   GW: string | null
@@ -49,11 +42,5 @@ export type PlayersInTable = {
   coinflip: string | null
   round: string
   tableRank: string
-  dropped:boolean
-}
-export type PlayersInTableTotalInfo = PlayersInTable & {
-  userId: string | null
-  username: string | null
-  full_name: string | null
-  vken: string | null
+  dropped: boolean
 }

@@ -3,11 +3,11 @@
 import { Box, Button } from '@mui/material'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
 
-import { PlayersInTableTotalInfo } from '../../../../../../utils/types'
+import { PlayersTotalInfo } from '../../../../../../utils/types'
 import React from 'react'
 
 interface Props {
-  playersList: PlayersInTableTotalInfo[]
+  playersList: PlayersTotalInfo[]
 }
 const GridPlayers = ({ playersList }: Props) => {
   const columns: GridColDef[] = [
@@ -19,7 +19,11 @@ const GridPlayers = ({ playersList }: Props) => {
       field: 'action',
       headerName: 'action',
       //TODO add behaviour to drop
-      renderCell: (params) => <Button onClick={()=>console.log('drop'+params.id)}>Drop/Play</Button>,
+      renderCell: (params) => (
+        <Button onClick={() => console.log('drop' + params.id)}>
+          Drop/Play
+        </Button>
+      ),
       width: 200,
     },
   ]
@@ -27,7 +31,7 @@ const GridPlayers = ({ playersList }: Props) => {
     id: index + 1,
     vken: player.vken,
     name: player.username === '' ? player.full_name : player.username,
-    status: player.dropped?'Dropped':'Playing',
+    status: player.dropped ? 'Dropped' : 'Playing',
     action: <Button>Drop</Button>,
   }))
   return (
