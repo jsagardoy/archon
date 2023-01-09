@@ -1,6 +1,6 @@
 import { doc, setDoc } from 'firebase/firestore'
 
-import { PlayersInTable } from '../database/database.types'
+import { PlayersInRound } from '../database/database.types'
 import { PlayersTotalInfo } from '../utils/types'
 import { db } from '../database/config'
 
@@ -10,7 +10,7 @@ const addNewPlayerToRound = async (
   round: string
 ) => {
   const id = tournamentId + '-' + round
-  const newObject: PlayersInTable = {
+  const newObject: PlayersInRound = {
     tournamentId: tournamentId,
     round: round,
     playersInRound: playersInRound,

@@ -11,9 +11,16 @@ export type Profile = {
   rol: string
 }
 
+export type PlayersInRound = {
+  tournamentId: string
+  round: string
+  playersInRound: PlayersTotalInfo[]
+}
+
 export type PlayersInTable = {
   tournamentId: string
   round: string
+  tableId:string
   playersInRound: PlayersTotalInfo[]
 }
 
