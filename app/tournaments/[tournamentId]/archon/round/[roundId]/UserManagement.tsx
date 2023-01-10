@@ -18,6 +18,7 @@ import getProfile from '../../../../../../services/getProfile'
 import getTournamentInfo from '../../../../../../services/getTournamentInfo'
 import getTournamentPlayers from '../../../../../../services/getTournamentPlayers'
 import updatePlayerInRoundInfoByVken from '../../../../../../services/updatePlayerInfoByVken'
+import usePlayersList from '../../../../../hooks/usePlayersList'
 import useSnackbar from '../../../../../hooks/useSnackbar'
 
 interface Props {
@@ -25,7 +26,8 @@ interface Props {
   roundId: string
 }
 const UserManagement = ({ tournamentId, roundId }: Props) => {
-  const [playersList, setPlayersList] = useState<PlayersTotalInfo[]>([])
+  /* const [playersList, setPlayersList] = useState<PlayersTotalInfo[]>([]) */
+  const { playersList, setPlayersList } = usePlayersList()
   const [showAddPlayerForm, setShowAddPlayerForm] = useState<boolean>(false)
   const [tournamentInfo, setTournamentInfo] = useState<Tournament | null>(null)
   const { setAlert } = useSnackbar()
@@ -49,7 +51,7 @@ const UserManagement = ({ tournamentId, roundId }: Props) => {
         userId: player.userId ?? '',
       }
       await addNewPlayer(newPlayer)
-      setPlayersList((prev) => [...prev, player])
+      setPlayersList([...playersList, player])
       const newAlert: AlertType = {
         open: true,
         severity: 'success',
@@ -138,15 +140,15 @@ const UserManagement = ({ tournamentId, roundId }: Props) => {
         //calculateFinal
         return
       }
-      
+
       //other rounds
       const players = await getPlayersPerRound(tournamentId, roundId)
-      if (!players || players.length===0) {
-        throw new Error ('Error getting Players in round')
+      if (!players || players.length === 0) {
+        throw new Error('Error getting Players in round')
       }
       if (players) {
         return players
-      } 
+      }
     }
   }
 
