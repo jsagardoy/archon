@@ -41,7 +41,17 @@ const GridPlayers = ({ playersList, dropPlayer }: Props) => {
   }))
   return (
     <Box sx={{ height: '80vh', width: '100%' }}>
-      <DataGrid columns={columns} rows={rows} />
+      <DataGrid
+        columns={columns}
+        rows={rows}
+        initialState={{
+          pagination: {
+            pageSize: 25,
+          },
+        }}
+        rowsPerPageOptions={[25, 50, 100]}
+        pagination
+      />
     </Box>
   )
 }
