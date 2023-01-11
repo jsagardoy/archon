@@ -5,17 +5,24 @@ import {
   PlayersTotalInfo,
   TableDistributionType,
 } from '../../../../utils/types'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 
 import usePlayersList from '../../../hooks/usePlayersList'
 
 const RoundTableDisplay = () => {
-  const { playersList, setPlayersList } = usePlayersList()
-  const [tables5, setTables5] = useState<PlayersTotalInfo[][]>()
-  const [tables4, setTables4] = useState<PlayersTotalInfo[][]>()
+  const {
+    playersList,
+    setPlayersList,
+    tables5,
+    setTables5,
+    tables4,
+    setTables4,
+  } = usePlayersList()
+  /*  const [tables5, setTables5] = useState<PlayersTotalInfo[][]>()
+  const [tables4, setTables4] = useState<PlayersTotalInfo[][]>() */
 
   const getTableDistributionTables = (): TableDistributionType => {
-    const numberOfPlayers = playersList.filter(elem=>!elem.dropped).length
+    const numberOfPlayers = playersList.filter((elem) => !elem.dropped).length
     if (numberOfPlayers > 7 && numberOfPlayers !== 11) {
       const rest5: number = numberOfPlayers % 5
       if (rest5 === 0) {
@@ -57,8 +64,7 @@ const RoundTableDisplay = () => {
     }
     return { table4: 0, table5: 0 }
   }
-
-  const sortByRank = (): PlayersTotalInfo[] => {
+  /*  const sortByRank = (): PlayersTotalInfo[] => {
     //TODO: TBD
     return [...playersList]
       .filter((elem) => !elem.dropped)
@@ -66,11 +72,8 @@ const RoundTableDisplay = () => {
       .sort((a, b) => Number(b.VP) - Number(a.VP))
       .sort((a, b) => Number(b.minipoints) - Number(a.minipoints))
       .sort((a, b) => Number(b.coinflip) - Number(a.coinflip))
-  }
-  const sortPlayersListWithSwissMethod = (): PlayersTotalInfo[] => {
-    //TODO: TBD
-    return [...playersList]
-  }
+  } */
+
   const sortPlayersList = (): PlayersTotalInfo[] => {
     return [...playersList]
       .filter((elem) => !elem.dropped)
@@ -79,22 +82,29 @@ const RoundTableDisplay = () => {
 
   const tables = () => {
     const { table4, table5 } = getTableDistributionTables()
-    const list = sortPlayersList()
-    const tables5 = [...Array(table5)].map((elem, index) =>
-      list.slice(index * 5, index * 5+5)
-    )
-    const startingTable4Index: number = table5 * 5
-    const tables4 = [...Array(table4)].map((elem, index) =>
-      list.slice(
-        startingTable4Index + 4 * index,
-        startingTable4Index + 4 * index + 4
+    if (
+      (tables5.length !== table5) ||
+      (tables4.length !== table4)
+    ) {
+      const list = sortPlayersList()
+      const NewTables5 = [...Array(table5)].map((elem, index) =>
+        list.slice(index * 5, index * 5 + 5)
       )
-    )
-    /*  console.log('tables5', { tables5 })
+      const startingTable4Index: number = table5 * 5
+      const newTables4 = [...Array(table4)].map((elem, index) =>
+        list.slice(
+          startingTable4Index + 4 * index,
+          startingTable4Index + 4 * index + 4
+        )
+      )
+      /*  console.log('tables5', { tables5 })
     console.log('tables4', { tables4 })  */
-    setTables4(tables4)
-    setTables5(tables5)
+      setTables4(newTables4)
+      setTables5(NewTables5)
+      return
+    }
   }
+
   useEffect(() => {
     tables()
   }, [])
