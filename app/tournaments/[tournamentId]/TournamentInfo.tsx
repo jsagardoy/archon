@@ -36,7 +36,6 @@ const TournamentInfo = ({ tournamentId }: Props) => {
 
   const getPlayersList = async () => {
     const players = await getTournamentPlayers(tournamentId)
-    console.log({ players })
     if (players) {
       const playersInfo: (Profile | null)[] = await Promise.all(
         players.map(async (profile) => await getProfile(profile?.userId))

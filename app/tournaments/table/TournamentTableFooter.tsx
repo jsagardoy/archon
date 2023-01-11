@@ -55,7 +55,7 @@ const TournamentTableFooter = ({
           page={page}
           SelectProps={{
             inputProps: {
-              'aria-label': 'rows per page',
+              'aria-label': 'Rows per page',
             },
             native: true,
           }}

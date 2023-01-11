@@ -152,7 +152,7 @@ const UserManagement = ({ tournamentId, roundId }: Props) => {
     }
   }
 
-  const dropPlayer = (index: number) => {
+  const dropPlayer = async (index: number) => {
     const newObject: PlayersTotalInfo = {
       ...playersList[index],
       dropped: !playersList[index].dropped,
@@ -165,7 +165,7 @@ const UserManagement = ({ tournamentId, roundId }: Props) => {
           Number(a.dropped) - Number(b.dropped)
       )
     )
-    updatePlayerInRoundInfoByVken(newObject, tournamentId, roundId)
+    await updatePlayerInRoundInfoByVken(newObject, tournamentId, roundId)
   }
 
   useEffect(() => {

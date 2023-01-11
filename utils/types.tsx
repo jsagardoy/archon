@@ -44,3 +44,5 @@ export type PlayersTotalInfo = {
   tableRank: string
   dropped: boolean
 }
+
+export type TableDistributionType={table4:number, table5:number}
