@@ -66,6 +66,10 @@ const UserManagement = ({ tournamentId, roundId }: Props) => {
   }
 
   const getData = async () => {
+    if (playersList && playersList.length > 0) {
+      //Si ya hay datos en el estado, no vuelvas a cargarlos
+      return
+    }
     const info = await getTournamentInfo(tournamentId)
     if (info) {
       setTournamentInfo(info)
@@ -81,6 +85,7 @@ const UserManagement = ({ tournamentId, roundId }: Props) => {
         const players: Player[] | null = await getTournamentPlayers(
           tournamentId
         )
+
         if (players) {
           const newPlayers: PlayersTotalInfo[] = players.map(
             (player: Player) => ({
