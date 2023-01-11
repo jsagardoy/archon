@@ -1,6 +1,6 @@
 'use client'
 
-import { Container, List, ListItem } from '@mui/material'
+import { Box, Container, List, ListItem, Typography } from '@mui/material'
 import {
   PlayersTotalInfo,
   TableDistributionType,
@@ -82,10 +82,7 @@ const RoundTableDisplay = () => {
 
   const tables = () => {
     const { table4, table5 } = getTableDistributionTables()
-    if (
-      (tables5.length !== table5) ||
-      (tables4.length !== table4)
-    ) {
+    if (tables5.length !== table5 || tables4.length !== table4) {
       const list = sortPlayersList()
       const NewTables5 = [...Array(table5)].map((elem, index) =>
         list.slice(index * 5, index * 5 + 5)
@@ -111,6 +108,21 @@ const RoundTableDisplay = () => {
 
   return (
     <Container>
+      {playersList.filter((elem) => !elem.dropped).length === 11 ||
+      playersList.filter((elem) => !elem.dropped).length < 7 ? (
+        <Box>
+          <Typography variant="body2">
+            Invalid number of active players
+          </Typography>
+          <Typography variant="body2">
+            The number of players does not fit official tournament rules. The
+            number of active players must be 8 or above and cannot be 11.
+          </Typography>
+          <Typography variant="body2">
+            Please check the players list to ensure the requirements are met.
+          </Typography>
+        </Box>
+      ) : null}
       <List>
         {tables5?.map((elem, index) => (
           <ListItem key={index}>
