@@ -131,7 +131,7 @@ const RoundTableDisplay = () => {
               <List>
                 {elem.map((player, index) => (
                   <ListItem key={index}>
-                    {index + 1} -{' '}
+                    {index + 1} -
                     {player.username && player.username !== ''
                       ? player.username
                       : player.full_name}
