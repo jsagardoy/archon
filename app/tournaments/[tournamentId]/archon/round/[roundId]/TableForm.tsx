@@ -1,5 +1,6 @@
 'use client'
 
+import { AlertType, PlayersTotalInfo } from '../../../../../../utils/types'
 import {
   Box,
   Button,
@@ -10,7 +11,7 @@ import {
 } from '@mui/material'
 import React, { FormEvent, useState } from 'react'
 
-import { PlayersTotalInfo } from '../../../../../../utils/types'
+import useSnackbar from '../../../../../hooks/useSnackbar'
 
 interface Props {
   table: PlayersTotalInfo[]
@@ -18,6 +19,9 @@ interface Props {
   updateTable: (newTable: PlayersTotalInfo[], tableId: number) => void
 }
 const TableForm = ({ table, updateTable, tableId }: Props) => {
+
+    const {setAlert}=useSnackbar()
+    
   const hasRepeatedVP = (list: PlayersTotalInfo[]) => {
     const vp = list.map((elem) => elem.VP)
     return !(new Set(vp).size === vp.length)
@@ -158,7 +162,7 @@ const TableForm = ({ table, updateTable, tableId }: Props) => {
         return { ...player, GW: '0' }
       })
       return newTable
-    }
+    } 
     return []
   }
 
@@ -180,10 +184,22 @@ const TableForm = ({ table, updateTable, tableId }: Props) => {
     })
 
     const withGW: PlayersTotalInfo[] = calculateGW(newTable)
-    const withMinipoints: PlayersTotalInfo[] = calculateMinipoints(withGW)
-    const withStartingPlacement: PlayersTotalInfo[] =
-      getStartingPlacement(withMinipoints)
-    updateTable(withStartingPlacement, tableId)
+    if (withGW.length > 0) {
+      const withMinipoints: PlayersTotalInfo[] = calculateMinipoints(withGW)
+      const withStartingPlacement: PlayersTotalInfo[] =
+        getStartingPlacement(withMinipoints)
+      updateTable(withStartingPlacement, tableId)
+    }
+    
+      if (withGW.length === 0) {
+          const newAlert: AlertType = {
+              open: true,
+              message: `Invalid amount of VP in Table ${tableId + 1}`,
+              severity:'error'
+          }
+          setAlert(newAlert)
+      }
+      
   }
   //updateTable(newTable, tableId)
 
