@@ -16,10 +16,10 @@ const GridPlayers = ({ playersList, dropPlayer }: Props) => {
   }
 
   const columns: GridColDef[] = [
-    { field: 'id', headerName: '#', width: 200 },
-    { field: 'name', headerName: 'Name', width: 200 },
-    { field: 'vken', headerName: 'vken', width: 200 },
-    { field: 'status', headerName: 'Status', width: 200 },
+    { field: 'id', headerName: '#', width: 50 },
+    { field: 'name', headerName: 'Name', width: 300 },
+    { field: 'vken', headerName: 'vken', width: 100 },
+    { field: 'status', headerName: 'Status', width: 100 },
     {
       field: 'action',
       headerName: 'action',
@@ -29,7 +29,7 @@ const GridPlayers = ({ playersList, dropPlayer }: Props) => {
           Drop/Play
         </Button>
       ),
-      width: 200,
+      width: 150,
     },
   ]
   const rows = playersList.map((player, index) => ({
@@ -40,7 +40,7 @@ const GridPlayers = ({ playersList, dropPlayer }: Props) => {
     action: <Button>Drop</Button>,
   }))
   return (
-    <Box sx={{ height: '80vh', width: '100%' }}>
+    <Box sx={{ height: '80vh', width: 700 }}>
       <DataGrid
         columns={columns}
         rows={rows}

@@ -4,6 +4,7 @@ import React, { ReactElement } from 'react'
 
 import OwnerAccessWrapper from '../../../../../components/OwnerAccessWrapper'
 import PlayersContextProvider from '../../../../../context/PlayersContext'
+import RoundRanking from './RoundRanking'
 import RoundTableDisplay from '../../RoundTableDisplay'
 import Stepper from '../../../../../components/Stepper'
 import TableResultForm from '../TableResultForm'
@@ -19,7 +20,8 @@ const ArchonRound = ({
   const steps: ReactElement[] = [
     <UserManagement tournamentId={tournamentId} roundId={roundId} />,
     <RoundTableDisplay />,
-    <TableResultForm/>,
+    <TableResultForm />,
+    <RoundRanking/>
   ]
   return (
     <OwnerAccessWrapper tournamentId={tournamentId}>
