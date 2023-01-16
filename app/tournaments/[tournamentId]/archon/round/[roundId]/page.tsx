@@ -21,12 +21,12 @@ const ArchonRound = ({
     <UserManagement tournamentId={tournamentId} roundId={roundId} />,
     <RoundTableDisplay />,
     <TableResultForm />,
-    <RoundRanking/>
+    <RoundRanking />,
   ]
   return (
     <OwnerAccessWrapper tournamentId={tournamentId}>
       <PlayersContextProvider>
-        <Stepper steps={steps} />
+        <Stepper steps={steps} tournamentId={tournamentId} roundId={roundId} />
       </PlayersContextProvider>
     </OwnerAccessWrapper>
   )
