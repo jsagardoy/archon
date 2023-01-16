@@ -23,14 +23,12 @@ const TableResultForm = () => {
     if (newTable.length === 5) {
       const newTables = [...tables5]
       newTables[tableId] = newTable
-      console.log({ newTables })
       setTables5(newTables)
     }
     if (newTable.length === 4) {
       const newTables = [...tables4]
       newTables[tableId] = newTable
-      console.log({ newTables })
-      setTables5(newTables)
+      setTables4(newTables)
     }
   }
   return (
@@ -68,16 +66,13 @@ const TableResultForm = () => {
         {tables4?.map((elem, index) => (
           <ListItem key={index}>
             <>
-              Table {(tables5?.length ?? 0) + index + 1}
+              Table {(tables4?.length ?? 0) + index}
               <List>
-                {elem.map((player, index) => (
-                  <ListItem key={index}>
-                    {index + 1} -{' '}
-                    {player.username && player.username !== ''
-                      ? player.username
-                      : player.full_name}
-                  </ListItem>
-                ))}
+                <TableForm
+                  table={elem}
+                  tableId={index}
+                  updateTable={updateTable}
+                />
               </List>
             </>
           </ListItem>
