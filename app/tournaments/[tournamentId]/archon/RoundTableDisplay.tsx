@@ -18,8 +18,7 @@ const RoundTableDisplay = () => {
     tables4,
     setTables4,
   } = usePlayersList()
-  /*  const [tables5, setTables5] = useState<PlayersTotalInfo[][]>()
-  const [tables4, setTables4] = useState<PlayersTotalInfo[][]>() */
+
 
   const getTableDistributionTables = (): TableDistributionType => {
     const numberOfPlayers = playersList.filter((elem) => !elem.dropped).length
@@ -64,15 +63,7 @@ const RoundTableDisplay = () => {
     }
     return { table4: 0, table5: 0 }
   }
-  /*  const sortByRank = (): PlayersTotalInfo[] => {
-    //TODO: TBD
-    return [...playersList]
-      .filter((elem) => !elem.dropped)
-      .sort((a, b) => Number(b.GW) - Number(a.GW))
-      .sort((a, b) => Number(b.VP) - Number(a.VP))
-      .sort((a, b) => Number(b.minipoints) - Number(a.minipoints))
-      .sort((a, b) => Number(b.coinflip) - Number(a.coinflip))
-  } */
+ 
 
   const sortPlayersList = (): PlayersTotalInfo[] => {
     return [...playersList]
@@ -80,11 +71,17 @@ const RoundTableDisplay = () => {
       .sort(() => Math.random() - 0.5)
   }
 
+  const clearTablesVP = (
+    newTable: PlayersTotalInfo[][]
+  ): PlayersTotalInfo[][] => {
+    return newTable.map((elem) => elem.map(elem2 => ({ ...elem2, VP:'0',GW:'0',minipoints:'0'})))
+  }
+
   const tables = () => {
     const { table4, table5 } = getTableDistributionTables()
     if (tables5.length !== table5 || tables4.length !== table4) {
       const list = sortPlayersList()
-      const NewTables5 = [...Array(table5)].map((elem, index) =>
+      const newTables5 = [...Array(table5)].map((elem, index) =>
         list.slice(index * 5, index * 5 + 5)
       )
       const startingTable4Index: number = table5 * 5
@@ -94,10 +91,9 @@ const RoundTableDisplay = () => {
           startingTable4Index + 4 * index + 4
         )
       )
-      /*  console.log('tables5', { tables5 })
-    console.log('tables4', { tables4 })  */
-      setTables4(newTables4)
-      setTables5(NewTables5)
+
+      setTables4(clearTablesVP(newTables4))
+      setTables5(clearTablesVP(newTables5))
       return
     }
   }

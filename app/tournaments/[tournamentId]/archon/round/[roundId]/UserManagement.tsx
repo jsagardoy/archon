@@ -4,6 +4,7 @@ import { AlertType, PlayersTotalInfo } from '../../../../../../utils/types'
 import { Button, Container } from '@mui/material'
 import {
   Player,
+  PlayersInRound,
   Profile,
   Tournament,
 } from '../../../../../../database/database.types'
@@ -13,6 +14,7 @@ import AddPlayerForm from './AddPlayerForm'
 import GridPlayers from './GridPlayers'
 import addNewPlayer from '../../../../../../services/addNewPlayer'
 import addNewPlayerToRound from '../../../../../../services/addNewPlayerToRound'
+import getPlayersInRound from '../../../../../../services/getPlayersInRound'
 import getPlayersPerRound from '../../../../../../services/getPlayersPerRound'
 import getProfile from '../../../../../../services/getProfile'
 import getTournamentInfo from '../../../../../../services/getTournamentInfo'
@@ -26,7 +28,6 @@ interface Props {
   roundId: string
 }
 const UserManagement = ({ tournamentId, roundId }: Props) => {
-  /* const [playersList, setPlayersList] = useState<PlayersTotalInfo[]>([]) */
   const { playersList, setPlayersList } = usePlayersList()
   const [showAddPlayerForm, setShowAddPlayerForm] = useState<boolean>(false)
   const [tournamentInfo, setTournamentInfo] = useState<Tournament | null>(null)
@@ -66,6 +67,7 @@ const UserManagement = ({ tournamentId, roundId }: Props) => {
   }
 
   const getData = async () => {
+    //TODO: load data from bd for results
     if (playersList && playersList.length > 0) {
       //Si ya hay datos en el estado, no vuelvas a cargarlos
       return
@@ -140,18 +142,22 @@ const UserManagement = ({ tournamentId, roundId }: Props) => {
 
         return
       }
+
       if (Number(roundId) === tournamentInfo?.numberOfRounds) {
         //final Round
         //calculateFinal
         return
       }
-
       //other rounds
-      const players = await getPlayersPerRound(tournamentId, roundId)
-      if (!players || players.length === 0) {
+      const players: PlayersInRound | null = await getPlayersInRound(
+        tournamentId,
+        String(Number(roundId) - 1)
+      )
+      if (!players) {
         throw new Error('Error getting Players in round')
       }
       if (players) {
+        setPlayersList(players.playersInRound)
         return players
       }
     }

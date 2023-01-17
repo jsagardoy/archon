@@ -7,6 +7,7 @@ import { AlertType } from '../../utils/types'
 import addRoundResults from '../../services/addRoundResults'
 import useMultistep from '../hooks/useMultistep'
 import usePlayersList from '../hooks/usePlayersList'
+import { useRouter } from 'next/navigation'
 import useSnackbar from '../hooks/useSnackbar'
 
 const Stepper = ({
@@ -22,6 +23,7 @@ const Stepper = ({
     useMultistep(steps)
   const { playersList } = usePlayersList()
   const { setAlert } = useSnackbar()
+  const router = useRouter()
   const handleNext = async () => {
     if (!isLastStep()) {
       return next()
@@ -40,10 +42,13 @@ const Stepper = ({
           severity: 'error',
         }
     setAlert(newAlert)
-    //TODO move to next url for next rounf
+    router.push(
+      `/tournaments/${tournamentId}/archon/round/${Number(roundId) + 1}`
+    )
   }
   return (
     <Container>
+      <Box>Round {roundId}</Box>
       <Box>
         {currentStepIndex + 1}/{steps.length}
       </Box>

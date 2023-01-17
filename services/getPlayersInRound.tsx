@@ -7,7 +7,7 @@ import { db } from '../database/config'
 const getPlayersInRound = async (
   tournamentId: string,
   round: string
-): Promise<PlayersInRound[] | null> => {
+): Promise<PlayersInRound | null> => {
   try {
     const docsRef = query(
       collection(db, 'playersInRound'),
@@ -18,14 +18,14 @@ const getPlayersInRound = async (
     const data = await getDocs(docsRef)
 
     if (data.empty) {
-      return []
+      return null
     }
 
     const players: PlayersInRound[] = data.docs.map(
       (elem) => elem.data() as PlayersInRound
     )
 
-    return players
+    return players[0]
   } catch (error) {
     return null
   }
