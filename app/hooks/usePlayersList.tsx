@@ -6,7 +6,7 @@ import {
 
 import { useContext } from 'react'
 
-const usePlayersList = () => {
+const usePlayersList= (): PlayersContextType  => {
   const {
     playersList,
     setPlayersList,

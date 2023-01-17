@@ -24,13 +24,14 @@ import usePlayersList from '../../../../../hooks/usePlayersList'
 import useSnackbar from '../../../../../hooks/useSnackbar'
 
 interface Props {
+  tournamentInfo: Tournament
   tournamentId: string
   roundId: string
 }
-const UserManagement = ({ tournamentId, roundId }: Props) => {
+const UserManagement = ({ tournamentInfo, tournamentId, roundId }: Props) => {
   const { playersList, setPlayersList } = usePlayersList()
   const [showAddPlayerForm, setShowAddPlayerForm] = useState<boolean>(false)
-  const [tournamentInfo, setTournamentInfo] = useState<Tournament | null>(null)
+  /*  /const [tournamentInfo, setTournamentInfo] = useState<Tournament | null>(null) */
   const { setAlert } = useSnackbar()
 
   const addPlayer = async (player: PlayersTotalInfo) => {
@@ -72,9 +73,9 @@ const UserManagement = ({ tournamentId, roundId }: Props) => {
       //Si ya hay datos en el estado, no vuelvas a cargarlos
       return
     }
-    const info = await getTournamentInfo(tournamentId)
+    const info = tournamentInfo//await getTournamentInfo(tournamentId)
     if (info) {
-      setTournamentInfo(info)
+      //setTournamentInfo(info)
       if (
         Number(roundId) > Number(info.numberOfRounds) &&
         Number(roundId) >= 0
