@@ -2,6 +2,7 @@
 
 import React, { ReactElement, useEffect, useState } from 'react'
 
+import FinalSittingOrder from './FinalSittingOrder'
 import FinalUserManagement from './FinalUserManagement'
 import OwnerAccessWrapper from '../../../../../components/OwnerAccessWrapper'
 import PlayersContextProvider from '../../../../../context/PlayersContext'
@@ -42,6 +43,7 @@ const ArchonRound = ({
       tournamentId={tournamentId}
       roundId={roundId}
     />,
+    <FinalSittingOrder/>,
   ]
 
   const steps: ReactElement[] = [

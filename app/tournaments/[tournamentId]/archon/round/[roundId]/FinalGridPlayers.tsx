@@ -23,7 +23,7 @@ const GridPlayers = ({ playersList, dropPlayer }: Props) => {
     {
       field: 'action',
       headerName: 'Action',
-      //TODO Hacer algo para cuando el usuario le da sin quere al drop
+      //TODO Hacer algo para cuando el usuario le da sin querer al drop
       renderCell: (params) => (
         params.id<=5?<Button onClick={() => handleDrop(params.id as number)}>
           Drop/Play
