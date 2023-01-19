@@ -3,7 +3,7 @@
 import { Box, Button } from '@mui/material'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
 
-import { PlayersTotalInfo } from '../../../../../../utils/types'
+import { PlayersTotalInfo } from '../../../../../../../utils/types'
 import React from 'react'
 
 interface Props {

@@ -1,6 +1,6 @@
 'use client'
 
-import { AlertType, PlayersTotalInfo } from '../../../../../../utils/types'
+import { AlertType, PlayersTotalInfo } from '../../../../../../../utils/types'
 import {
   Box,
   Button,
@@ -14,8 +14,8 @@ import {
 } from '@mui/material'
 import React, { FormEvent, useEffect, useState } from 'react'
 
-import usePlayersList from '../../../../../hooks/usePlayersList'
-import useSnackbar from '../../../../../hooks/useSnackbar'
+import usePlayersList from '../../../../../../hooks/usePlayersList'
+import useSnackbar from '../../../../../../hooks/useSnackbar'
 
 const FinalSittingOrder = () => {
   const { playersList, setPlayersList } = usePlayersList()

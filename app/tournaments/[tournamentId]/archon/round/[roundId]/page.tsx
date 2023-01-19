@@ -2,8 +2,11 @@
 
 import React, { ReactElement, useEffect, useState } from 'react'
 
-import FinalSittingOrder from './FinalSittingOrder'
-import FinalUserManagement from './FinalUserManagement'
+import FinalRoundRanking from './final/FinalRoundRanking'
+import FinalSittingOrder from './final/FinalSittingOrder'
+import FinalTable from './final/FinalTable'
+import FinalTableResultForm from './final/FinalTableResultForm'
+import FinalUserManagement from './final/FinalUserManagement'
 import OwnerAccessWrapper from '../../../../../components/OwnerAccessWrapper'
 import PlayersContextProvider from '../../../../../context/PlayersContext'
 import RoundRanking from './RoundRanking'
@@ -43,7 +46,10 @@ const ArchonRound = ({
       tournamentId={tournamentId}
       roundId={roundId}
     />,
-    <FinalSittingOrder/>,
+    <FinalSittingOrder />,
+    <FinalTable />,
+    <FinalTableResultForm />,
+    <FinalRoundRanking />,
   ]
 
   const steps: ReactElement[] = [

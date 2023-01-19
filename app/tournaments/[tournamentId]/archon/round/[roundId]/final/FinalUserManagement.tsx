@@ -3,16 +3,15 @@
 import {
   PlayersInRound,
   Tournament,
-} from '../../../../../../database/database.types'
+} from '../../../../../../../database/database.types'
 import React, { useEffect } from 'react'
 
 import { Container } from '@mui/material'
 import FinalGridPlayers from './FinalGridPlayers'
-import GridPlayers from './GridPlayers'
-import { PlayersTotalInfo } from '../../../../../../utils/types'
-import getFinalRound from '../../../../../../services/getFinalRound'
-import updatePlayerInRoundInfoByVken from '../../../../../../services/updatePlayerInfoByVken'
-import usePlayersList from '../../../../../hooks/usePlayersList'
+import { PlayersTotalInfo } from '../../../../../../../utils/types'
+import getFinalRound from '../../../../../../../services/getFinalRound'
+import updatePlayerInRoundInfoByVken from '../../../../../../../services/updatePlayerInfoByVken'
+import usePlayersList from '../../../../../../hooks/usePlayersList'
 
 interface Props {
   tournamentInfo: Tournament
@@ -48,7 +47,8 @@ const FinalUserManagement = ({
         )
         if (data) {
           const newPlayersList: PlayersTotalInfo[] = data.playersInRound
-            .filter(elem=>!elem.dropped).map((elem: PlayersTotalInfo) => ({
+            .filter((elem) => !elem.dropped)
+            .map((elem: PlayersTotalInfo) => ({
               ...elem,
               coinflip: calculateCoinflip(),
             }))
@@ -69,6 +69,7 @@ const FinalUserManagement = ({
                 Number(b.GW) - Number(a.GW)
             )
           setPlayersList(newPlayersList)
+          window.sessionStorage.setItem('final', JSON.stringify(newPlayersList))
           return
         }
         return
