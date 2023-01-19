@@ -47,7 +47,6 @@ const FinalTableForm = () => {
     if (data.length === 1) {
       return [...table].sort((a, b) => Number(b.VP) - Number(a.VP))
     } else {
-      //TODO:Revisar esto porque arrasta los VP totales
       const list = window.sessionStorage.getItem('final')
       if (list) {
         const startingOrder: PlayersTotalInfo[] = JSON.parse(
@@ -60,7 +59,6 @@ const FinalTableForm = () => {
             startingOrder.find((elem2) => elem.userId === elem2.userId) ?? elem
           return { ...elem, tableRank: value.tableRank }
         })
-        console.log(middleTable)
 
         const newTable: PlayersTotalInfo[] = middleTable
           .sort((a, b) => Number(b.VP) - Number(a.VP))

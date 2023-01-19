@@ -27,7 +27,6 @@ const ArchonRound = ({
   const [tournamentInfo, setTournamentInfo] = useState<Tournament>(
     {} as Tournament
   )
-  //TODO: Incluir steps para la final
 
   const calculateFinal = async () => {
     const info: Tournament | null = await getTournamentInfo(tournamentId)
@@ -74,12 +73,14 @@ const ArchonRound = ({
             steps={finalSteps}
             tournamentId={tournamentId}
             roundId={roundId}
+            isFinal={true}
           />
         ) : (
           <Stepper
             steps={steps}
             tournamentId={tournamentId}
             roundId={roundId}
+            isFinal={false}
           />
         )}
       </PlayersContextProvider>

@@ -1,10 +1,11 @@
 'use client'
 
+import { AlertType, PlayersTotalInfo } from '../../utils/types'
 import { Box, Button, Container } from '@mui/material'
 import React, { ReactElement } from 'react'
 
-import { AlertType } from '../../utils/types'
 import addRoundResults from '../../services/addRoundResults'
+import addTournamentRanking from '../../services/addTournamentRanking'
 import useMultistep from '../hooks/useMultistep'
 import usePlayersList from '../hooks/usePlayersList'
 import { useRouter } from 'next/navigation'
@@ -14,16 +15,31 @@ const Stepper = ({
   steps,
   tournamentId,
   roundId,
+  isFinal,
 }: {
   steps: ReactElement[]
   tournamentId: string
   roundId: string
+  isFinal: boolean
 }) => {
   const { currentStepIndex, step, isFirstStep, isLastStep, back, next } =
     useMultistep(steps)
   const { playersList } = usePlayersList()
   const { setAlert } = useSnackbar()
   const router = useRouter()
+
+  const composeFinalRanking = async () => {
+    const listItem = window.sessionStorage.getItem('final')
+    if (listItem) { 
+      const list:PlayersTotalInfo[] = JSON.parse(listItem)
+      const ranking = [...playersList, ...list.slice(5)]
+      //TODO:Linsert in DB
+      const resp = await addTournamentRanking(ranking, tournamentId)
+      if (!resp) {
+        console.error('Error adding tournament ranking to Database')
+      }
+    }
+  }
   const handleNext = async () => {
     if (!isLastStep()) {
       return next()
@@ -42,8 +58,9 @@ const Stepper = ({
           severity: 'error',
         }
     setAlert(newAlert)
+    composeFinalRanking()
     router.push(
-      `/tournaments/${tournamentId}/archon/round/${Number(roundId) + 1}`
+      `/tournaments/${tournamentId}/finalRanking`
     )
   }
   return (
