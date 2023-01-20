@@ -6,6 +6,7 @@ import React, { ReactElement } from 'react'
 
 import addRoundResults from '../../services/addRoundResults'
 import addTournamentRanking from '../../services/addTournamentRanking'
+import getFinalRound from '../../services/getFinalRound'
 import useMultistep from '../hooks/useMultistep'
 import usePlayersList from '../hooks/usePlayersList'
 import { useRouter } from 'next/navigation'
@@ -35,6 +36,7 @@ const Stepper = ({
       const ranking = [...playersList, ...list.slice(5)]
       //TODO:Linsert in DB
       const resp = await addTournamentRanking(ranking, tournamentId)
+     
       if (!resp) {
         console.error('Error adding tournament ranking to Database')
       }
