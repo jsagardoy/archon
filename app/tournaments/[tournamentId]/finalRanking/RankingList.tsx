@@ -1,6 +1,6 @@
 'use client'
 
-import { Box, Container } from '@mui/material'
+import { Box, Container, Typography } from '@mui/material'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
 
 import { PlayersTotalInfo } from '../../../../utils/types'
@@ -36,6 +36,7 @@ const RankingList = ({ ranking }: Props) => {
   }))
   return (
     <Container>
+      <Typography variant='h5'>Tournament final ranking</Typography>
       <Box sx={{ height: '80vh', width: 905 }}>
         <DataGrid
           columns={columns}
