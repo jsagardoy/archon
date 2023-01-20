@@ -20,6 +20,8 @@ const RankingList = ({ ranking }: Props) => {
     { field: 'status', headerName: 'Status', width: 100 },
     { field: 'GW', headerName: 'GW', width: 50 },
     { field: 'VP', headerName: 'VP', width: 50 },
+    { field: 'minipoints', headerName: 'Minipoints', width: 100 },
+    { field: 'coinflip', headerName: 'Coinflip', width: 100 },
   ]
   const rows = ranking.map((player, index) => ({
     id: index + 1,
@@ -29,10 +31,12 @@ const RankingList = ({ ranking }: Props) => {
     status: player.dropped ? 'Dropped' : 'Playing',
     GW: player.GW,
     VP: player.VP,
+    minipoints: player.minipoints,
+    coinflip: player.coinflip,
   }))
   return (
     <Container>
-      <Box sx={{ height: '80vh', width: 705 }}>
+      <Box sx={{ height: '80vh', width: 905 }}>
         <DataGrid
           columns={columns}
           rows={rows}
