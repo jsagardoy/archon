@@ -28,6 +28,7 @@ const ArchonRound = ({
     {} as Tournament
   )
 
+  const [allowNext, setAllowNext] = useState<boolean>(true)
   const calculateFinal = async () => {
     const info: Tournament | null = await getTournamentInfo(tournamentId)
     if (info) {
@@ -39,15 +40,19 @@ const ArchonRound = ({
     }
   }
 
+  const handleNext = (newValue: boolean) => {
+    setAllowNext(newValue)
+  }
+
   const finalSteps: ReactElement[] = [
     <FinalUserManagement
       tournamentInfo={tournamentInfo}
       tournamentId={tournamentId}
       roundId={roundId}
     />,
-    <FinalSittingOrder />,
+    <FinalSittingOrder updateNext={handleNext} />,
     <FinalTable />,
-    <FinalTableResultForm />,
+    <FinalTableResultForm updateNext={handleNext}/>,
     <FinalRoundRanking />,
   ]
 
@@ -61,6 +66,7 @@ const ArchonRound = ({
     <TableResultForm />,
     <RoundRanking />,
   ]
+
   useEffect(() => {
     calculateFinal()
   }, [roundId])
@@ -73,14 +79,14 @@ const ArchonRound = ({
             steps={finalSteps}
             tournamentId={tournamentId}
             roundId={roundId}
-            isFinal={true}
+            allowNext={allowNext}
           />
         ) : (
           <Stepper
             steps={steps}
             tournamentId={tournamentId}
             roundId={roundId}
-            isFinal={false}
+            allowNext={true}
           />
         )}
       </PlayersContextProvider>

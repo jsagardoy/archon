@@ -17,9 +17,18 @@ import React, { FormEvent, useEffect, useState } from 'react'
 import usePlayersList from '../../../../../../hooks/usePlayersList'
 import useSnackbar from '../../../../../../hooks/useSnackbar'
 
-const FinalSittingOrder = () => {
+interface Props {
+  updateNext: (value: boolean) => void
+}
+const FinalSittingOrder = ({ updateNext }: Props) => {
   const { playersList, setPlayersList } = usePlayersList()
   const { setAlert } = useSnackbar()
+  const [allowNext, setAllowNext] = useState<boolean>(false)
+
+  useEffect(() => {
+    updateNext(allowNext)
+  }, [])
+
   const initialOrder = [...playersList]
     .filter((elem) => !elem.dropped)
     .slice(0, 5)
@@ -44,6 +53,7 @@ const FinalSittingOrder = () => {
     e.preventDefault()
     if (validateTable()) {
       getData()
+      updateNext(true)
     } else {
       const newAlert: AlertType = {
         open: true,

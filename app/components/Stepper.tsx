@@ -16,12 +16,12 @@ const Stepper = ({
   steps,
   tournamentId,
   roundId,
-  isFinal,
+  allowNext,
 }: {
   steps: ReactElement[]
   tournamentId: string
   roundId: string
-  isFinal: boolean
+  allowNext: boolean
 }) => {
   const { currentStepIndex, step, isFirstStep, isLastStep, back, next } =
     useMultistep(steps)
@@ -31,12 +31,12 @@ const Stepper = ({
 
   const composeFinalRanking = async () => {
     const listItem = window.sessionStorage.getItem('final')
-    if (listItem) { 
-      const list:PlayersTotalInfo[] = JSON.parse(listItem)
+    if (listItem) {
+      const list: PlayersTotalInfo[] = JSON.parse(listItem)
       const ranking = [...playersList, ...list.slice(5)]
       //TODO:Linsert in DB
       const resp = await addTournamentRanking(ranking, tournamentId)
-     
+
       if (!resp) {
         console.error('Error adding tournament ranking to Database')
       }
@@ -61,9 +61,7 @@ const Stepper = ({
         }
     setAlert(newAlert)
     composeFinalRanking()
-    router.push(
-      `/tournaments/${tournamentId}/finalRanking`
-    )
+    router.push(`/tournaments/${tournamentId}/finalRanking`)
   }
   return (
     <Container>
@@ -75,8 +73,8 @@ const Stepper = ({
       <Box
         sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}
       >
-        {!isFirstStep() && <Button onClick={back}>Back</Button>}
-        <Button onClick={() => handleNext()}>
+        {!isFirstStep() ? <Button onClick={back}>Back</Button> : <Box></Box>}
+        <Button disabled={!allowNext} onClick={() => handleNext()}>
           {isLastStep() ? 'Finish' : 'Next'}
         </Button>
       </Box>

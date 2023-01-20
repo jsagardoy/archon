@@ -21,7 +21,7 @@ const useMultistep = (steps: ReactElement[]) => {
   const goto = (index: number) => {
     setCurrentStepIndex(index)
   }
-  const isFirstStep = () => currentStepIndex === 0
+  const isFirstStep = ():boolean => currentStepIndex === 0
 
   const isLastStep = () => currentStepIndex === steps.length - 1
   return {

@@ -7,11 +7,14 @@ import FinalTableForm from './FinalTableForm'
 import { PlayersTotalInfo } from '../../../../../../../utils/types'
 import usePlayersList from '../../../../../../hooks/usePlayersList'
 
-const FinalTableResultForm = () => {
+interface Props{
+ updateNext:(value:boolean)=>void 
+}
+const FinalTableResultForm = ({updateNext}:Props) => {
   return (
     <Container>
       <span>Final Table</span>
-      <FinalTableForm />
+      <FinalTableForm updateNext={updateNext}/>
     </Container>
   )
 }

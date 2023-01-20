@@ -9,14 +9,18 @@ import {
   Select,
   SelectChangeEvent,
 } from '@mui/material'
-import React, { FormEvent, useState } from 'react'
+import React, { FormEvent, useEffect, useState } from 'react'
 
 import usePlayersList from '../../../../../../hooks/usePlayersList'
 import useSnackbar from '../../../../../../hooks/useSnackbar'
 
-const FinalTableForm = () => {
+interface Props{
+ updateNext:(value:boolean)=>void 
+}
+const FinalTableForm = ({updateNext}:Props) => {
   const { setAlert } = useSnackbar()
   const { playersList, setPlayersList } = usePlayersList()
+  const [allowNext, setAllowNext] = useState<boolean>(false)
   const [table, setTable] = useState<PlayersTotalInfo[]>(
     playersList
       .map((elem) => ({
@@ -106,6 +110,11 @@ const FinalTableForm = () => {
     setTable(newTable)
   }
 
+  useEffect(() => {
+    updateNext(allowNext)
+  }, [])
+  
+
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
     const withGW: PlayersTotalInfo[] = calculateGW()
@@ -120,6 +129,7 @@ const FinalTableForm = () => {
     } else {
       setTable(withGW)
       setPlayersList(withGW)
+      updateNext(true)
     }
   }
   return (
@@ -156,7 +166,7 @@ const FinalTableForm = () => {
           </Box>
         )
       })}
-      <Button type="submit">Submit</Button>
+      <Button type="submit">Save</Button>
     </Box>
   )
 }
