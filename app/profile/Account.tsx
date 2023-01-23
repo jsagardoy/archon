@@ -26,7 +26,7 @@ export default function Account() {
 
   useEffect(() => {
     getProfileData()
-  }, [])
+  }, [user])
   const getProfileData = async () => {
     try {
       if (user) {
@@ -129,7 +129,7 @@ export default function Account() {
               label="Avatar URL"
               InputLabelProps={{ shrink: true }}
             />
-            <Box sx={{ minWidth: 'fit-content', minHeight: 'fit-content' }}>
+            <Box sx={{ width: 200, height: 200 }}>
               <picture>
                 {avatarURLRef.current && (
                   <img
