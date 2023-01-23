@@ -14,7 +14,7 @@ import useSnackbar from '../hooks/useSnackbar'
 //type Profiles = Database['public']['Tables']['profiles']['Row']
 
 export default function Account() {
-  const { user, getSession } = useAuth()
+  const { user } = useAuth()
   const usernameRef = useRef<HTMLInputElement>(null)
   const avatarURLRef = useRef<HTMLInputElement>(null)
   const websiteRef = useRef<HTMLInputElement>(null)
