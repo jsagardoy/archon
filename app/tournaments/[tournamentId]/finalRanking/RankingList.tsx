@@ -13,7 +13,7 @@ interface Props {
 
 const RankingList = ({ ranking }: Props) => {
   const columns: GridColDef[] = [
-    { field: 'id', headerName: '#', width: 50 , hide:true },
+    { field: 'id', headerName: '#', width: 50, hide: true },
     { field: 'ranking', headerName: 'Ranking', width: 100 },
     { field: 'name', headerName: 'Name', width: 300 },
     { field: 'vken', headerName: 'vken', width: 100 },
@@ -36,20 +36,24 @@ const RankingList = ({ ranking }: Props) => {
   }))
   return (
     <Container>
-      <Typography variant='h5'>Tournament final ranking</Typography>
-      <Box sx={{ height: '80vh', width: 905 }}>
-        <DataGrid
-          columns={columns}
-          rows={rows}
-          initialState={{
-            pagination: {
-              pageSize: 25,
-            },
-          }}
-          rowsPerPageOptions={[25, 50, 100]}
-          pagination
-        />
-      </Box>
+      <Typography variant="h5">Tournament final ranking</Typography>
+      {ranking && ranking.length > 0 ? (
+        <Box sx={{ height: '80vh', width: 905 }}>
+          <DataGrid
+            columns={columns}
+            rows={rows}
+            initialState={{
+              pagination: {
+                pageSize: 25,
+              },
+            }}
+            rowsPerPageOptions={[25, 50, 100]}
+            pagination
+          />
+        </Box>
+      ) : (
+        <Typography variant="caption">Tournament ranking not available.</Typography>
+      )}
     </Container>
   )
 }

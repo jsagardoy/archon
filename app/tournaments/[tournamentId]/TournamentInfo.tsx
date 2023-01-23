@@ -50,6 +50,10 @@ const TournamentInfo = ({ tournamentId }: Props) => {
     router.push(`/tournaments/${tournamentId}/archon/round/1`)
   }
 
+  const handleSeeResults = () => {
+     router.push(`/tournaments/${tournamentId}/finalRanking`)
+  }
+  
   useEffect(() => {
     getTournamentInfoData()
     getPlayersList()
@@ -91,7 +95,8 @@ const TournamentInfo = ({ tournamentId }: Props) => {
           <Typography variant="body1">City: {tournament.city}</Typography>
           <OwnerAccessWrapper tournamentId={tournament?.tournamentId}>
             <>
-              <Button onClick={() => handleStartTournament()}>
+{/* disabled buttom if tournament not active */}
+              <Button disabled={!tournament.active} onClick={() => handleStartTournament()}>
                 Start tournament
               </Button>
               <Typography variant="subtitle1">Player's list:</Typography>
@@ -102,6 +107,9 @@ const TournamentInfo = ({ tournamentId }: Props) => {
               )}
             </>
           </OwnerAccessWrapper>
+              <Button disabled={!tournament.active} onClick={() => handleSeeResults()}>
+                See results
+              </Button>
         </Box>
       )}
     </Container>
