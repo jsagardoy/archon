@@ -1,9 +1,8 @@
+import HomeData from './HomeData'
 import React from 'react'
 
-const HomePage = () => (
-  <>
-    <div>HomePage</div>
-  </>
-)
+const HomePage = () => {
+  return <HomeData />
+}
 
 export default HomePage
