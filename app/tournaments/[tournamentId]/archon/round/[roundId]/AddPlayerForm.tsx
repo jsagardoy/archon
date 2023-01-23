@@ -33,7 +33,6 @@ const AddPlayerForm = ({ tournamentId, roundId, addPlayer }: Props) => {
         username: user.username,
         full_name: user.fullName,
         vken: user.vken,
-        playerId: user.userId,
         tournamentId: tournamentId,
         VP: '0',
         GW: '0',
