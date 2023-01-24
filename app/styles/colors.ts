@@ -1,0 +1,5 @@
+export const darkViolet = '#6E6DA6'
+export const violet = '#A582BD'
+export const lightViolet = '#A59EDB'
+export const aqua = '#B5DDEB'
+export const lightGreen = '#C2E6B1'

@@ -24,9 +24,6 @@ const HomeCard = ({ imgURL, alt, title, detail, URL }: Props) => {
   const handleClick = () => {
     router.push(URL)
   }
-  useEffect(() => {
-    console.log({ imgURL })
-  }, [])
 
   return (
     <Card sx={{ maxWidth: 345 }}>

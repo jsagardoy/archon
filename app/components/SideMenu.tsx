@@ -1,6 +1,9 @@
 'use client'
 
+import '../styles/sideMenu.css'
+
 import {
+  Avatar,
   Button,
   Drawer,
   IconButton,
@@ -9,14 +12,15 @@ import {
   Link as MuiLink,
 } from '@mui/material'
 import React, { useEffect, useState } from 'react'
+import { darkViolet, lightViolet, violet } from '../styles/colors'
 
 import Box from '@mui/material/Box'
 import Link from 'next/link'
 import MenuIcon from '@mui/icons-material/Menu'
 import { User } from 'firebase/auth'
-import useSession from '../hooks/useSession'
 import { useAuth } from '../hooks/useAuth'
 import { useRouter } from 'next/navigation'
+import useSession from '../hooks/useSession'
 
 const SideMenu = () => {
   const { session } = useSession()
@@ -41,16 +45,32 @@ const SideMenu = () => {
   }
   const handleListOfElements = (elem: string) => {
     if (elem === 'Home') {
-      return <Link href={`/`}>{elem}</Link>
+      return (
+        <Link className="linkItems" href={`/`}>
+          {elem}
+        </Link>
+      )
     }
     if (!activeUser) {
-      return <Link href={`/${elem}`.toLocaleLowerCase()}>{elem}</Link>
+      return (
+        <Link className="linkItems" href={`/${elem}`.toLocaleLowerCase()}>
+          {elem}
+        </Link>
+      )
     }
     if (activeUser && elem.toLocaleLowerCase() !== 'login') {
-      return <Link href={`/${elem}`.toLocaleLowerCase()}>{elem}</Link>
+      return (
+        <Link className="linkItems" href={`/${elem}`.toLocaleLowerCase()}>
+          {elem}
+        </Link>
+      )
     }
 
-    return <MuiLink onClick={handleLogout}>Logout</MuiLink>
+    return (
+      <MuiLink className="linkItems" onClick={handleLogout}>
+        Logout
+      </MuiLink>
+    )
   }
   useEffect(() => {
     setActiveUser(user)
@@ -60,14 +80,64 @@ const SideMenu = () => {
   }, [user])
 
   const menuList = () => (
-    <Box>
-      <List>
-        {menuElements.map((elem) => (
-          <ListItem key={elem} onClick={handleClose}>
-            {handleListOfElements(elem)}
-          </ListItem>
-        ))}
-      </List>
+    <Box sx={{ width: '20rem', height: '100%', overflow: 'hidden' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: darkViolet,
+          height: '30%',
+          marginTop: '0px',
+          marginBottom: '0px',
+          borderBottom: '3px solid white',
+        }}
+      >
+        <img
+          className="avatarMenu"
+          alt="User picture"
+          src={user?.photoURL ?? 'https://i.stack.imgur.com/34AD2.jpg'}
+        />
+      </Box>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          height: '70%',
+          width: '100%',
+          marginTop: '0px',
+          marginBottom: '0px',
+          backgroundColor: lightViolet,
+        }}
+      >
+        <List
+          sx={{
+            display: 'flex',
+            justifyContent: 'flex-start',
+            alignItem: 'center',
+            flexDirection: 'column',
+            width: '100%',
+            marginLeft: '0px',
+            marginRight: '0px',
+          }}
+        >
+          {menuElements.map((elem) => (
+            <ListItem
+              sx={{
+                display: 'flex',
+                textAlign: 'center',
+                width: '100%',
+                paddingLeft: '0px',
+                paddingRight: '0px',
+              }}
+              key={elem}
+              onClick={handleClose}
+            >
+              {handleListOfElements(elem)}
+            </ListItem>
+          ))}
+        </List>
+      </Box>
     </Box>
   )
 
