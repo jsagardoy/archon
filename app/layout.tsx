@@ -1,10 +1,11 @@
 'use client'
 
-import React, { Suspense, useState } from 'react'
+import './componentStyles/body.css'
 
 import AuthProvider from './context/AuthContext'
 import { CookiesProvider } from 'react-cookie'
 import Header from './components/Header'
+import React from 'react'
 import SnackbarComponent from './components/SnackbarComponent'
 import { SnackbarContextProvider } from './context/SnackbarContext'
 
@@ -15,13 +16,13 @@ const Layout = ({ children }: any) => {
         <title>Vtes Archon</title>
       </head>
       <AuthProvider>
-        <body>
+        <body className="body">
           <header>
             <Header />
           </header>
           <CookiesProvider>
             <SnackbarContextProvider>
-              <main>
+              <main className="main">
                 {children}
                 <SnackbarComponent />
               </main>

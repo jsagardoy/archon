@@ -1,15 +1,19 @@
+'use client'
+
+import { Box, Typography } from '@mui/material'
+
 import LoginButton from './LoginButton'
 import React from 'react'
 import SideMenu from './SideMenu'
-import styles from './Header.module.css'
+import styles from '../componentStyles/Header.module.css'
 
 const Header = () => {
   return (
-    <div className={styles.loginContainer}>
+    <Box sx={{ padding: '0px' }} className={styles.loginContainer}>
       <SideMenu />
-      <h2>Archon</h2>
+      <Typography variant="h2">Archon</Typography>
       <LoginButton />
-    </div>
+    </Box>
   )
 }
 

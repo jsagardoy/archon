@@ -1,7 +1,11 @@
+'use client'
+
+import React, { useEffect } from 'react'
+
 import HomeData from './HomeData'
-import React from 'react'
 
 const HomePage = () => {
+  useEffect(() => {}, [])
   return <HomeData />
 }
 

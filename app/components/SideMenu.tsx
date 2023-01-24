@@ -1,6 +1,6 @@
 'use client'
 
-import '../styles/sideMenu.css'
+import '../componentStyles/sideMenu.css'
 
 import {
   Avatar,
@@ -12,7 +12,7 @@ import {
   Link as MuiLink,
 } from '@mui/material'
 import React, { useEffect, useState } from 'react'
-import { darkViolet, lightViolet, violet } from '../styles/colors'
+import { darkViolet, lightViolet, violet } from '../componentStyles/colors'
 
 import Box from '@mui/material/Box'
 import Link from 'next/link'

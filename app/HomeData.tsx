@@ -1,8 +1,9 @@
 'use client'
 
+import React, { useEffect } from 'react'
+
 import { Container } from '@mui/material'
 import HomeCard from './components/HomeCard'
-import React from 'react'
 import { useAuth } from './hooks/useAuth'
 
 const HomeData = () => {
@@ -17,6 +18,7 @@ const HomeData = () => {
     'https://cdn.britannica.com/55/182855-131-79CC9BF8/Max-Schreck-Nosferatu-Murnau-FW.jpg'
   const loginURL = '/login'
   const { user } = useAuth()
+  useEffect(() => {}, [user])
 
   return (
     <Container
