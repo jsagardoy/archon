@@ -26,11 +26,11 @@ const HomeCard = ({ imgURL, alt, title, detail, URL }: Props) => {
   }
 
   return (
-    <Card sx={{ maxWidth: 345 }}>
+    <Card sx={{ minWidth:'18rem' }}>
       <CardActionArea onClick={() => handleClick()}>
         <CardMedia component="img" height="140" image={imgURL} alt={alt} />
         <CardContent>
-          <Typography gutterBottom variant="h5" component="div">
+          <Typography gutterBottom variant='h6' component="div">
             {title}
           </Typography>
           <Typography variant="body2" color="text.secondary">

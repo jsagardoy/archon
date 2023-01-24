@@ -11,15 +11,25 @@ const HomeData = () => {
   const tournamentDescription = 'Tournaments list'
   const tournamentsURL = '/tournaments'
   const profileURL = '/profile'
-    const loginDescription =
-        'Welcome to my house! Enter freely. Go safely, and leave something of the happiness you bring. - Bram Stoker'
-    const loginImg =
-        'https://cdn.britannica.com/55/182855-131-79CC9BF8/Max-Schreck-Nosferatu-Murnau-FW.jpg'
-    const loginURL= '/login'
+  const loginDescription =
+    'Welcome to my house! Enter freely. Go safely, and leave something of the happiness you bring. - Bram Stoker'
+  const loginImg =
+    'https://cdn.britannica.com/55/182855-131-79CC9BF8/Max-Schreck-Nosferatu-Murnau-FW.jpg'
+  const loginURL = '/login'
   const { user } = useAuth()
-  
+
   return (
-    <Container>
+    <Container
+      sx={{
+        display: 'flex',
+        alignItems: 'flex-start',
+        justifyContent: 'center',
+        flexWrap: 'wrap',
+        width: '100%',
+        gap: '1rem',
+        height: '80vh',
+      }}
+    >
       <HomeCard
         imgURL={nosfeURL}
         alt={'Nosferatu accessing to a computer'}
