@@ -144,7 +144,7 @@ const SideMenu = () => {
   return (
     <>
       <IconButton onClick={toogleDrawer}>
-        <MenuIcon />
+        <MenuIcon color='primary'/>
       </IconButton>
       <Drawer anchor="left" open={showDrawer} onClose={handleClose}>
         {menuList()}
