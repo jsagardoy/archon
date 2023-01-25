@@ -16,7 +16,7 @@ const LoginButton = () => {
 
   return (
     <>
-      {!user ? <Button onClick={handleButton}>Login</Button> : <Logout />}
+      {!user ? <Button color='secondary' onClick={handleButton}>Login</Button> : <Logout />}
       {open ? <LoginButtonDialog open={open} onClose={handleClose} /> : null}
     </>
   )

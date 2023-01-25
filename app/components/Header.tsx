@@ -11,7 +11,7 @@ const Header = () => {
   return (
     <Box sx={{ padding: '0px' }} className={styles.loginContainer}>
       <SideMenu />
-      <Typography variant="h2" color='primary'>Archon</Typography>
+      <Typography variant="h2" color='secondary'>Archon</Typography>
       <LoginButton />
     </Box>
   )

@@ -12,6 +12,7 @@ import { PaletteMode } from '@mui/material'
 import React from 'react'
 import SnackbarComponent from './components/SnackbarComponent'
 import { SnackbarContextProvider } from './context/SnackbarContext'
+import { darkViolet } from './componentStyles/colors'
 
 const Layout = ({ children }: any) => {
   const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
@@ -29,12 +30,12 @@ const Layout = ({ children }: any) => {
             // palette values for light mode
             primary: {
               light: '#5097cc',
-              main: '#ffff',
+              main: darkViolet,
               dark: '#003f6c',
             },
             secondary: {
-              main: '#9b3806',
-              light: '#d26634',
+              main: '#ffff',
+              light: '#ffff',
               dark: '#670300',
             },
             background: {

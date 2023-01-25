@@ -21,10 +21,10 @@ const Footer = () => {
       }}
     >
       <Box sx={{ marginTop: '1rem' }}>
-        <Typography color="primary" variant="subtitle1">
+        <Typography color="secondary" variant="subtitle1">
           Author: Jehú Sagardoy Martín
         </Typography>
-        <Typography color="primary" variant="subtitle1">
+        <Typography color="secondary" variant="subtitle1">
           Contact:
           <Link sx={{ marginLeft: '0.5rem' }} href="info@test.com">
             info@test.com
