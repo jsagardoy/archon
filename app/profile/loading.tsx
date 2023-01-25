@@ -6,11 +6,16 @@ import React from 'react'
 
 const Loading = () => {
   return (
-    <Stack spacing={1}>
-      <Skeleton variant="text" sx={{ fontSize: '1rem' }} />
-      <Skeleton variant="circular" width={40} height={40} />
-      <Skeleton variant="rectangular" width={210} height={60} />
-      <Skeleton variant="rounded" width={210} height={60} />
+    <Stack sx={{display:'flex',justifyContent:'center', alignItems:'center'}} spacing={1}>
+      {/* <Skeleton variant="text" sx={{ fontSize: '1rem' }} />
+      */}
+      <Skeleton variant="circular" width={200} height={200} /> 
+      <Skeleton variant="rectangular" width={500} height={40} />
+      <Skeleton variant="rectangular" width={500} height={40} />
+      <Skeleton variant="rectangular" width={500} height={40} />
+      <Skeleton variant="rectangular" width={500} height={40} />
+      <Skeleton variant="rectangular" width={500} height={40} />
+      <Skeleton variant="rectangular" width={100} height={40} />
     </Stack>
   )
 }

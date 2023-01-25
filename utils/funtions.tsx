@@ -35,3 +35,4 @@ export const isDateInBetweenDates = (
     formatedDate.getTime() <= end.getTime()
   )
 }
+export const DEFAULT_USER_URL='https://i.stack.imgur.com/34AD2.jpg'

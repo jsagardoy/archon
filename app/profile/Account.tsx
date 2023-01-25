@@ -1,9 +1,12 @@
 'use client'
 
+import '../componentStyles/profile.css'
+
 import { Box, Button, Container, FormControl, TextField } from '@mui/material'
 import { FormEvent, useEffect, useRef, useState } from 'react'
 
 import { AlertType } from '../../utils/types'
+import { DEFAULT_USER_URL } from '../../utils/funtions'
 import NoSession from './NoSession'
 import { Profile } from '../../database/database.types'
 import getProfile from '../../services/getProfile'
@@ -104,9 +107,18 @@ export default function Account() {
     updateProfileData()
   }
   return user ? (
-    <Container>
-      <Box component="form" onSubmit={onSubmit}>
-        <FormControl fullWidth sx={{ gap: '1rem' }}>
+    <Container sx={{display:'flex', flexDirection:'column', alignItems:'center', width:'100em'}}>
+      <Box sx={{ marginBottom: '1rem' }}>
+        <picture className="profilePicture">
+          <img
+            className="profilePicture"
+            src={user.photoURL ?? DEFAULT_USER_URL}
+            alt="user avatar"
+          />
+        </picture>
+      </Box>
+      <Box sx={{minWidth:'50em'}} component="form" onSubmit={onSubmit}>
+        <FormControl fullWidth sx={{ gap: '1em' }}>
           <TextField
             id="id_fullName"
             inputRef={fullNameRef}
@@ -119,7 +131,6 @@ export default function Account() {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: '1rem',
             }}
           >
             <TextField
@@ -129,16 +140,6 @@ export default function Account() {
               label="Avatar URL"
               InputLabelProps={{ shrink: true }}
             />
-            <Box sx={{ width: 200, height: 200 }}>
-              <picture>
-                {avatarURLRef.current && (
-                  <img
-                    src={avatarURLRef.current?.value ?? ''}
-                    alt="user avatar"
-                  />
-                )}
-              </picture>
-            </Box>
           </Box>
           <TextField
             id="id_username"
