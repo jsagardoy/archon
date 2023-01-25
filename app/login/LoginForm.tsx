@@ -7,6 +7,7 @@ import {
   FormControl,
   FormHelperText,
   FormLabel,
+  Paper,
   TextField,
   Typography,
 } from '@mui/material'
@@ -107,9 +108,19 @@ const LoginForm = ({ handleClose }: Props) => {
 
   return (
     <Container>
-      <Box component="form" onSubmit={handleLogin}>
+      <Box
+        component="form"
+        onSubmit={handleLogin}
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          gap: '1rem',
+          flexDirection: 'column',
+        }}
+      >
+        <Typography variant="h6">Login form</Typography>
         <FormControl fullWidth>
-          <FormLabel>Login form</FormLabel>
           <TextField
             error={validationResult?.email?._errors !== undefined}
             onChange={clearError}
@@ -128,14 +139,16 @@ const LoginForm = ({ handleClose }: Props) => {
             label="Password"
             required
           />
-          <Button type="submit">Login</Button>
+          <Button color="secondary" type="submit">
+            Login
+          </Button>
           <FormHelperText error={showError}>
             {showError ? 'Incorrect user/password' : ''}
           </FormHelperText>
         </FormControl>
       </Box>
       <Box>
-        <Typography variant="caption">
+        <Typography sx={{ display: 'flex', gap: '0.2rem' }} variant="caption">
           Not registred?
           <Link onClick={handleClose} href="/signup">
             SignUp
@@ -143,14 +156,13 @@ const LoginForm = ({ handleClose }: Props) => {
         </Typography>
       </Box>
       <Box>
-        <Typography variant="caption">
+        <Typography sx={{ display: 'flex', gap: '0.2rem' }} variant="caption">
           Forgot your password?
           <Link href="/reset">Reset</Link>
         </Typography>
       </Box>
-      <Box>
-        <GoogleButton onClick={handleLoginGoogle}/>
-          
+      <Box sx={{marginTop:'1rem', paddingBottom:'0.5em'}}>
+        <GoogleButton onClick={handleLoginGoogle} />
       </Box>
     </Container>
   )

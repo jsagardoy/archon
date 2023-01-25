@@ -1,4 +1,5 @@
-import { Dialog } from '@mui/material'
+import { Box, Dialog } from '@mui/material'
+
 import LoginForm from '../login/LoginForm'
 import React from 'react'
 
@@ -12,7 +13,9 @@ const LoginButtonDialog = (props: Props) => {
 
   return (
     <Dialog open={open} onClose={onClose}>
-      <LoginForm handleClose={onClose}/>
+      <Box sx={{width:'20em', height:'21em', marginTop:'2em'}}>
+        <LoginForm handleClose={onClose} />
+      </Box>
     </Dialog>
   )
 }
