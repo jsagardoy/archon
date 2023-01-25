@@ -26,7 +26,7 @@ const Footer = () => {
         </Typography>
         <Typography color="secondary" variant="subtitle1">
           Contact:
-          <Link sx={{ marginLeft: '0.5rem' }} href="info@test.com">
+          <Link color='secondary' sx={{ marginLeft: '0.5rem' }} href="info@test.com">
             info@test.com
           </Link>
         </Typography>
