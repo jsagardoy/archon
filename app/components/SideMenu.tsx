@@ -15,6 +15,7 @@ import React, { useEffect, useState } from 'react'
 import { darkViolet, lightViolet, violet } from '../componentStyles/colors'
 
 import Box from '@mui/material/Box'
+import { DEFAULT_USER_URL } from '../../utils/funtions'
 import Link from 'next/link'
 import MenuIcon from '@mui/icons-material/Menu'
 import { User } from 'firebase/auth'
@@ -96,7 +97,7 @@ const SideMenu = () => {
         <img
           className="avatarMenu"
           alt="User picture"
-          src={user?.photoURL ?? 'https://i.stack.imgur.com/34AD2.jpg'}
+          src={user?.photoURL ?? DEFAULT_USER_URL}
         />
       </Box>
       <Box
