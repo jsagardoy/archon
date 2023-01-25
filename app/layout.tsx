@@ -6,6 +6,7 @@ import { ThemeOptions, ThemeProvider, createTheme } from '@mui/material'
 
 import AuthProvider from './context/AuthContext'
 import { CookiesProvider } from 'react-cookie'
+import Footer from './components/Footer'
 import Header from './components/Header'
 import { PaletteMode } from '@mui/material'
 import React from 'react'
@@ -18,6 +19,7 @@ const Layout = ({ children }: any) => {
       fontFamily: '"Gill Sans", "Gill Sans MT", Calibri, sans-serif',
       button: {
         textTransform: 'none',
+        fontSize: 20,
       },
     },
     palette: {
@@ -76,8 +78,8 @@ const Layout = ({ children }: any) => {
         <title>Vtes Archon</title>
       </head>
       <AuthProvider>
-        <ThemeProvider theme={theme}>
-          <body className="body">
+        <body className="body">
+          <ThemeProvider theme={theme}>
             <header>
               <Header />
             </header>
@@ -89,8 +91,11 @@ const Layout = ({ children }: any) => {
                 </main>
               </SnackbarContextProvider>
             </CookiesProvider>
-          </body>
-        </ThemeProvider>
+          <footer>
+          <Footer/>
+        </footer>
+          </ThemeProvider>
+        </body>
       </AuthProvider>
     </html>
   )

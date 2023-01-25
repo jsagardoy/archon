@@ -5,6 +5,9 @@
     justify-content: space-between;
     align-items: center;
     background-color: #6E6DA6;
+    width: 100%;
     margin-top: 0px;
     padding-top: 0px;
+    min-height: fit-content;
+    height: 10rem;
 }

@@ -51,14 +51,14 @@ const SideMenu = () => {
         </Link>
       )
     }
-    if (!activeUser) {
+    if (!user) {
       return (
         <Link className="linkItems" href={`/${elem}`.toLocaleLowerCase()}>
           {elem}
         </Link>
       )
     }
-    if (activeUser && elem.toLocaleLowerCase() !== 'login') {
+    if (user && elem.toLocaleLowerCase() !== 'login') {
       return (
         <Link className="linkItems" href={`/${elem}`.toLocaleLowerCase()}>
           {elem}
@@ -86,7 +86,7 @@ const SideMenu = () => {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          backgroundColor: darkViolet,
+          backgroundColor: lightViolet,
           height: '30%',
           marginTop: '0px',
           marginBottom: '0px',
@@ -107,7 +107,7 @@ const SideMenu = () => {
           width: '100%',
           marginTop: '0px',
           marginBottom: '0px',
-          backgroundColor: lightViolet,
+          backgroundColor: darkViolet,
         }}
       >
         <List
@@ -144,7 +144,7 @@ const SideMenu = () => {
   return (
     <>
       <IconButton onClick={toogleDrawer}>
-        <MenuIcon color='primary'/>
+        <MenuIcon fontSize='large' color='primary'/>
       </IconButton>
       <Drawer anchor="left" open={showDrawer} onClose={handleClose}>
         {menuList()}
