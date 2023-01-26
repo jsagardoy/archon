@@ -68,7 +68,7 @@ const SideMenu = () => {
     }
 
     return (
-      <MuiLink className="linkItems" onClick={handleLogout}>
+      <MuiLink color='secondary' className="linkItems" onClick={handleLogout}>
         Logout
       </MuiLink>
     )
