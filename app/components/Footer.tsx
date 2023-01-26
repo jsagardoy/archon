@@ -11,7 +11,7 @@ const Footer = () => {
       sx={{
         backgroundColor: darkViolet,
         minWidth: '100%',
-        height: '10%',
+        height: '10vh',
         display: 'flex',
         justifyContent: 'flex-end',
         alignItems: 'flex-start',
