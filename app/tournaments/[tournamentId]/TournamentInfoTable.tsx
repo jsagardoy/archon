@@ -17,7 +17,7 @@ interface Props {
 }
 const TournamentInfoTable = ({ profiles }: Props) => {
   return (
-    <TableContainer>
+    <TableContainer sx={{display:'flex', height:'65vh'}}>
       <Table>
         <TableHead>
           <TableRow>
