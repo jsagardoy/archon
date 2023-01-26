@@ -32,7 +32,7 @@ const Logout = () => {
     }
   }
   return (
-    <Button color='secondary' disabled={!user} onClick={() => handleLogout()}>
+    <Button sx={{marginRight:'1rem'}} color='secondary' disabled={!user} onClick={() => handleLogout()}>
       Logout
     </Button>
   )

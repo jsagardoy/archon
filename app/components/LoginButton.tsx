@@ -11,12 +11,22 @@ const LoginButton = () => {
   const [open, setOpen] = useState<boolean>(false)
   const { user } = useAuth()
 
-  const handleButton = () => setOpen((prev) => !prev)
+  const handleButton = ():void => setOpen((prev) => !prev)
   const handleClose = () => setOpen(false)
 
   return (
     <>
-      {!user ? <Button color='secondary' onClick={handleButton}>Login</Button> : <Logout />}
+      {!user ? (
+        <Button
+          sx={{ marginRight: '1rem' }}
+          color="secondary"
+          onClick={handleButton}
+        >
+          Login
+        </Button>
+      ) : (
+        <Logout />
+      )}
       {open ? <LoginButtonDialog open={open} onClose={handleClose} /> : null}
     </>
   )

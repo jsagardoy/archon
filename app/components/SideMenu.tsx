@@ -144,8 +144,8 @@ const SideMenu = () => {
 
   return (
     <>
-      <IconButton onClick={toogleDrawer}>
-        <MenuIcon fontSize='large' color='secondary'/>
+      <IconButton sx={{ marginLeft: '1rem' }} onClick={toogleDrawer}>
+        <MenuIcon fontSize="large" color="secondary" />
       </IconButton>
       <Drawer anchor="left" open={showDrawer} onClose={handleClose}>
         {menuList()}
