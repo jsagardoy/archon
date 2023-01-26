@@ -1,17 +1,20 @@
 'use client'
 
-import { Box, Container, Typography } from '@mui/material'
+import { Box, Button, Container, Typography } from '@mui/material'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
+import React, { useEffect } from 'react'
 
 import { PlayersTotalInfo } from '../../../../utils/types'
-import React from 'react'
-import getFinalRound from '../../../../services/getFinalRound'
+import { Tournament } from '../../../../database/database.types'
+import { useRouter } from 'next/navigation'
 
 interface Props {
   ranking: PlayersTotalInfo[]
+  tournamentInfo: Tournament|null
 }
 
-const RankingList = ({ ranking }: Props) => {
+const RankingList = ({ ranking, tournamentInfo }: Props) => {
+  const router=useRouter()
   const columns: GridColDef[] = [
     { field: 'id', headerName: '#', width: 50, hide: true },
     { field: 'ranking', headerName: 'Ranking', width: 100 },
@@ -34,11 +37,41 @@ const RankingList = ({ ranking }: Props) => {
     minipoints: player.minipoints,
     coinflip: player.coinflip,
   }))
+  const handleGoToInfo = () => {
+   router.push(`/tournaments/${tournamentInfo?.tournamentId}`) 
+  }
   return (
-    <Container>
-      <Typography variant="h5">Tournament final ranking</Typography>
+    <Container
+      id="resultContainer"
+      sx={{
+        display: 'flex',
+        width: '100%',
+        heigh: '75vh',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+
+          marginBottom: '0.5rem',
+          marginTop: '0.5rem',
+        }}
+      >
+        <Typography
+          color="primary"
+          variant="h5"
+          sx={{ textDecoration: 'underline' }}
+        >
+          Tournament {tournamentInfo?.name} final ranking
+        </Typography>
+      </Box>
+      <Button onClick={handleGoToInfo} sx={{border:'1px solid',marginBottom:'1rem'}}>Tournament information details</Button>
       {ranking && ranking.length > 0 ? (
-        <Box sx={{ height: '80vh', width: 905 }}>
+        <Box sx={{ height: '64vh', width: 925 }}>
           <DataGrid
             columns={columns}
             rows={rows}
@@ -52,7 +85,9 @@ const RankingList = ({ ranking }: Props) => {
           />
         </Box>
       ) : (
-        <Typography variant="caption">Tournament ranking not available.</Typography>
+        <Typography variant="body1">
+          Tournament final ranking not available yet.
+        </Typography>
       )}
     </Container>
   )
