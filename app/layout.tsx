@@ -18,6 +18,7 @@ const Layout = ({ children }: any) => {
   const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
     typography: {
       fontFamily: '"Gill Sans", "Gill Sans MT", Calibri, sans-serif',
+      fontSize:16,
       button: {
         textTransform: 'none',
         fontSize: 20,
