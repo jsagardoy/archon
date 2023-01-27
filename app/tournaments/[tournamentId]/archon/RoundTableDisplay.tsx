@@ -14,6 +14,8 @@ import {
 } from '../../../../utils/types'
 import React, { useEffect } from 'react'
 
+import TableList from './TableList'
+import TableWrapper from './TableWrapper'
 import usePlayersList from '../../../hooks/usePlayersList'
 
 const RoundTableDisplay = () => {
@@ -120,7 +122,7 @@ const RoundTableDisplay = () => {
         justifyContent: 'flex-start',
         textAlign: 'center',
         flexWrap: 'wrap',
-        overflowY: 'scroll',
+        overflowY: 'auto',
       }}
     >
       {playersList.filter((elem) => !elem.dropped).length === 11 ||
@@ -139,65 +141,11 @@ const RoundTableDisplay = () => {
         </Box>
       ) : null}
       <Box>
-        <List
-          sx={{
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'flex-start',
-          }}
-          id="tables5"
-        >
-          {tables5?.map((elem, index) => (
-            <ListItem sx={{ width: 'fit-content' }} key={index}>
-              <Box
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'flex-start',
-                  alignItems: 'center',
-                }}
-                key={index}
-              >
-                <Typography
-                  color="primary"
-                  variant="subtitle1"
-                  sx={{ fontWeight: 'bold' }}
-                >
-                  Table {index + 1}
-                </Typography>
-                <List sx={{ width: '100%' }}>
-                  {elem.map((player, index) => (
-                    <ListItem
-                      sx={{
-                        display: 'flex',
-                        border: '1px solid',
-                        gap: '0.5rem',
-                        justifyContent: 'flex-start',
-                        textAlign: 'start',
-                      }}
-                      key={index}
-                    >
-                      <ListItemText
-                        sx={{ maxWidth: '0.5rem' }}
-                        secondary={`${index + 1}`}
-                      />
-                      <ListItemText
-                        primary={
-                          player.username && player.username !== ''
-                            ? player.username
-                            : player.full_name
-                        }
-                      />
-                    </ListItem>
-                  ))}
-                </List>
-              </Box>
-            </ListItem>
-          ))}
-        </List>
+        <TableWrapper tables={tables5} startingIndex={0} />
       </Box>
       <Box>
-        <List
+        <TableWrapper tables={tables4} startingIndex={tables5?.length} />
+        {/*  <List
           sx={{
             display: 'flex',
             flexDirection: 'row',
@@ -224,36 +172,11 @@ const RoundTableDisplay = () => {
                 >
                   Table {(tables5?.length ?? 0) + index + 1}
                 </Typography>
-                <List sx={{ width: '100%' }}>
-                  {elem.map((player, index) => (
-                    <ListItem
-                      sx={{
-                        display: 'flex',
-                        border: '1px solid',
-                        gap: '0.5rem',
-                        justifyContent: 'flex-start',
-                        textAlign: 'start',
-                      }}
-                      key={index}
-                    >
-                      <ListItemText
-                        sx={{ maxWidth: '0.5rem' }}
-                        secondary={`${index + 1}`}
-                      />
-                      <ListItemText
-                        primary={
-                          player.username && player.username !== ''
-                            ? player.username
-                            : player.full_name
-                        }
-                      />
-                    </ListItem>
-                  ))}
-                </List>
+                <TableList playersList={elem} />
               </Box>
             </ListItem>
           ))}
-        </List>
+        </List> */}
       </Box>
     </Container>
   )
