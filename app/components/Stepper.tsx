@@ -1,7 +1,7 @@
 'use client'
 
 import { AlertType, PlayersTotalInfo } from '../../utils/types'
-import { Box, Button, Container } from '@mui/material'
+import { Box, Button, Container, Typography } from '@mui/material'
 import React, { ReactElement } from 'react'
 
 import addRoundResults from '../../services/addRoundResults'
@@ -34,9 +34,7 @@ const Stepper = ({
     if (listItem) {
       const list: PlayersTotalInfo[] = JSON.parse(listItem)
       const ranking = [...playersList, ...list.slice(5)]
-      //TODO:Linsert in DB
       const resp = await addTournamentRanking(ranking, tournamentId)
-
       if (!resp) {
         console.error('Error adding tournament ranking to Database')
       }
@@ -64,10 +62,14 @@ const Stepper = ({
     router.push(`/tournaments/${tournamentId}/finalRanking`)
   }
   return (
-    <Container>
-      <Box>Round {roundId}</Box>
-      <Box>
+    <Container sx={{ display: 'flex', width: '100%', flexDirection: 'column', maxHeight:'65vh', height:'65vh', alignItems:'center' }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', flexDirection:'row',marginTop:'1rem', width:'100%' }}>
+        <Typography color="primary" variant="subtitle1">
+          Round {roundId}
+        </Typography>
+      <Typography color='primary' variant='body1'>
         {currentStepIndex + 1}/{steps.length}
+      </Typography>
       </Box>
       <Box>{step}</Box>
       <Box
