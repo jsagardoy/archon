@@ -40,7 +40,7 @@ const GridPlayers = ({ playersList, dropPlayer }: Props) => {
     action: <Button>Drop</Button>,
   }))
   return (
-    <Box sx={{ height: '80vh', width: 700 }}>
+    <Box sx={{ height: '80vh', width: 720 }}>
       <DataGrid
         columns={columns}
         rows={rows}

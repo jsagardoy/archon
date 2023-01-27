@@ -56,13 +56,13 @@ const AddPlayerForm = ({ tournamentId, roundId, addPlayer }: Props) => {
   }
 
   return (
-    <Box component="form" onSubmit={handleSubmit}>
-      <FormControl error={showUserNotFound}>
+    <Box sx={{display:'flex'}} component="form" onSubmit={handleSubmit}>
+      <FormControl sx={{display:'flex', flexDirection:'row', marginBottom:'0.5rem'}} error={showUserNotFound}>
         <TextField
           inputRef={vkenRef}
           type="number"
-          label="vken"
-          helperText="User must have an active account in order to be added to a tournament"
+          label="Vken"
+          helperText="User must have an active account with Vken number, in order to be added to a tournament"
           onChange={() => {
             if (showUserNotFound) {
               setShowUserNotFound(false)

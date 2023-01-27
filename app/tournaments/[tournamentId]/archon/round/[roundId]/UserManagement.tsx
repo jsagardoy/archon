@@ -31,7 +31,6 @@ interface Props {
 const UserManagement = ({ tournamentInfo, tournamentId, roundId }: Props) => {
   const { playersList, setPlayersList } = usePlayersList()
   const [showAddPlayerForm, setShowAddPlayerForm] = useState<boolean>(false)
-  /*  /const [tournamentInfo, setTournamentInfo] = useState<Tournament | null>(null) */
   const { setAlert } = useSnackbar()
 
   const addPlayer = async (player: PlayersTotalInfo) => {
@@ -185,8 +184,8 @@ const UserManagement = ({ tournamentInfo, tournamentId, roundId }: Props) => {
   }, [])
 
   return (
-    <Container>
-      <Button onClick={() => handleAddPlayer()}>New player</Button>
+    <Container sx={{display:'flex', flexDirection:'column', height:'65vh', maxHeight:'65vh', width:'100%'}}>
+      <Button onClick={() => handleAddPlayer()}>Add a new player</Button>
       {showAddPlayerForm && (
         <AddPlayerForm
           tournamentId={tournamentId}
