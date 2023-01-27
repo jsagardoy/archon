@@ -145,38 +145,6 @@ const RoundTableDisplay = () => {
       </Box>
       <Box>
         <TableWrapper tables={tables4} startingIndex={tables5?.length} />
-        {/*  <List
-          sx={{
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'flex-start',
-            flexWrap: 'wrap',
-          }}
-          id="tables4"
-        >
-          {tables4?.map((elem, index) => (
-            <ListItem sx={{ width: 'fit-content' }} key={index}>
-              <Box
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'flex-start',
-                  alignItems: 'center',
-                }}
-                key={index}
-              >
-                <Typography
-                  color="primary"
-                  variant="subtitle1"
-                  sx={{ fontWeight: 'bold' }}
-                >
-                  Table {(tables5?.length ?? 0) + index + 1}
-                </Typography>
-                <TableList playersList={elem} />
-              </Box>
-            </ListItem>
-          ))}
-        </List> */}
       </Box>
     </Container>
   )
