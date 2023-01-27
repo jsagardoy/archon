@@ -62,7 +62,7 @@ const Stepper = ({
     router.push(`/tournaments/${tournamentId}/finalRanking`)
   }
   return (
-    <Container sx={{ display: 'flex', width: '100%', flexDirection: 'column', maxHeight:'65vh', height:'65vh', alignItems:'center' }}>
+    <Container sx={{ display: 'flex', width: '100%', flexDirection: 'column', maxHeight:'65vh', height:'55vh', alignItems:'center'}}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', flexDirection:'row',marginTop:'1rem', width:'100%' }}>
         <Typography color="primary" variant="subtitle1">
           Round {roundId}
@@ -71,7 +71,7 @@ const Stepper = ({
         {currentStepIndex + 1}/{steps.length}
       </Typography>
       </Box>
-      <Box>{step}</Box>
+      <Box sx={{width:'100%'}}>{step}</Box>
       <Box
         sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}
       >

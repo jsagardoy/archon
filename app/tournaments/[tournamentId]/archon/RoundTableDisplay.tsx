@@ -1,6 +1,13 @@
 'use client'
 
-import { Box, Container, List, ListItem, Typography } from '@mui/material'
+import {
+  Box,
+  Container,
+  List,
+  ListItem,
+  ListItemText,
+  Typography,
+} from '@mui/material'
 import {
   PlayersTotalInfo,
   TableDistributionType,
@@ -18,7 +25,6 @@ const RoundTableDisplay = () => {
     tables4,
     setTables4,
   } = usePlayersList()
-
 
   const getTableDistributionTables = (): TableDistributionType => {
     const numberOfPlayers = playersList.filter((elem) => !elem.dropped).length
@@ -63,7 +69,6 @@ const RoundTableDisplay = () => {
     }
     return { table4: 0, table5: 0 }
   }
- 
 
   const sortPlayersList = (): PlayersTotalInfo[] => {
     return [...playersList]
@@ -74,7 +79,9 @@ const RoundTableDisplay = () => {
   const clearTablesVP = (
     newTable: PlayersTotalInfo[][]
   ): PlayersTotalInfo[][] => {
-    return newTable.map((elem) => elem.map(elem2 => ({ ...elem2, VP:'0',GW:'0',minipoints:'0'})))
+    return newTable.map((elem) =>
+      elem.map((elem2) => ({ ...elem2, VP: '0', GW: '0', minipoints: '0' }))
+    )
   }
 
   const tables = () => {
@@ -103,10 +110,22 @@ const RoundTableDisplay = () => {
   }, [])
 
   return (
-    <Container>
+    <Container
+      id="TablesContainer"
+      sx={{
+        display: 'flex',
+        width: '100%',
+        flexDirection: 'row',
+        height: '65vh',
+        justifyContent: 'flex-start',
+        textAlign: 'center',
+        flexWrap: 'wrap',
+        overflowY: 'scroll',
+      }}
+    >
       {playersList.filter((elem) => !elem.dropped).length === 11 ||
       playersList.filter((elem) => !elem.dropped).length < 7 ? (
-        <Box>
+        <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
           <Typography variant="body2">
             Invalid number of active players
           </Typography>
@@ -119,44 +138,123 @@ const RoundTableDisplay = () => {
           </Typography>
         </Box>
       ) : null}
-      <List>
-        {tables5?.map((elem, index) => (
-          <ListItem key={index}>
-            <>
-              Table {index + 1}
-              <List>
-                {elem.map((player, index) => (
-                  <ListItem key={index}>
-                    {index + 1} -
-                    {player.username && player.username !== ''
-                      ? player.username
-                      : player.full_name}
-                  </ListItem>
-                ))}
-              </List>
-            </>
-          </ListItem>
-        ))}
-      </List>
-      <List>
-        {tables4?.map((elem, index) => (
-          <ListItem key={index}>
-            <>
-              Table {(tables5?.length ?? 0) + index + 1}
-              <List>
-                {elem.map((player, index) => (
-                  <ListItem key={index}>
-                    {index + 1} -{' '}
-                    {player.username && player.username !== ''
-                      ? player.username
-                      : player.full_name}
-                  </ListItem>
-                ))}
-              </List>
-            </>
-          </ListItem>
-        ))}
-      </List>
+      <Box>
+        <List
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'flex-start',
+          }}
+          id="tables5"
+        >
+          {tables5?.map((elem, index) => (
+            <ListItem sx={{ width: 'fit-content' }} key={index}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'flex-start',
+                  alignItems: 'center',
+                }}
+                key={index}
+              >
+                <Typography
+                  color="primary"
+                  variant="subtitle1"
+                  sx={{ fontWeight: 'bold' }}
+                >
+                  Table {index + 1}
+                </Typography>
+                <List sx={{ width: '100%' }}>
+                  {elem.map((player, index) => (
+                    <ListItem
+                      sx={{
+                        display: 'flex',
+                        border: '1px solid',
+                        gap: '0.5rem',
+                        justifyContent: 'flex-start',
+                        textAlign: 'start',
+                      }}
+                      key={index}
+                    >
+                      <ListItemText
+                        sx={{ maxWidth: '0.5rem' }}
+                        secondary={`${index + 1}`}
+                      />
+                      <ListItemText
+                        primary={
+                          player.username && player.username !== ''
+                            ? player.username
+                            : player.full_name
+                        }
+                      />
+                    </ListItem>
+                  ))}
+                </List>
+              </Box>
+            </ListItem>
+          ))}
+        </List>
+      </Box>
+      <Box>
+        <List
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'flex-start',
+            flexWrap: 'wrap',
+          }}
+          id="tables4"
+        >
+          {tables4?.map((elem, index) => (
+            <ListItem sx={{ width: 'fit-content' }} key={index}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'flex-start',
+                  alignItems: 'center',
+                }}
+                key={index}
+              >
+                <Typography
+                  color="primary"
+                  variant="subtitle1"
+                  sx={{ fontWeight: 'bold' }}
+                >
+                  Table {(tables5?.length ?? 0) + index + 1}
+                </Typography>
+                <List sx={{ width: '100%' }}>
+                  {elem.map((player, index) => (
+                    <ListItem
+                      sx={{
+                        display: 'flex',
+                        border: '1px solid',
+                        gap: '0.5rem',
+                        justifyContent: 'flex-start',
+                        textAlign: 'start',
+                      }}
+                      key={index}
+                    >
+                      <ListItemText
+                        sx={{ maxWidth: '0.5rem' }}
+                        secondary={`${index + 1}`}
+                      />
+                      <ListItemText
+                        primary={
+                          player.username && player.username !== ''
+                            ? player.username
+                            : player.full_name
+                        }
+                      />
+                    </ListItem>
+                  ))}
+                </List>
+              </Box>
+            </ListItem>
+          ))}
+        </List>
+      </Box>
     </Container>
   )
 }

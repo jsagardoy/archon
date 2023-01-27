@@ -184,7 +184,7 @@ const UserManagement = ({ tournamentInfo, tournamentId, roundId }: Props) => {
   }, [])
 
   return (
-    <Container sx={{display:'flex', flexDirection:'column', height:'65vh', maxHeight:'65vh', width:'100%'}}>
+    <Container sx={{display:'flex', flexDirection:'column', height:'65vh', maxHeight:'65vh', width:'100%', alignItems:'center'}}>
       <Button onClick={() => handleAddPlayer()}>Add a new player</Button>
       {showAddPlayerForm && (
         <AddPlayerForm
