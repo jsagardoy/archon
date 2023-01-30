@@ -52,7 +52,7 @@ const ArchonRound = ({
     />,
     <FinalSittingOrder updateNext={handleNext} />,
     <FinalTable />,
-    <FinalTableResultForm updateNext={handleNext}/>,
+    <FinalTableResultForm updateNext={handleNext} />,
     <FinalRoundRanking />,
   ]
 
@@ -80,6 +80,7 @@ const ArchonRound = ({
             tournamentId={tournamentId}
             roundId={roundId}
             allowNext={allowNext}
+            isFinal={isFinal}
           />
         ) : (
           <Stepper
@@ -87,6 +88,7 @@ const ArchonRound = ({
             tournamentId={tournamentId}
             roundId={roundId}
             allowNext={true}
+            isFinal={isFinal}
           />
         )}
       </PlayersContextProvider>

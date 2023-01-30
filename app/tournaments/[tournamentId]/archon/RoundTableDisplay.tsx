@@ -140,10 +140,10 @@ const RoundTableDisplay = () => {
           </Typography>
         </Box>
       ) : null}
-      <Box>
+      <Box sx={{ height:'fit-content', maxHeight: 'fit-content' }}>
         <TableWrapper tables={tables5} startingIndex={0} />
       </Box>
-      <Box>
+      <Box sx={{ height:'fit-content', maxHeight: 'fit-content' }}>
         <TableWrapper tables={tables4} startingIndex={tables5?.length} />
       </Box>
     </Container>

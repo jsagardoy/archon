@@ -1,4 +1,4 @@
-import { Box, Button } from '@mui/material'
+import { Box, Button, Container, Typography } from '@mui/material'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
 import React, { useEffect, useState } from 'react'
 
@@ -56,19 +56,26 @@ const RoundRanking = () => {
     { field: 'Minipoints', headerName: 'Minipoints', width: 100 },
   ]
   return (
-    <Box sx={{ height: '80vh', width: 750 }}>
-      <DataGrid
-        columns={columns}
-        rows={rows}
-        initialState={{
-          pagination: {
-            pageSize: 25,
-          },
-        }}
-        rowsPerPageOptions={[25, 50, 100]}
-        pagination
-      />
-    </Box>
+    <Container
+      sx={{ display: 'flex', height: '65vh', justifyContent: 'center', flexDirection:'column', alignItems:'center'}}
+    >
+      <Typography color="primary" variant="h5" sx={{marginBottom: '1rem'}}>
+        Table results this round
+      </Typography>
+      <Box sx={{ height: '65vh', width: 760 }}>
+        <DataGrid
+          columns={columns}
+          rows={rows}
+          initialState={{
+            pagination: {
+              pageSize: 25,
+            },
+          }}
+          rowsPerPageOptions={[25, 50, 100]}
+          pagination
+        />
+      </Box>
+    </Container>
   )
 }
 

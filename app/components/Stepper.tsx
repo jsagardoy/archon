@@ -7,6 +7,7 @@ import React, { ReactElement } from 'react'
 import addRoundResults from '../../services/addRoundResults'
 import addTournamentRanking from '../../services/addTournamentRanking'
 import getFinalRound from '../../services/getFinalRound'
+import { isSourceFile } from 'typescript'
 import useMultistep from '../hooks/useMultistep'
 import usePlayersList from '../hooks/usePlayersList'
 import { useRouter } from 'next/navigation'
@@ -17,11 +18,13 @@ const Stepper = ({
   tournamentId,
   roundId,
   allowNext,
+  isFinal,
 }: {
   steps: ReactElement[]
   tournamentId: string
   roundId: string
   allowNext: boolean
+  isFinal: boolean
 }) => {
   const { currentStepIndex, step, isFirstStep, isLastStep, back, next } =
     useMultistep(steps)
@@ -58,20 +61,41 @@ const Stepper = ({
           severity: 'error',
         }
     setAlert(newAlert)
-    composeFinalRanking()
-    router.push(`/tournaments/${tournamentId}/finalRanking`)
+    if (isFinal) {
+      composeFinalRanking()
+      router.push(`/tournaments/${tournamentId}/finalRanking`)
+    } else {
+      router.push(`/tournaments/${tournamentId}/archon/round/${(Number(roundId) + 1)}`)
+    }
   }
   return (
-    <Container sx={{ display: 'flex', width: '100%', flexDirection: 'column', maxHeight:'65vh', height:'55vh', alignItems:'center'}}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', flexDirection:'row',marginTop:'1rem', width:'100%' }}>
+    <Container
+      sx={{
+        display: 'flex',
+        width: '100%',
+        flexDirection: 'column',
+        maxHeight: '65vh',
+        height: '55vh',
+        alignItems: 'center',
+      }}
+    >
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          flexDirection: 'row',
+          marginTop: '1rem',
+          width: '100%',
+        }}
+      >
         <Typography color="primary" variant="subtitle1">
           Round {roundId}
         </Typography>
-      <Typography color='primary' variant='body1'>
-        {currentStepIndex + 1}/{steps.length}
-      </Typography>
+        <Typography color="primary" variant="body1">
+          {currentStepIndex + 1}/{steps.length}
+        </Typography>
       </Box>
-      <Box sx={{width:'100%'}}>{step}</Box>
+      <Box sx={{ width: '100%' }}>{step}</Box>
       <Box
         sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}
       >

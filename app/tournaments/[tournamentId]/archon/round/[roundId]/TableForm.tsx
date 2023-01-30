@@ -19,9 +19,8 @@ interface Props {
   updateTable: (newTable: PlayersTotalInfo[], tableId: number) => void
 }
 const TableForm = ({ table, updateTable, tableId }: Props) => {
+  const { setAlert } = useSnackbar()
 
-    const {setAlert}=useSnackbar()
-    
   const hasRepeatedVP = (list: PlayersTotalInfo[]) => {
     const vp = list.map((elem) => elem.VP)
     return !(new Set(vp).size === vp.length)
@@ -162,7 +161,7 @@ const TableForm = ({ table, updateTable, tableId }: Props) => {
         return { ...player, GW: '0' }
       })
       return newTable
-    } 
+    }
     return []
   }
 
@@ -190,31 +189,47 @@ const TableForm = ({ table, updateTable, tableId }: Props) => {
         getStartingPlacement(withMinipoints)
       updateTable(withStartingPlacement, tableId)
     }
-    
-      if (withGW.length === 0) {
-          const newAlert: AlertType = {
-              open: true,
-              message: `Invalid amount of VP in Table ${tableId + 1}`,
-              severity:'error'
-          }
-          setAlert(newAlert)
+
+    if (withGW.length === 0) {
+      const newAlert: AlertType = {
+        open: true,
+        message: `Invalid amount of VP in Table ${tableId}`,
+        severity: 'error',
       }
-      
+      setAlert(newAlert)
+    }
   }
   //updateTable(newTable, tableId)
 
   return (
     <Box>
-      {table.map((player) => {
+      {table.map((player, index) => {
         return (
-          <Box key={player.userId}>
-            <Box>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              textAlign: 'center',
+              gap: '1rem',
+            }}
+            key={player.userId}
+          >
+            <Box sx={{ display: 'flex', widht: '1rem' }}>{index + 1}</Box>
+            <Box
+              sx={{
+                display: 'flex',
+                width: '10rem',
+                maxWidth: '10rem',
+                marginRight: '1rem',
+              }}
+            >
               {player.username !== '' && player.username
                 ? player.username
                 : player.full_name}
             </Box>
-            <Box>
-              <InputLabel id="VP_id">VP</InputLabel>
+            <Box sx={{ display: 'flex' }}>
+              {/* <InputLabel id="VP_id">VP</InputLabel> */}
               <Select
                 name={player.userId ?? ''}
                 labelId="VP_id"
