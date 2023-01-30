@@ -107,7 +107,15 @@ const LoginForm = ({ handleClose }: Props) => {
   }
 
   return (
-    <Container>
+    <Container
+      sx={{
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'column',
+      }}
+    >
       <Box
         component="form"
         onSubmit={handleLogin}
@@ -117,10 +125,20 @@ const LoginForm = ({ handleClose }: Props) => {
           alignItems: 'center',
           gap: '1rem',
           flexDirection: 'column',
+          width: '100%',
         }}
       >
-        <Typography variant="h6">Login form</Typography>
-        <FormControl fullWidth>
+        <Typography
+          color="primary"
+          sx={{ marginTop: '1rem', marginBottom: '1rem' }}
+          variant="h5"
+        >
+          Login form
+        </Typography>
+        <FormControl
+          fullWidth
+          sx={{ display: 'flex', gap: '1rem', witdth: '100%' }}
+        >
           <TextField
             error={validationResult?.email?._errors !== undefined}
             onChange={clearError}
@@ -139,9 +157,17 @@ const LoginForm = ({ handleClose }: Props) => {
             label="Password"
             required
           />
-          <Button color="secondary" type="submit">
-            Login
-          </Button>
+          <Box
+            sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}
+          >
+            <Button
+              color="primary"
+              type="submit"
+              sx={{ border: '1px solid', width: '30%' }}
+            >
+              Login
+            </Button>
+          </Box>
           <FormHelperText error={showError}>
             {showError ? 'Incorrect user/password' : ''}
           </FormHelperText>
@@ -161,7 +187,7 @@ const LoginForm = ({ handleClose }: Props) => {
           <Link href="/reset">Reset</Link>
         </Typography>
       </Box>
-      <Box sx={{marginTop:'1rem', paddingBottom:'0.5em'}}>
+      <Box sx={{ marginTop: '1rem', paddingBottom: '0.5em' }}>
         <GoogleButton onClick={handleLoginGoogle} />
       </Box>
     </Container>
