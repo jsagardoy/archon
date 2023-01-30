@@ -92,9 +92,36 @@ const SignupForm = () => {
   const clearError = () => setShowError(false)
 
   return (
-    <Container>
-      <Box component="form" onSubmit={handleLogin}>
-        <FormControl fullWidth>
+    <Container
+      sx={{
+        display: 'flex',
+        width: '100%',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        textAlign: 'center',
+        marginTop: '1rem',
+      }}
+    >
+      <Typography color="primary" variant="h5" sx={{ marginBottom: '1rem' }}>
+        Signup
+      </Typography>
+      <Box
+        component="form"
+        onSubmit={handleLogin}
+        sx={{
+          display: 'flex',
+          width: '100%',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <FormControl
+          fullWidth
+          sx={{
+            display: 'flex',
+            gap: '1rem',
+          }}
+        >
           <TextField
             inputRef={emailRef}
             error={validationResult?.email?._errors !== undefined}
@@ -121,9 +148,16 @@ const SignupForm = () => {
             onChange={clearError}
             required
           />
-          <Button disabled={showError} type="submit">
-            Signup
-          </Button>
+          <Box>
+            <Button
+              color="primary"
+              sx={{ border: '1px solid', width: '30%' }}
+              disabled={showError}
+              type="submit"
+            >
+              Signup
+            </Button>
+          </Box>
           <FormHelperText error={showError}>
             {showError ? 'Password and confirm password are not equal' : ''}
           </FormHelperText>
