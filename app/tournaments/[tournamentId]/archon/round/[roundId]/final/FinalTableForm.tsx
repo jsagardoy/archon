@@ -148,9 +148,9 @@ const FinalTableForm = ({ updateNext }: Props) => {
           width: '40%',
           justifyContent: 'center',
           flexDirection: 'column',
-          alignItems:'center',
+          alignItems: 'center',
           textAlign: 'center',
-          padding:'1rem',
+          padding: '1rem',
         }}
         component="form"
         onSubmit={handleSubmit}
@@ -165,7 +165,7 @@ const FinalTableForm = ({ updateNext }: Props) => {
                 flexDirection: 'row',
                 width: '100%',
                 textAlign: 'center',
-                gap:'1rem',
+                gap: '1rem',
               }}
               key={player.userId}
             >
@@ -206,12 +206,11 @@ const FinalTableForm = ({ updateNext }: Props) => {
           sx={{
             display: 'flex',
             justifyContent: 'center',
-            border: '1px solid',
             width: '20%',
             marginTop: '2rem',
           }}
         >
-          <Button color="primary" type="submit">
+          <Button sx={{ border: '1px solid' }} color="primary" type="submit">
             Save
           </Button>
         </Box>
