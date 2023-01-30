@@ -102,7 +102,9 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser ?? null)
-      setCookie('FirebaseAuth', JSON.stringify(currentUser))
+      if (currentUser) {
+        setCookie('FirebaseAuth', JSON.stringify(currentUser))
+      }
     })
   }, [])
 
