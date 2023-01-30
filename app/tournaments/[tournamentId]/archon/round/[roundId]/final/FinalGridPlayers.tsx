@@ -50,7 +50,7 @@ const GridPlayers = ({ playersList, dropPlayer }: Props) => {
     Coinflip: player.coinflip,
   }))
   return (
-    <Box sx={{ height: '80vh', width: 1015 }}>
+    <Box sx={{ height: '80vh', width: 1025 }}>
       <DataGrid
         columns={columns}
         rows={rows}

@@ -1,6 +1,6 @@
 'use client'
 
-import { Box, Button } from '@mui/material'
+import { Box, Button, Container, Typography } from '@mui/material'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
 import React, { useEffect } from 'react'
 
@@ -42,19 +42,23 @@ const FinalTable = () => {
   }, [])
 
   return (
-    <Box sx={{ height: '80vh', width: 455 }}>
-      <DataGrid
-        columns={columns}
-        rows={rows}
-        initialState={{
-          pagination: {
-            pageSize: 25,
-          },
-        }}
-        rowsPerPageOptions={[25, 50, 100]}
-        pagination
-      />
-    </Box>
+    <Container
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+
+        alignItems: 'center',
+        width: '100%',
+        height: '65vh',
+      }}
+    >
+      <Typography sx={{ m: '1rem' }} color="primary" variant="h5">
+        Final sitting and starting order
+      </Typography>
+      <Box sx={{ height: '32.3vh', width: 465, maxHeight:'fit-content' }}>
+        <DataGrid columns={columns} rows={rows} hideFooter />
+      </Box>
+    </Container>
   )
 }
 

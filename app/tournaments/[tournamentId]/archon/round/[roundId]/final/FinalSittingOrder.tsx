@@ -11,6 +11,7 @@ import {
   MenuItem,
   Select,
   SelectChangeEvent,
+  Typography,
 } from '@mui/material'
 import React, { FormEvent, useEffect, useState } from 'react'
 
@@ -90,14 +91,43 @@ const FinalSittingOrder = ({ updateNext }: Props) => {
   }
 
   return (
-    <Container>
-      <Box component="form" onSubmit={handleSubmit}>
-        <List>
+    <Container
+      sx={{
+        display: 'flex',
+        justityContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+        height: '65vh',
+        flexDirection: 'column',
+      }}
+    >
+      <Box
+        component="form"
+        onSubmit={handleSubmit}
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          flexDirection: 'column',
+          alignItems: 'center',
+          width: '100%',
+        }}
+      >
+        <Typography color="primary" variant="h5">
+          Final sitting order
+        </Typography>
+        <List sx={{ border: '1px solid', margin: '1rem', width: '50%', padding:'1rem' }}>
           {playersList
             .filter((elem) => !elem.dropped)
             .slice(0, 5)
             .map((player, index) => (
-              <ListItem key={player.vken}>
+              <ListItem
+                key={player.vken}
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  textAlign: 'start',
+                }}
+              >
                 <Box>{index + 1}</Box>
                 <Box>
                   {player.username || player.username !== ''
@@ -105,7 +135,7 @@ const FinalSittingOrder = ({ updateNext }: Props) => {
                     : player.full_name}
                 </Box>
                 <Box>{player.vken}</Box>
-                <InputLabel id="sittingOrderLabel">Sitting order</InputLabel>
+
                 <Select
                   name={player.userId ?? ''}
                   onChange={handleSelectChange}
@@ -121,7 +151,11 @@ const FinalSittingOrder = ({ updateNext }: Props) => {
               </ListItem>
             ))}
         </List>
-        <Button type="submit">Save Order</Button>
+   
+          <Button sx={{ width: '20%', border: '1px solid' }} type="submit">
+            Save Order
+          </Button>
+    
       </Box>
     </Container>
   )
