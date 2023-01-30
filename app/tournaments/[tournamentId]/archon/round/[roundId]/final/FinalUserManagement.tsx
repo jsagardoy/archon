@@ -98,7 +98,16 @@ const FinalUserManagement = ({
   }, [])
 
   return (
-    <Container>
+    <Container
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'column',
+        maxHeight: '65vh',
+        height: '65vh',
+      }}
+    >
       <FinalGridPlayers
         playersList={playersList}
         dropPlayer={(index: number) => dropPlayer(index)}
