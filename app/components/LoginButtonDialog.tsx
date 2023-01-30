@@ -13,7 +13,7 @@ const LoginButtonDialog = (props: Props) => {
 
   return (
     <Dialog open={open} onClose={onClose}>
-      <Box sx={{width:'20em', height:'21em', marginTop:'2em'}}>
+      <Box sx={{width:'30em', height:'fit-content', marginTop:'1rem', marginBottom:'1rem'}}>
         <LoginForm handleClose={onClose} />
       </Box>
     </Dialog>
