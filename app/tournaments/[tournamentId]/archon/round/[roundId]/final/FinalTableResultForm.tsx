@@ -1,20 +1,28 @@
 'use client'
 
+import { Container, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 
-import { Container } from '@mui/material'
 import FinalTableForm from './FinalTableForm'
 import { PlayersTotalInfo } from '../../../../../../../utils/types'
 import usePlayersList from '../../../../../../hooks/usePlayersList'
 
-interface Props{
- updateNext:(value:boolean)=>void 
+interface Props {
+  updateNext: (value: boolean) => void
 }
-const FinalTableResultForm = ({updateNext}:Props) => {
+const FinalTableResultForm = ({ updateNext }: Props) => {
   return (
-    <Container>
-      <span>Final Table</span>
-      <FinalTableForm updateNext={updateNext}/>
+    <Container
+      sx={{
+        display: 'flex',
+        height: '65vh',
+        flexDirection: 'column',
+        alignItems: 'center',
+        width:'100%',
+      }}
+    >
+      <Typography sx={{m:'1rem'}} color="primary" variant='h5'>Final table results</Typography>
+      <FinalTableForm updateNext={updateNext} />
     </Container>
   )
 }

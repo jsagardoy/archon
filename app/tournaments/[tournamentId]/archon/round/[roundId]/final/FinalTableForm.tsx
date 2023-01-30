@@ -4,6 +4,7 @@ import { AlertType, PlayersTotalInfo } from '../../../../../../../utils/types'
 import {
   Box,
   Button,
+  Container,
   InputLabel,
   MenuItem,
   Select,
@@ -14,10 +15,10 @@ import React, { FormEvent, useEffect, useState } from 'react'
 import usePlayersList from '../../../../../../hooks/usePlayersList'
 import useSnackbar from '../../../../../../hooks/useSnackbar'
 
-interface Props{
- updateNext:(value:boolean)=>void 
+interface Props {
+  updateNext: (value: boolean) => void
 }
-const FinalTableForm = ({updateNext}:Props) => {
+const FinalTableForm = ({ updateNext }: Props) => {
   const { setAlert } = useSnackbar()
   const { playersList, setPlayersList } = usePlayersList()
   const [allowNext, setAllowNext] = useState<boolean>(false)
@@ -113,7 +114,6 @@ const FinalTableForm = ({updateNext}:Props) => {
   useEffect(() => {
     updateNext(allowNext)
   }, [])
-  
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
@@ -133,41 +133,90 @@ const FinalTableForm = ({updateNext}:Props) => {
     }
   }
   return (
-    <Box component="form" onSubmit={handleSubmit}>
-      {table.map((player) => {
-        return (
-          <Box key={player.userId}>
-            <Box>
-              {player.username !== '' && player.username
-                ? player.username
-                : player.full_name}
-            </Box>
-            <Box>
-              <InputLabel id="VP_id">VP</InputLabel>
-              <Select
-                name={player.userId ?? ''}
-                labelId="VP_id"
-                value={player.VP ?? '0'}
-                onChange={handleSelect}
+    <Container
+      sx={{
+        display: 'flex',
+        width: '100%',
+        m: '1rem',
+        justifyContent: 'center',
+      }}
+    >
+      <Box
+        sx={{
+          border: '1px solid',
+          display: 'flex',
+          width: '40%',
+          justifyContent: 'center',
+          flexDirection: 'column',
+          alignItems:'center',
+          textAlign: 'center',
+          padding:'1rem',
+        }}
+        component="form"
+        onSubmit={handleSubmit}
+      >
+        {table.map((player) => {
+          return (
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                flexDirection: 'row',
+                width: '100%',
+                textAlign: 'center',
+                gap:'1rem',
+              }}
+              key={player.userId}
+            >
+              <Box
+                sx={{
+                  display: 'flex',
+                  marginRight: '1rem',
+                }}
               >
-                <MenuItem value={'0'}>0</MenuItem>
-                <MenuItem value={'0.5'}>0.5</MenuItem>
-                <MenuItem value={'1'}>1</MenuItem>
-                <MenuItem value={'1.5'}>1.5</MenuItem>
-                <MenuItem value={'2'}>2</MenuItem>
-                <MenuItem value={'2.5'}>2.5</MenuItem>
-                <MenuItem value={'3'}>3</MenuItem>
-                <MenuItem value={'3.5'}>3.5</MenuItem>
-                <MenuItem value={'4'}>4</MenuItem>
-                <MenuItem value={'4.5'}>4.5</MenuItem>
-                <MenuItem value={'5'}>5</MenuItem>
-              </Select>
+                {player.username !== '' && player.username
+                  ? player.username
+                  : player.full_name}
+              </Box>
+              <Box sx={{ display: 'flex' }}>
+                <Select
+                  name={player.userId ?? ''}
+                  labelId="VP_id"
+                  value={player.VP ?? '0'}
+                  onChange={handleSelect}
+                >
+                  <MenuItem value={'0'}>0</MenuItem>
+                  <MenuItem value={'0.5'}>0.5</MenuItem>
+                  <MenuItem value={'1'}>1</MenuItem>
+                  <MenuItem value={'1.5'}>1.5</MenuItem>
+                  <MenuItem value={'2'}>2</MenuItem>
+                  <MenuItem value={'2.5'}>2.5</MenuItem>
+                  <MenuItem value={'3'}>3</MenuItem>
+                  <MenuItem value={'3.5'}>3.5</MenuItem>
+                  <MenuItem value={'4'}>4</MenuItem>
+                  <MenuItem value={'4.5'}>4.5</MenuItem>
+                  <MenuItem value={'5'}>5</MenuItem>
+                </Select>
+              </Box>
             </Box>
-          </Box>
-        )
-      })}
-      <Button type="submit">Save</Button>
-    </Box>
+          )
+        })}
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            border: '1px solid',
+            width: '20%',
+            marginTop: '2rem',
+          }}
+        >
+          <Button color="primary" type="submit">
+            Save
+          </Button>
+        </Box>
+      </Box>
+    </Container>
   )
 }
 
