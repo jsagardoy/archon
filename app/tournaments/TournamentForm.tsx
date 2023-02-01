@@ -15,13 +15,14 @@ import {
 import { City, Country, State } from 'country-state-city'
 import { ICountry, IState } from 'country-state-city'
 import React, { useRef, useState } from 'react'
-import { ZodFormattedError, z } from 'zod'
+import { ZodFormattedError, any, z } from 'zod'
 
 import { AlertType } from '../../utils/types'
 import { Timestamp } from 'firebase/firestore'
 import { Tournament } from '../../database/database.types'
 import addTournament from '../../services/addTournament'
 import getSymbolFromCurrency from 'currency-symbol-map'
+import { isISODate } from '@elunic/is-iso-date'
 import { useAuth } from '../hooks/useAuth'
 import { useFormControl } from '@mui/material/FormControl'
 import useSnackbar from '../hooks/useSnackbar'
@@ -72,12 +73,10 @@ const TournamentForm = ({ handleClose }: Props) => {
 
   const FormSchema = z.object({
     name: z.string()?.min(1),
-    date: z.date(),
+    date: z.object({}),
     hour: z.string().regex(/^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/),
     numberOfRounds: z.number().min(1).gte(0),
-    /* .regex(/^[1-9]\d*$/), */
     maxNumberOfPlayers: z.number().min(1).gte(0),
-    /* .regex(/^[1-9]\d*$/), */
     details: z.string(),
     price: z
       .string()
@@ -134,7 +133,7 @@ const TournamentForm = ({ handleClose }: Props) => {
         tournamentId: crypto.randomUUID(),
         name: nameRef.current?.value ?? '',
         description: descriptionRef.current?.value ?? '',
-        date: Timestamp.fromDate(new Date(dateRef.current?.value??'')),
+        date: Timestamp.fromDate(new Date(dateRef.current?.value ?? '')),
         hour: hourRef.current?.value ?? '',
         numberOfRounds: Number(numberOfRoundsRef.current?.value) ?? 0,
         maxNumberOfPlayers: Number(maxNumOfPlayersRef.current?.value) ?? 0,
@@ -198,7 +197,7 @@ const TournamentForm = ({ handleClose }: Props) => {
         flexDirection: 'column',
       }}
     >
-      <FormControl error={error}>
+      <FormControl sx={{ gap: '1rem', m: '1rem' }} error={error}>
         <TextField
           error={validationResult?.name?._errors !== undefined}
           helperText={validationResult?.name?._errors.join(', ') || ''}
@@ -228,7 +227,7 @@ const TournamentForm = ({ handleClose }: Props) => {
             onChange={handleTournamentType}
             value={tournamentType}
           >
-            {['Grand Slam', 'National Qualifier', 'Standart', 'Grand Prix'].map(
+            {['Grand Slam', 'National Qualifier', 'Standar', 'Grand Prix'].map(
               (c) => (
                 <MenuItem key={c} value={c}>
                   {c}

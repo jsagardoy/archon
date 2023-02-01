@@ -27,13 +27,18 @@ const DialogWrapper = ({ label, children }: Props) => {
       <Button onClick={handleButton} variant="outlined" startIcon={<AddIcon />}>
         {label}
       </Button>
-      <Dialog fullWidth open={open} onClose={handleClose}>
-        <DialogTitle>Create new tournament</DialogTitle>
-        <DialogContent>
-          {/*  {cloneElement(children as ReactElement, { handleClose: handleClose })} */}
-          {children}
-          {/*  <TournamentForm handleClose={handleClose} /> */}
-        </DialogContent>
+      <Dialog
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          flexDirection: 'column',
+        }}
+        fullWidth
+        open={open}
+        onClose={handleClose}
+      >
+        <DialogTitle sx={{ m: '1rem' }}>Create new tournament</DialogTitle>
+        <DialogContent>{children}</DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
         </DialogActions>

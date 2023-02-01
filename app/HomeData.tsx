@@ -29,7 +29,8 @@ const HomeData = () => {
         flexWrap: 'wrap',
         width: '100%',
         gap: '1rem',
-        height: '80vh',
+        height: '65vh',
+        marginTop:'1rem',
       }}
     >
       <HomeCard

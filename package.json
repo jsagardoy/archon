@@ -9,10 +9,12 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@elunic/is-iso-date": "^2.0.1",
     "@emotion/react": "^11.10.5",
     "@emotion/server": "^11.10.0",
     "@emotion/styled": "^11.10.5",
     "@fontsource/roboto": "^4.5.8",
+    "@google-cloud/firestore": "^6.0.0",
     "@mui/icons-material": "^5.10.9",
     "@mui/material": "^5.10.13",
     "@mui/x-data-grid": "^5.17.14",
